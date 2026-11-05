@@ -8,6 +8,6 @@
     "lib": ["ES2022", "DOM"],
     "rootDir": ".."
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "vitest.*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts", "prisma/seedGuard.ts", "vitest.*.ts"],
   "exclude": ["node_modules", "dist"]
 }

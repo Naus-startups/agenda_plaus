@@ -9,6 +9,7 @@ import { AppError, AuthenticationError, ConflictError, ValidationError } from ".
 import { signAccessToken, signRefreshToken, signTemporaryToken, verifyRefreshToken, verifyTemporaryToken } from "../../shared/utils/jwt";
 import { normalizeEmail } from "../../shared/utils/email";
 import { forgetAllSessions, forgetSession } from "../../shared/sessionUsers";
+import { logSecurityEvent } from "../../shared/securityLog";
 import { authRepository } from "./auth.repository";
 import type { AppleAuthInput, GoogleAuthInput, GoogleMobileExchangeInput, GoogleMobileStartInput } from "./auth.schema";
 
@@ -488,7 +489,10 @@ export const authService = {
         // every session of the account ends. Right after it, it's the dashboard's parallel
         // requests refreshing twice, and only this request is refused.
         const rotatedAt = session.expiresAt.getTime() - ms(env.JWT_REFRESH_EXPIRES_IN);
-        if (Date.now() - rotatedAt > REFRESH_REUSE_GRACE_MS) await endAllSessions(session.userId);
+        if (Date.now() - rotatedAt > REFRESH_REUSE_GRACE_MS) {
+          logSecurityEvent("refresh_token_reuse", { userId: session.userId, reason: "token antigo reutilizado: todas as sessões terminadas" });
+          await endAllSessions(session.userId);
+        }
         throw invalid;
       }
 
@@ -506,6 +510,7 @@ export const authService = {
     const stored = await authRepository.findRefreshToken(presentedHash);
     if (!stored || stored.revokedAt || stored.expiresAt <= new Date()) {
       if (stored?.revokedAt && Date.now() - stored.revokedAt.getTime() > REFRESH_REUSE_GRACE_MS) {
+        logSecurityEvent("refresh_token_reuse", { userId: stored.userId, reason: "token antigo reutilizado: todas as sessões terminadas" });
         await endAllSessions(stored.userId);
       }
       throw invalid;
@@ -531,6 +536,7 @@ export const authService = {
 
   // "Terminar todas as sessões": every device, access tokens included.
   logoutAll(userId: string): Promise<void> {
+    logSecurityEvent("all_sessions_ended", { userId });
     return endAllSessions(userId);
   },
 };

@@ -1,10 +1,34 @@
 import type { NextFunction, Request, Response } from "express";
 import { Prisma } from "@prisma/client";
 import { AppError } from "../errors";
+import { logSecurityEvent, type SecurityEvent } from "../securityLog";
 import { sendError } from "../utils/apiResponse";
 
-export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction): void {
+// Every refusal the API answers goes through here, so this is where they're recorded: a
+// wrong password, a bad or expired token, someone reaching for another account's data, a
+// rate limit hit. See shared/securityLog.ts.
+function recordRefusal(req: Request, err: AppError): void {
+  const path = req.originalUrl.split("?")[0];
+  let event: SecurityEvent | null = null;
+  if (err.statusCode === 429) event = "rate_limited";
+  else if (err.statusCode === 403) event = "access_denied";
+  else if (err.statusCode === 401) event = path.endsWith("/auth/login") ? "login_failed" : "token_rejected";
+  if (!event) return;
+
+  const email = (req.body as { email?: unknown } | undefined)?.email;
+  logSecurityEvent(event, {
+    ip: req.clientIp ?? req.ip,
+    userId: req.user?.id,
+    email: event === "login_failed" && typeof email === "string" ? email : undefined,
+    method: req.method,
+    path,
+    reason: err.code,
+  });
+}
+
+export function errorHandler(err: unknown, req: Request, res: Response, _next: NextFunction): void {
   if (err instanceof AppError) {
+    recordRefusal(req, err);
     sendError(res, err.code, err.message, err.statusCode);
     return;
   }

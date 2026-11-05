@@ -8,6 +8,7 @@ import {
   refreshSession,
 } from "@/lib/session";
 import { clientIpFrom } from "@/lib/internal-proxy";
+import { isCrossSiteMutation } from "@/lib/csrf";
 
 // Páginas do painel: sem sessão, vão para o login.
 const DASHBOARD_PREFIXES = [
@@ -37,6 +38,15 @@ function matches(pathname: string, prefixes: string[]) {
  */
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // The /api routes handle the session themselves; here they only get the CSRF check.
+  if (pathname === "/api" || pathname.startsWith("/api/")) {
+    if (isCrossSiteMutation(request.method, request.headers)) {
+      console.warn(`[security] ${JSON.stringify({ at: new Date().toISOString(), event: "csrf_rejected", method: request.method, path: pathname, origin: request.headers.get("origin") })}`);
+      return Response.json({ error: "Pedido recusado: origem não autorizada." }, { status: 403 });
+    }
+    return NextResponse.next();
+  }
 
   let session = parseSession(request.cookies.get(SESSION_COOKIE)?.value);
   let renewedCookie: string | null = null;
@@ -80,6 +90,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Só páginas: as rotas /api tratam a sessão sozinhas, e ficheiros estáticos não precisam.
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)"],
+  // Páginas (renovação da sessão) e rotas /api (só a verificação CSRF); ficheiros estáticos não.
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)", "/api/:path*"],
 };

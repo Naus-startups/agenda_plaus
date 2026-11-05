@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { newPassword } from "@slotix/validation";
 import { imageUrl, personName, phone } from "../../shared/validation/fields";
 
 export const updateProfileSchema = z.object({
@@ -14,7 +15,7 @@ export const updateLocationSchema = z.object({
 
 export const changePasswordSchema = z.object({
   currentPassword: z.string().min(1).max(128),
-  newPassword: z.string().min(8).max(128),
+  newPassword,
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

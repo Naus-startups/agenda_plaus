@@ -4,6 +4,7 @@ import swaggerUi from "swagger-ui-express";
 import { env } from "../config/env";
 import { generateOpenApiDocument } from "../docs/openapi";
 import { internalProxy } from "../shared/internalProxy";
+import { logSecurityEvent } from "../shared/securityLog";
 import { errorHandler } from "../shared/middleware/errorHandler";
 import { routes } from "./routes";
 
@@ -30,9 +31,30 @@ function securityHeaders(req: express.Request, res: express.Response, next: expr
   res.setHeader("Cross-Origin-Resource-Policy", "same-site");
   if (!req.path.startsWith("/api/v1/docs")) {
     res.setHeader("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'");
+    // Tokens and personal data: never kept by a shared proxy or the browser's cache.
+    res.setHeader("Cache-Control", "no-store");
   }
   if (env.NODE_ENV === "production") res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   next();
+}
+
+// In production the API sits behind the host's TLS proxy (Render), which says how the
+// client connected in X-Forwarded-Proto. A request that came in over plain HTTP has already
+// sent its token in the clear: it's refused, not redirected, so the client fails loudly
+// instead of silently resending the token. Requests without the header (the dashboard's
+// container on a private network) aren't affected. /health stays open for probes.
+export function arrivedOverPlainHttp(req: Pick<express.Request, "get" | "path">, nodeEnv: string = env.NODE_ENV): boolean {
+  if (nodeEnv !== "production" || req.path === "/health") return false;
+  return req.get("x-forwarded-proto")?.split(",")[0]?.trim().toLowerCase() === "http";
+}
+
+function requireHttps(req: express.Request, res: express.Response, next: express.NextFunction): void {
+  if (!arrivedOverPlainHttp(req)) {
+    next();
+    return;
+  }
+  logSecurityEvent("https_required", { ip: req.ip, method: req.method, path: req.path });
+  res.status(403).json({ success: false, error: { code: "HTTPS_REQUIRED", message: "Use HTTPS para aceder a esta API." } });
 }
 
 export function createApp() {
@@ -41,6 +63,7 @@ export function createApp() {
   app.disable("x-powered-by");
   if (env.TRUST_PROXY !== undefined) app.set("trust proxy", env.TRUST_PROXY);
   app.use(securityHeaders);
+  app.use(requireHttps);
   app.use(internalProxy);
 
   // CORS is a browser-only concern: the mobile app's native HTTP calls carry no Origin

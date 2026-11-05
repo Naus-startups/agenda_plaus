@@ -1,17 +1,10 @@
 import { Router } from "express";
-import multer from "multer";
+import { imageUpload as upload } from "../../shared/middleware/upload";
 import { authenticate } from "../../shared/middleware/authenticate";
 import { authorize } from "../../shared/middleware/authorize";
 import { validate } from "../../shared/middleware/validate";
 import { galleryController } from "./gallery.controller";
 import { uploadGalleryImageSchema } from "./gallery.schema";
-
-// Buffered in memory, not written to local disk: the file is forwarded straight to
-// Supabase Storage, and the API may run on an ephemeral/read-only filesystem.
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 },
-});
 
 // mergeParams: true — this router is mounted at /businesses/:businessId/gallery, and
 // needs that :businessId from the parent path.

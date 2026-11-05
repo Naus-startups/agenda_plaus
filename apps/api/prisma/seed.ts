@@ -1,7 +1,13 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../src/config/database";
+import { demoSeedAllowed } from "./seedGuard";
 
 async function main() {
+  if (!demoSeedAllowed(process.env)) {
+    console.warn("Seed ignorado: as contas de demonstração só são criadas numa base de dados local (fora de produção). Defina ALLOW_DEMO_SEED=true para forçar.");
+    return;
+  }
+
   const passwordHash = await bcrypt.hash("password123", 10);
 
   const owner = await prisma.user.upsert({

@@ -6,6 +6,7 @@ import { usersRepository } from "./users.repository";
 import type { ChangePasswordInput, UpdateLocationInput, UpdateProfileInput } from "./users.schema";
 import { endAllSessions, issueTokens } from "../auth/auth.service";
 import { forgetSessionUser } from "../../shared/sessionUsers";
+import { logSecurityEvent } from "../../shared/securityLog";
 
 function toUserDTO(user: {
   id: string;
@@ -80,6 +81,7 @@ export const usersService = {
 
     const passwordHash = await bcrypt.hash(input.newPassword, 10);
     await usersRepository.updatePasswordHash(userId, passwordHash);
+    logSecurityEvent("password_changed", { userId });
     await endAllSessions(userId);
     return issueTokens(user);
   },
@@ -92,6 +94,7 @@ export const usersService = {
     if (!user) throw new NotFoundError("Utilizador não encontrado.");
 
     const removedUserIds = await usersRepository.deleteAccount(userId);
+    logSecurityEvent("account_deleted", { userId });
     forgetSessionUser(...removedUserIds);
   },
 };

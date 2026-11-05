@@ -1,5 +1,5 @@
 import { Router } from "express";
-import multer from "multer";
+import { imageUpload as upload } from "../../shared/middleware/upload";
 import { authenticate, optionalAuthenticate } from "../../shared/middleware/authenticate";
 import { authorize } from "../../shared/middleware/authorize";
 import { validate, validateQuery } from "../../shared/middleware/validate";
@@ -7,9 +7,6 @@ import { businessesController } from "./businesses.controller";
 import { createBusinessSchema, getBusinessQuerySchema, listBusinessesQuerySchema, setBusinessHoursSchema, updateBusinessSchema } from "./businesses.schema";
 
 export const businessesRoutes = Router();
-
-// In memory, same as the gallery: the file goes straight on to Supabase Storage.
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 // Public, but a signed-in user without coordinates on the request gets distances from
 // their last saved position (see withStoredLocation).

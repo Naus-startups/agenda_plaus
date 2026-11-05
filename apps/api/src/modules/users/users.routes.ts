@@ -1,5 +1,5 @@
 import { Router } from "express";
-import multer from "multer";
+import { imageUpload as upload } from "../../shared/middleware/upload";
 import { authenticate } from "../../shared/middleware/authenticate";
 import { validate } from "../../shared/middleware/validate";
 import { usersController } from "./users.controller";
@@ -7,9 +7,6 @@ import { changePasswordSchema, updateLocationSchema, updateProfileSchema } from 
 import { byUser, rateLimit } from "../../shared/middleware/rateLimit";
 
 export const usersRoutes = Router();
-
-// In memory, same as the business logo: the file goes straight on to storage.
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 // Someone holding a stolen session can't use this to guess the current password.
 const passwordLimit = rateLimit("change-password", { windowMs: 15 * 60_000, max: 10, key: byUser });

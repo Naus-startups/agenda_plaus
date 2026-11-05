@@ -79,13 +79,42 @@ if (!parsed.success) {
 
 export const env = parsed.data;
 
-// Warnings rather than a refusal to boot, so an existing deployment keeps running: but a
-// shared or short secret weakens every token this API signs.
-if (env.NODE_ENV === "production") {
-  if (env.JWT_ACCESS_SECRET === env.JWT_REFRESH_SECRET) {
-    console.warn("[segurança] JWT_ACCESS_SECRET e JWT_REFRESH_SECRET são iguais: defina segredos diferentes.");
+// The placeholder values the example files and docker-compose ship with.
+const PLACEHOLDER_SECRET = /change-me|dev-only|secret$/i;
+const LOCAL_DATABASE_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "[::1]", "db", "postgres"]);
+
+// Warnings rather than a refusal to boot, so an existing deployment keeps running: but each
+// of these weakens what the API protects. Exported for the tests.
+export function productionWarnings(config: Env): string[] {
+  if (config.NODE_ENV !== "production") return [];
+  const warnings: string[] = [];
+
+  if (config.JWT_ACCESS_SECRET === config.JWT_REFRESH_SECRET) {
+    warnings.push("JWT_ACCESS_SECRET e JWT_REFRESH_SECRET são iguais: defina segredos diferentes.");
   }
-  if (env.JWT_ACCESS_SECRET.length < 32 || env.JWT_REFRESH_SECRET.length < 32) {
-    console.warn("[segurança] Os segredos JWT devem ter pelo menos 32 caracteres aleatórios.");
+  if (config.JWT_ACCESS_SECRET.length < 32 || config.JWT_REFRESH_SECRET.length < 32) {
+    warnings.push("Os segredos JWT devem ter pelo menos 32 caracteres aleatórios.");
   }
+  if ([config.JWT_ACCESS_SECRET, config.JWT_REFRESH_SECRET].some((secret) => PLACEHOLDER_SECRET.test(secret))) {
+    warnings.push("Um segredo JWT ainda é o valor de exemplo: gere um novo (ex.: openssl rand -hex 32).");
+  }
+
+  // Browsers only hold on to the dashboard's session over https.
+  const origins = [config.WEB_URL, ...(config.CORS_ORIGINS?.split(",") ?? [])].map((origin) => origin?.trim()).filter(Boolean) as string[];
+  const plain = origins.filter((origin) => !origin.startsWith("https://"));
+  if (plain.length > 0) warnings.push(`Origens sem https em WEB_URL/CORS_ORIGINS: ${plain.join(", ")}.`);
+
+  try {
+    const database = new URL(config.DATABASE_URL);
+    if (!LOCAL_DATABASE_HOSTS.has(database.hostname) && !/^(require|verify-ca|verify-full)$/.test(database.searchParams.get("sslmode") ?? "")) {
+      warnings.push("DATABASE_URL aponta para um servidor remoto sem sslmode=require: a ligação à base de dados pode ir sem encriptação.");
+    }
+  } catch {
+    warnings.push("DATABASE_URL não é um endereço válido.");
+  }
+
+  if (config.ENABLE_API_DOCS === "true") warnings.push("ENABLE_API_DOCS=true: o mapa completo da API está público em /api/v1/docs.");
+  return warnings;
 }
+
+for (const warning of productionWarnings(env)) console.warn(`[segurança] ${warning}`);
