@@ -8,8 +8,11 @@ export default defineConfig({
   // pull`) never needs a live DATABASE_URL — it only reads schema.prisma. Some build
   // environments run `npm install` (and our postinstall generate) before injecting
   // runtime secrets, so this must not hard-fail when the variable is absent at that point.
+  // Only the Prisma CLI (migrate) reads this; the running API connects through
+  // DATABASE_URL (config/database.ts). Migrations take session-level locks, which Neon's
+  // pooled (-pooler) address can't hold: DIRECT_URL, when set, is the direct address.
   datasource: {
-    url: process.env.DATABASE_URL,
+    url: process.env.DIRECT_URL || process.env.DATABASE_URL,
   },
   migrations: {
     seed: "tsx prisma/seed.ts",

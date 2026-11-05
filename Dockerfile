@@ -1,5 +1,6 @@
 # Imagens da API e do painel web, a partir do monorepo (npm workspaces).
-# Usado pelo docker-compose.yml: `docker compose up --build`.
+# Usado pelo docker-compose.yml (`docker compose up --build`) e pelo Render, que constrói a
+# ÚLTIMA imagem deste ficheiro quando não lhe é indicada outra: por isso a da API fica no fim.
 # A app mobile (Expo) não entra aqui: corre no computador de quem desenvolve.
 
 FROM node:24-slim AS base
@@ -24,16 +25,6 @@ COPY apps/api/prisma apps/api/prisma
 COPY apps/api/prisma.config.ts apps/api/
 RUN npm ci --workspace apps/api --workspace apps/web
 
-# ---------- API ----------
-FROM deps AS api
-COPY packages packages
-COPY apps/api apps/api
-WORKDIR /app/apps/api
-RUN npx prisma generate
-EXPOSE 3000
-# Aplica as migrações, cria os dados de exemplo (o seed pode correr várias vezes) e arranca.
-CMD ["sh", "-c", "npx prisma migrate deploy && npx tsx prisma/seed.ts && npx tsx src/app/server.ts"]
-
 # ---------- Painel web ----------
 FROM deps AS web
 COPY packages packages
@@ -49,3 +40,15 @@ ENV NEXT_API_URL=$NEXT_API_URL \
 RUN npm run build
 EXPOSE 3001
 CMD ["npx", "next", "start", "-p", "3001"]
+
+# ---------- API (a imagem por omissão: tem de ser a última) ----------
+FROM deps AS api
+COPY packages packages
+COPY apps/api apps/api
+WORKDIR /app/apps/api
+RUN npx prisma generate
+# Em produção (Render) a porta vem da variável PORT, que a API lê; 3000 é a local.
+EXPOSE 3000
+# Aplica as migrações pendentes e arranca. Os dados de exemplo (contas com uma password
+# pública) NÃO são criados aqui: só o docker-compose.yml os pede, para desenvolvimento.
+CMD ["sh", "-c", "npx prisma migrate deploy && npx tsx src/app/server.ts"]

@@ -18,8 +18,9 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-      # 5433 para não chocar com um PostgreSQL já instalado no computador.
-      - "${DB_PORT:-5433}:5432"
+      # 5433 para não chocar com um PostgreSQL já instalado no computador. Só em 127.0.0.1:
+      # com a password fixa acima, a base não pode ficar aberta a toda a rede Wi-Fi.
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U agenda -d agenda"]
       interval: 3s
@@ -30,6 +31,8 @@ services:
     build:
       context: .
       target: api
+    # Só em desenvolvimento: além das migrações, cria as contas de exemplo (ver prisma/seed.ts).
+    command: ["sh", "-c", "npx prisma migrate deploy && npx tsx prisma/seed.ts && npx tsx src/app/server.ts"]
     environment:
       NODE_ENV: development
       PORT: 3000
