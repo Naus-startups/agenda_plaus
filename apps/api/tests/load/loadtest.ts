@@ -13,11 +13,14 @@
  * descartável (a dos testes de integração, ou LOADTEST_DATABASE_URL), que esvazia antes de
  * começar. O .env real nunca é lido, e não há forma de apontar o teste a outra API: um URL
  * remoto, do Neon ou cujo nome não contenha "test" é recusado antes de qualquer ligação.
+ * Se a porta já estiver ocupada, o teste não começa; a API que arranca (e só essa) é
+ * terminada no fim, num erro ou numa interrupção (Ctrl+C).
  *
  * Termina com código 1 se houver erros 5xx, timeouts, falhas de rede ou marcações sobrepostas.
  */
 import { spawn, execSync, type ChildProcess } from "node:child_process";
 import { createHmac, randomBytes } from "node:crypto";
+import { createServer } from "node:net";
 import path from "node:path";
 import { TEST_DATABASE_URL } from "../../vitest.shared";
 import { assertLocalTestDatabase } from "../integration/dbGuard";
@@ -97,21 +100,111 @@ async function prepareDatabase() {
   return prisma;
 }
 
-const serverErrors: string[] = [];
+// ---------------------------------------------------------------- API do teste
 
-async function startApi(): Promise<ChildProcess> {
-  const child = spawn("npx", ["tsx", "src/app/server.ts"], { cwd: API_DIR, env: apiEnv, stdio: ["ignore", "pipe", "pipe"] });
+const serverErrors: string[] = [];
+let api: ChildProcess | undefined;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const running = (child: ChildProcess) => child.exitCode === null && child.signalCode === null;
+
+// Se a porta já estiver ocupada (uma API deixada por outra execução, ou outro programa), o
+// teste mediria esse processo e não o seu: pára antes de tocar na base de dados.
+function assertPortFree(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const probe = createServer();
+    probe.once("error", (error: NodeJS.ErrnoException) => {
+      reject(
+        error.code === "EADDRINUSE"
+          ? new Error(`A porta ${PORT} já está ocupada por outro processo. Termine-o ou use --port <outra>: o teste não reutiliza uma API que não arrancou.`)
+          : error,
+      );
+    });
+    // Sem host, como o app.listen da API: apanha também quem só escuta em 127.0.0.1.
+    probe.listen(PORT, () => probe.close(() => resolve()));
+  });
+}
+
+// O próprio node (sem os intermediários npx/tsx, que ao serem terminados deixavam o
+// servidor a correr), num grupo de processos só seu: stopApi termina esse grupo e nada mais.
+async function startApi(): Promise<void> {
+  const child = spawn(process.execPath, ["--import", "tsx", "src/app/server.ts"], {
+    cwd: API_DIR,
+    env: apiEnv,
+    stdio: ["ignore", "pipe", "pipe"],
+    detached: true,
+  });
+  api = child;
+
+  // Os dois canais são lidos até ao fim: um pipe cheio e por ler bloquearia a API.
+  let ready = false;
+  child.stdout!.on("data", (chunk: Buffer) => {
+    if (chunk.toString().includes(`a correr em http://localhost:${PORT}`)) ready = true;
+  });
   child.stderr!.on("data", (chunk: Buffer) => {
     for (const code of chunk.toString().match(/code: '(P\d{4})'|Error: [^\n]{0,120}/g) ?? []) serverErrors.push(code);
   });
-  for (let i = 0; i < 60; i++) {
-    if (child.exitCode !== null) throw new Error("A API terminou ao arrancar.");
-    if (await fetch(`http://127.0.0.1:${PORT}/health`).then((r) => r.ok).catch(() => false)) return child;
-    await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // Pronta quando ESTE processo diz que abriu a porta e responde; nunca só porque algo
+  // na porta respondeu.
+  for (let i = 0; i < 120; i++) {
+    if (!running(child)) throw new Error(`A API do teste terminou ao arrancar (${serverErrors.at(-1) ?? `código ${child.exitCode}`}).`);
+    if (ready && (await fetch(`http://127.0.0.1:${PORT}/health`).then((r) => r.ok).catch(() => false))) return;
+    await sleep(250);
   }
-  child.kill();
-  throw new Error(`A API não respondeu na porta ${PORT}.`);
+  throw new Error(`A API do teste não respondeu na porta ${PORT}.`);
 }
+
+function signalApiGroup(pid: number, signal: NodeJS.Signals): void {
+  try {
+    process.kill(-pid, signal);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
+  }
+}
+
+// SIGTERM ao grupo; se em 5 s não terminar, SIGKILL. Pode ser chamada mais do que uma vez.
+async function stopApi(): Promise<void> {
+  const child = api;
+  if (!child?.pid) return;
+  if (running(child)) {
+    const exited = new Promise((resolve) => child.once("exit", resolve));
+    signalApiGroup(child.pid, "SIGTERM");
+    await Promise.race([exited, sleep(5000)]);
+    if (running(child)) {
+      signalApiGroup(child.pid, "SIGKILL");
+      await exited;
+    }
+  }
+  // Algum processo que a API tenha lançado e ainda reste no grupo dela.
+  signalApiGroup(child.pid, "SIGKILL");
+  api = undefined;
+}
+
+// Último recurso, síncrono, para saídas que não passam pelo finally de main().
+process.on("exit", () => {
+  if (api?.pid && running(api)) signalApiGroup(api.pid, "SIGKILL");
+});
+
+let stopping = false;
+async function abort(code: number, reason?: unknown): Promise<void> {
+  if (stopping) return;
+  stopping = true;
+  if (reason) console.error(reason instanceof Error ? reason.message : reason);
+  await stopApi().catch(() => undefined);
+  process.exit(code);
+}
+process.on("SIGINT", () => void abort(130, "\nInterrompido: a terminar a API do teste."));
+process.on("SIGTERM", () => void abort(143));
+process.on("SIGHUP", () => void abort(129));
+process.on("uncaughtException", (error) => void abort(1, error));
+process.on("unhandledRejection", (error) => void abort(1, error));
+// O npm não reencaminha o SIGTERM: se quem lançou o teste desaparecer, o teste também pára,
+// em vez de continuar sozinho em segundo plano.
+const launcher = process.ppid;
+setInterval(() => {
+  if (process.ppid !== launcher) void abort(143, "O processo que lançou o teste terminou: a parar a API do teste.");
+}, 500).unref();
 
 // ---------------------------------------------------------------- clientes simulados
 
@@ -219,17 +312,14 @@ function nextDays(count: number): string[] {
 // ---------------------------------------------------------------- execução
 
 async function main() {
+  await assertPortFree();
   console.log(`Base de dados: ${new URL(DATABASE_URL).host}${new URL(DATABASE_URL).pathname} (local, esvaziada)`);
   const prisma = await prepareDatabase();
-  const api = await startApi();
-  const stop = () => api.kill();
-  process.on("SIGINT", () => {
-    stop();
-    process.exit(130);
-  });
 
   let failed = false;
   try {
+    await startApi();
+    console.log(`API do teste: pid ${api!.pid}, porta ${PORT}`);
     const business = await prisma.business.findFirstOrThrow();
     const ctx: Context = {
       businessId: business.id,
@@ -284,14 +374,11 @@ async function main() {
       if (failures.length || Number(overlaps) > 0) failed = true;
     }
   } finally {
-    stop();
+    await stopApi();
     await prisma.$disconnect();
   }
   console.log(failed ? "\nRESULTADO: FALHOU" : "\nRESULTADO: OK");
   process.exit(failed ? 1 : 0);
 }
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-});
+main().catch((error) => void abort(1, error));
