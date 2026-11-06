@@ -1,15 +1,15 @@
-import bcrypt from "bcryptjs";
 import type { Role } from "@prisma/client";
 import { createApp } from "../../src/app/app";
 import { prisma } from "../../src/config/database";
 import { issueTokens } from "../../src/modules/auth/auth.service";
+import { hashPasswordSync } from "../../src/shared/utils/password";
 import { assertLocalTestDatabase } from "./dbGuard";
 
 export const app = createApp();
 export { prisma };
 
 export const PASSWORD = "Password123!";
-const passwordHash = bcrypt.hashSync(PASSWORD, 4);
+const passwordHash = hashPasswordSync(PASSWORD, 4);
 
 let counter = 0;
 const unique = () => `${Date.now().toString(36)}${(counter++).toString(36)}`;

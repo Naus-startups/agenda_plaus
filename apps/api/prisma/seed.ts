@@ -1,5 +1,5 @@
-import bcrypt from "bcryptjs";
 import { prisma } from "../src/config/database";
+import { hashPassword } from "../src/shared/utils/password";
 import { demoSeedAllowed } from "./seedGuard";
 
 async function main() {
@@ -8,7 +8,7 @@ async function main() {
     return;
   }
 
-  const passwordHash = await bcrypt.hash("password123", 10);
+  const passwordHash = await hashPassword("password123");
 
   const owner = await prisma.user.upsert({
     where: { email: "owner@slotix.dev" },

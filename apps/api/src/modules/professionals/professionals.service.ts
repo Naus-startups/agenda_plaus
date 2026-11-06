@@ -1,5 +1,4 @@
 import { randomBytes } from "node:crypto";
-import bcrypt from "bcryptjs";
 import type { ProfessionalBlockDTO, ProfessionalDTO } from "@slotix/types";
 import { authRepository } from "../auth/auth.repository";
 import { ConflictError, NotFoundError, ValidationError } from "../../shared/errors";
@@ -8,6 +7,7 @@ import { usersRepository } from "../users";
 import { professionalsRepository } from "./professionals.repository";
 import type { CreateBlockInput, CreateProfessionalInput, InviteProfessionalInput, UpdateProfessionalInput } from "./professionals.schema";
 import { normalizeEmail } from "../../shared/utils/email";
+import { hashPassword } from "../../shared/utils/password";
 import { endAllSessions } from "../auth/auth.service";
 
 // Base64url, no padding — short enough to read out loud, long enough to not be guessable
@@ -100,7 +100,7 @@ export const professionalsService = {
     if (await authRepository.isEmailTaken(input.email)) throw new ConflictError("Este email já está registado.", "EMAIL_ALREADY_REGISTERED");
 
     const temporaryPassword = generateTemporaryPassword();
-    const passwordHash = await bcrypt.hash(temporaryPassword, 10);
+    const passwordHash = await hashPassword(temporaryPassword);
 
     const professional = await professionalsRepository.createWithNewUser({
       businessId: input.businessId,
@@ -124,7 +124,7 @@ export const professionalsService = {
     assertBusinessOwner(business, ownerId);
 
     const temporaryPassword = generateTemporaryPassword();
-    await usersRepository.updatePasswordHash(professional.userId, await bcrypt.hash(temporaryPassword, 10));
+    await usersRepository.updatePasswordHash(professional.userId, await hashPassword(temporaryPassword));
     await endAllSessions(professional.userId);
 
     return { temporaryPassword };

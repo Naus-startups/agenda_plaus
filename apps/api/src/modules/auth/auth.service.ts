@@ -1,6 +1,5 @@
 import { createHash, createPublicKey, randomBytes, randomUUID, type JsonWebKey } from "node:crypto";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import ms from "../../shared/utils/ms";
 import type { LoginInput, RegisterInput } from "@slotix/validation";
 import { matchBusinessCategory, type AuthTokensDTO, type LoginResponse, type UserDTO } from "@slotix/types";
@@ -8,6 +7,7 @@ import { env } from "../../config/env";
 import { AppError, AuthenticationError, ConflictError, ValidationError } from "../../shared/errors";
 import { signAccessToken, signRefreshToken, signTemporaryToken, verifyRefreshToken, verifyTemporaryToken } from "../../shared/utils/jwt";
 import { normalizeEmail } from "../../shared/utils/email";
+import { hashPassword, hashPasswordSync, verifyPassword } from "../../shared/utils/password";
 import { forgetAllSessions, forgetSession } from "../../shared/sessionUsers";
 import { logSecurityEvent } from "../../shared/securityLog";
 import { authRepository } from "./auth.repository";
@@ -98,7 +98,7 @@ async function signInByVerifiedEmail(
 
   // No password was chosen: a random one nobody knows keeps email+password login closed
   // for this account until a password is set some other way.
-  const passwordHash = await bcrypt.hash(randomBytes(32).toString("hex"), 10);
+  const passwordHash = await hashPassword(randomBytes(32).toString("hex"));
   const account = { name: profile.name, email: normalizeEmail(profile.email), passwordHash, avatarUrl: profile.picture };
 
   return business ? authRepository.createOwnerWithBusiness({ ...account, ...business }) : authRepository.createUser(account);
@@ -210,7 +210,7 @@ export async function endAllSessions(userId: string): Promise<void> {
   forgetAllSessions();
 }
 
-const DUMMY_PASSWORD_HASH = bcrypt.hashSync(randomBytes(16).toString("hex"), 10);
+const DUMMY_PASSWORD_HASH = hashPasswordSync(randomBytes(16).toString("hex"));
 
 function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
@@ -265,7 +265,7 @@ export const authService = {
       throw new ConflictError("Este email já está registado.", "EMAIL_ALREADY_REGISTERED");
     }
 
-    const passwordHash = await bcrypt.hash(input.password, 10);
+    const passwordHash = await hashPassword(input.password);
     const user = await authRepository.createUser({
       name: input.name,
       email: normalizeEmail(input.email),
@@ -281,7 +281,7 @@ export const authService = {
     const user = await authRepository.findUserByEmail(input.email);
     // An unknown email still pays for one bcrypt comparison, so the response time doesn't
     // tell which addresses have an account.
-    const valid = await bcrypt.compare(input.password, user?.passwordHash ?? DUMMY_PASSWORD_HASH);
+    const valid = await verifyPassword(input.password, user?.passwordHash ?? DUMMY_PASSWORD_HASH);
     if (!user || !valid) {
       throw new AuthenticationError();
     }

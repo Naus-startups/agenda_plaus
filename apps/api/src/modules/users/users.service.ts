@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import type { AuthTokensDTO, UserDTO } from "@slotix/types";
 import { NotFoundError, ValidationError } from "../../shared/errors";
 import { uploadImage } from "../gallery/gallery.storage";
@@ -7,6 +6,7 @@ import type { ChangePasswordInput, UpdateLocationInput, UpdateProfileInput } fro
 import { endAllSessions, issueTokens } from "../auth/auth.service";
 import { forgetSessionUser } from "../../shared/sessionUsers";
 import { logSecurityEvent } from "../../shared/securityLog";
+import { hashPassword, verifyPassword } from "../../shared/utils/password";
 
 function toUserDTO(user: {
   id: string;
@@ -74,12 +74,12 @@ export const usersService = {
     const user = await usersRepository.findById(userId);
     if (!user) throw new NotFoundError("Utilizador não encontrado.");
 
-    const valid = await bcrypt.compare(input.currentPassword, user.passwordHash);
+    const valid = await verifyPassword(input.currentPassword, user.passwordHash);
     // 400, not 401: the session is fine — a 401 here made the dashboard's proxy renew the
     // session and resend the request, rotating the refresh token on every wrong attempt.
     if (!valid) throw new ValidationError("Password atual incorreta.", "CURRENT_PASSWORD_INCORRECT");
 
-    const passwordHash = await bcrypt.hash(input.newPassword, 10);
+    const passwordHash = await hashPassword(input.newPassword);
     await usersRepository.updatePasswordHash(userId, passwordHash);
     logSecurityEvent("password_changed", { userId });
     await endAllSessions(userId);
