@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { prisma } from "../../config/database";
 import { requireId } from "../../shared/utils/requireId";
 
@@ -62,8 +63,8 @@ export const professionalsRepository = {
     return prisma.professionalBlock.findMany({ where: { professionalId }, orderBy: { startAt: "asc" } });
   },
 
-  findBlocksInRange(professionalId: string, rangeStart: Date, rangeEnd: Date) {
-    return prisma.professionalBlock.findMany({
+  findBlocksInRange(professionalId: string, rangeStart: Date, rangeEnd: Date, db: Prisma.TransactionClient = prisma) {
+    return db.professionalBlock.findMany({
       where: { professionalId, startAt: { lt: rangeEnd }, endAt: { gt: rangeStart } },
     });
   },

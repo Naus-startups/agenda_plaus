@@ -67,10 +67,12 @@ async function assertSlotAvailable(
   // 24h lookback safely covers any realistically-sized service duration ending after `start`.
   const windowStart = new Date(start.getTime() - 24 * 60 * 60_000);
 
+  // All on `db`: a query on the global pool here would wait for a free connection while
+  // every other booking for this professional holds one, blocked on the lock above.
   const [allHours, existingAppointments, blocks] = await Promise.all([
-    businessesRepository.findHours(businessId),
+    businessesRepository.findHours(businessId, db),
     appointmentsRepository.findActiveInWindow(professionalId, windowStart, end, excludeId, db),
-    professionalsRepository.findBlocksInRange(professionalId, windowStart, end),
+    professionalsRepository.findBlocksInRange(professionalId, windowStart, end, db),
   ]);
 
   const slot = { start, end };

@@ -224,6 +224,21 @@ describe("M-02: transições de estado atómicas", () => {
     const statuses = (await Promise.all([book(), book(), book()])).map((r) => r.status).sort();
     expect(statuses).toEqual([201, 409, 409]);
   });
+
+  // More bookings than the pool has connections (10): each waiting one holds a connection
+  // while blocked on the professional's lock, so the holder must not need another one.
+  it("muitas marcações simultâneas no mesmo profissional não esgotam o pool (409, não 500)", async () => {
+    const scheduledAt = tomorrowAt(15);
+    const book = () =>
+      request(app)
+        .post("/api/v1/appointments")
+        .set(auth(a.customer.token))
+        .send({ businessId: a.business.id, serviceId: a.service.id, professionalId: a.professional.id, scheduledAt });
+    const statuses = (await Promise.all(Array.from({ length: 25 }, book))).map((r) => r.status);
+    expect(statuses.filter((s) => s === 201)).toHaveLength(1);
+    expect(statuses.filter((s) => s === 409)).toHaveLength(24);
+    expect(await prisma.appointment.count({ where: { professionalId: a.professional.id } })).toBe(1);
+  });
 });
 
 describe("validação de parâmetros", () => {
