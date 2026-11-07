@@ -2,7 +2,7 @@ import { AppState, type AppStateStatus } from "react-native";
 import { fetch } from "expo/fetch";
 import type { NotificationDTO } from "@slotix/types";
 
-import { getAccessToken, getApiUrl } from "./api-client";
+import { getAccessToken, getApiUrl, refreshSession } from "./api-client";
 import { setRealtimeActive, showLocalNotification } from "./push";
 
 /*
@@ -93,6 +93,8 @@ async function open() {
       headers: { Authorization: `Bearer ${token}`, Accept: "text/event-stream" },
       signal: current.signal,
     });
+    // An expired access token: renewed here, so the reconnect below carries the new one.
+    if (response.status === 401) await refreshSession();
     if (!response.ok || !response.body) throw new Error(`HTTP ${response.status}`);
 
     const reader = response.body.getReader();

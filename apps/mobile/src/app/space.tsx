@@ -16,7 +16,6 @@ import {
 } from "react-native";
 
 import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
@@ -58,8 +57,12 @@ const COLORS = {
   muted: "#636366",
   soft: "#AEAEB2",
   border: "rgba(17,17,17,0.08)",
-  glass: "rgba(255,255,255,0.72)",
 };
+
+// O azul da marca, igual nos dois temas nos botões; no escuro, os ícones usam um tom mais
+// claro para se lerem sobre o cartão cinzento.
+const BRAND = "#1451D6";
+const BRAND_ON_DARK = "#6E9BFF";
 
 const formatPrice = (value: number) =>
   new Intl.NumberFormat("pt-AO", {
@@ -123,37 +126,19 @@ const RatingBreakdown = ({ reviews }: { reviews: ReviewDTO[] }) => {
   );
 };
 
-const GlassCard = ({ children, style }: { children: React.ReactNode; style?: any }) => {
-  const { tc, styles } = useThemed(createStyles);
-  return (
-    <View style={[styles.glassCard, style]}>
-      <BlurView intensity={32} tint={tc.dark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
-
-      <LinearGradient
-        colors={tc.bgs(["rgba(255,255,255,0.86)", "rgba(255,255,255,0.60)"])}
-        style={StyleSheet.absoluteFill}
-      />
-
-      <View style={styles.glassTopLine} />
-
-      {children}
-    </View>
-  );
+// Cartão sólido com as cores do sistema: branco no tema claro, cinzento-escuro no escuro.
+const Card = ({ children, style }: { children: React.ReactNode; style?: any }) => {
+  const { styles } = useThemed(createStyles);
+  return <View style={[styles.card, style]}>{children}</View>;
 };
 
-const SectionHeader = ({ number, title, subtitle }: { number: string; title: string; subtitle?: string }) => {
-  const { tc, styles } = useThemed(createStyles);
+const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }) => {
+  const { styles } = useThemed(createStyles);
   return (
     <View style={styles.sectionHeader}>
-      <View style={styles.sectionNumber}>
-        <Text style={styles.sectionNumberText}>{number}</Text>
-      </View>
+      <Text style={styles.sectionTitle}>{title}</Text>
 
-      <View style={styles.sectionHeaderContent}>
-        <Text style={styles.sectionTitle}>{title}</Text>
-
-        {subtitle ? <Text style={styles.sectionSubtitle}>{subtitle}</Text> : null}
-      </View>
+      {subtitle ? <Text style={styles.sectionSubtitle}>{subtitle}</Text> : null}
     </View>
   );
 };
@@ -165,7 +150,7 @@ const ServiceRow = ({ service, last }: { service: ServiceDTO; last: boolean }) =
   return (
     <View style={[styles.listRow, !last && styles.listRowDivider]}>
       <View style={styles.listRowIcon}>
-        <Ionicons name="cut-outline" size={19} color={tc.fg(COLORS.black)} />
+        <Ionicons name="cut-outline" size={18} color={tc.dark ? BRAND_ON_DARK : BRAND} />
       </View>
 
       <View style={styles.listRowInfo}>
@@ -207,7 +192,7 @@ const ProfessionalRow = ({ professional, last }: { professional: ProfessionalDTO
 
       {professional.ratingAvg !== null ? (
         <View style={styles.professionalRating}>
-          <Ionicons name="star" size={12} color={tc.fg(COLORS.gold)} />
+          <Ionicons name="star" size={13} color={STAR_COLOR} />
 
           <Text style={styles.professionalRatingText}>{professional.ratingAvg.toFixed(1)}</Text>
         </View>
@@ -431,8 +416,6 @@ const SpaceScreen = () => {
     setLocating(false);
   };
 
-  let sectionIndex = 0;
-  const nextNumber = () => String(++sectionIndex).padStart(2, "0");
 
   // A contagem veio da API; o gosto da própria pessoa pode ter mudado entretanto.
   const likes = Math.max(0, business.favoriteCount + (isFavorite(business.id) ? 1 : 0) - (favoriteAtLoad ? 1 : 0));
@@ -479,24 +462,23 @@ const SpaceScreen = () => {
 
           {business.description ? (
             <View style={styles.section}>
-              <SectionHeader number={nextNumber()} title={t("Sobre o espaço")} />
+              <SectionHeader title={t("Sobre o espaço")} />
 
-              <GlassCard style={styles.aboutCard}>
+              <Card style={styles.aboutCard}>
                 <Text style={styles.aboutText}>{t(business.description)}</Text>
-              </GlassCard>
+              </Card>
             </View>
           ) : null}
 
           <View style={styles.section}>
             <SectionHeader
-              number={nextNumber()}
               title={t("Localização")}
               subtitle={
                 coordinates && business.distanceKm !== null ? t("{0} de distância", [formatDistance(business.distanceKm)]) : undefined
               }
             />
 
-            <GlassCard>
+            <Card>
               {coordinates ? (
                 <SpaceMap
                   coordinates={coordinates}
@@ -534,17 +516,16 @@ const SpaceScreen = () => {
                     accessibilityRole="button"
                     style={({ pressed }) => [styles.directionsButton, pressed && styles.reserveButtonPressed]}
                   >
-                    <Ionicons name="navigate" size={15} color={tc.fg(COLORS.white)} />
+                    <Ionicons name="navigate" size={15} color={COLORS.white} />
                     <Text style={styles.directionsText}>{t("Como chegar")}</Text>
                   </Pressable>
                 ) : null}
               </View>
-            </GlassCard>
+            </Card>
           </View>
 
           <View style={styles.section}>
             <SectionHeader
-              number={nextNumber()}
               title={t("Serviços")}
               subtitle={
                 services.length > 0
@@ -554,11 +535,11 @@ const SpaceScreen = () => {
             />
 
             {services.length > 0 ? (
-              <GlassCard>
+              <Card>
                 {services.map((service, index) => (
                   <ServiceRow key={service.id} service={service} last={index === services.length - 1} />
                 ))}
-              </GlassCard>
+              </Card>
             ) : (
               <Text style={styles.emptyText}>{t("Sem serviços disponíveis neste espaço.")}</Text>
             )}
@@ -566,7 +547,6 @@ const SpaceScreen = () => {
 
           <View style={styles.section}>
             <SectionHeader
-              number={nextNumber()}
               title={t("Profissionais")}
               subtitle={
                 professionals.length > 0
@@ -576,7 +556,7 @@ const SpaceScreen = () => {
             />
 
             {professionals.length > 0 ? (
-              <GlassCard>
+              <Card>
                 {professionals.map((professional, index) => (
                   <ProfessionalRow
                     key={professional.id}
@@ -584,7 +564,7 @@ const SpaceScreen = () => {
                     last={index === professionals.length - 1}
                   />
                 ))}
-              </GlassCard>
+              </Card>
             ) : (
               <Text style={styles.emptyText}>{t("Sem profissionais disponíveis neste espaço.")}</Text>
             )}
@@ -592,7 +572,6 @@ const SpaceScreen = () => {
 
           <View style={styles.section}>
             <SectionHeader
-              number={nextNumber()}
               title={t("Avaliações")}
               subtitle={
                 business.ratingCount > 0
@@ -602,14 +581,14 @@ const SpaceScreen = () => {
             />
 
             {business.ratingCount > 0 && business.ratingAvg !== null ? (
-              <GlassCard style={styles.ratingSummary}>
+              <Card style={styles.ratingSummary}>
                 <View style={styles.ratingScore}>
                   <Text style={styles.ratingScoreValue}>{business.ratingAvg.toFixed(1)}</Text>
                   <Stars value={business.ratingAvg} size={15} emptyColor={tc.fg(COLORS.soft)} />
                   <Text style={styles.ratingScoreLabel}>{t("de 5 estrelas")}</Text>
                 </View>
                 <RatingBreakdown reviews={reviews} />
-              </GlassCard>
+              </Card>
             ) : null}
 
             {reviewableAppointment ? (
@@ -618,7 +597,7 @@ const SpaceScreen = () => {
                 accessibilityRole="button"
                 style={({ pressed }) => [styles.rateButton, pressed && styles.reserveButtonPressed]}
               >
-                <Ionicons name="star-outline" size={18} color={tc.fg(COLORS.white)} />
+                <Ionicons name="star-outline" size={18} color={COLORS.white} />
                 <Text style={styles.rateButtonText}>{t("Avaliar este espaço")}</Text>
               </Pressable>
             ) : isCustomer ? (
@@ -626,11 +605,11 @@ const SpaceScreen = () => {
             ) : null}
 
             {reviews.length > 0 ? (
-              <GlassCard style={styles.reviewsCard}>
+              <Card style={styles.reviewsCard}>
                 {reviews.slice(0, 20).map((review, index, shown) => (
                   <ReviewRow key={review.id} review={review} last={index === shown.length - 1} />
                 ))}
-              </GlassCard>
+              </Card>
             ) : (
               <Text style={styles.emptyText}>{t("Sem avaliações ainda.")}</Text>
             )}
@@ -662,7 +641,7 @@ const SpaceScreen = () => {
             <Text style={styles.reserveButtonText}>{t("Reservar")}</Text>
 
             <View style={styles.reserveArrow}>
-              <Ionicons name="arrow-forward" size={19} color={tc.fg(COLORS.white)} />
+              <Ionicons name="arrow-forward" size={18} color={COLORS.white} />
             </View>
           </Pressable>
         </BlurView>
@@ -717,17 +696,17 @@ const createStyles = (tc: ThemeRoles) =>
       marginTop: 18,
       height: 44,
       paddingHorizontal: 20,
-      borderRadius: 16,
+      borderRadius: 14,
       borderCurve: "continuous",
-      backgroundColor: tc.bg(COLORS.black),
+      backgroundColor: BRAND,
       alignItems: "center",
       justifyContent: "center",
     },
 
     errorButtonText: {
-      color: tc.fg(COLORS.white),
-      fontSize: 12,
-      fontWeight: "700",
+      color: COLORS.white,
+      fontSize: 15,
+      fontWeight: "600",
     },
 
     carouselWrapper: {
@@ -853,11 +832,13 @@ const createStyles = (tc: ThemeRoles) =>
       marginTop: 16,
       marginHorizontal: 20,
       paddingVertical: 14,
-      borderRadius: 18,
+      borderRadius: 20,
       borderCurve: "continuous",
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: tc.bg(COLORS.white),
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: tc.border(COLORS.border),
     },
 
     stat: {
@@ -880,7 +861,7 @@ const createStyles = (tc: ThemeRoles) =>
     },
 
     statLabel: {
-      fontSize: 12,
+      fontSize: 13,
       textAlign: "center",
       color: tc.fg(COLORS.muted),
     },
@@ -951,7 +932,7 @@ const createStyles = (tc: ThemeRoles) =>
     },
 
     rateButton: {
-      height: 48,
+      height: 50,
       borderRadius: 14,
       borderCurve: "continuous",
       flexDirection: "row",
@@ -959,17 +940,18 @@ const createStyles = (tc: ThemeRoles) =>
       justifyContent: "center",
       gap: 8,
       marginBottom: 12,
-      backgroundColor: tc.bg(COLORS.black),
+      backgroundColor: BRAND,
     },
 
     rateButtonText: {
-      fontSize: 15,
+      fontSize: 16,
       fontWeight: "600",
-      color: tc.fg(COLORS.white),
+      color: COLORS.white,
     },
 
     rateHint: {
-      fontSize: 12,
+      fontSize: 13,
+      lineHeight: 18,
       color: tc.fg(COLORS.muted),
       marginBottom: 12,
       paddingHorizontal: 2,
@@ -1011,84 +993,55 @@ const createStyles = (tc: ThemeRoles) =>
     },
 
     reviewName: {
-      fontSize: 14,
+      fontSize: 15,
       fontWeight: "600",
       color: tc.fg(COLORS.text),
     },
 
     reviewDate: {
-      marginTop: 1,
-      fontSize: 11,
-      color: tc.fg(COLORS.soft),
+      marginTop: 2,
+      fontSize: 12,
+      color: tc.fg(COLORS.muted),
     },
 
     reviewComment: {
       marginTop: 10,
-      fontSize: 13,
-      lineHeight: 19,
+      fontSize: 15,
+      lineHeight: 21,
       color: tc.fg(COLORS.text),
     },
 
     sectionHeader: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      marginBottom: 13,
+      marginBottom: 12,
+      paddingHorizontal: 2,
     },
 
-    sectionNumber: {
-      width: 29,
-      height: 29,
-      borderRadius: 15,
-      borderCurve: "continuous",
-      backgroundColor: tc.bg(COLORS.black),
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: 11,
-    },
 
-    sectionNumberText: {
-      color: tc.fg(COLORS.white),
-      fontSize: 9,
-      fontWeight: "700",
-    },
 
-    sectionHeaderContent: {
-      flex: 1,
-    },
 
     sectionTitle: {
-      color: tc.fg(COLORS.black),
-      fontSize: 17,
+      color: tc.fg(COLORS.text),
+      fontSize: 20,
       fontWeight: "700",
-      letterSpacing: -0.3,
+      letterSpacing: -0.4,
     },
 
     sectionSubtitle: {
-      marginTop: 3,
+      marginTop: 2,
       color: tc.fg(COLORS.muted),
-      fontSize: 11,
-      lineHeight: 16,
+      fontSize: 13,
+      lineHeight: 18,
     },
 
-    glassCard: {
-      borderRadius: 25,
+    card: {
+      borderRadius: 20,
       borderCurve: "continuous",
       overflow: "hidden",
-      borderWidth: 1,
-      borderColor: tc.border("rgba(255,255,255,0.95)"),
-      backgroundColor: tc.bg(COLORS.glass),
-      position: "relative",
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: tc.border(COLORS.border),
+      backgroundColor: tc.bg(COLORS.white),
     },
 
-    glassTopLine: {
-      position: "absolute",
-      top: 0,
-      left: 18,
-      right: 18,
-      height: 1,
-      backgroundColor: tc.bg("rgba(255,255,255,0.95)"),
-      zIndex: 5,
-    },
 
     locationRow: {
       flexDirection: "row",
@@ -1104,37 +1057,38 @@ const createStyles = (tc: ThemeRoles) =>
     locationNote: {
       marginTop: 4,
       color: tc.fg(COLORS.muted),
-      fontSize: 12,
-      lineHeight: 17,
+      fontSize: 13,
+      lineHeight: 18,
     },
 
     locationLink: {
       marginTop: 6,
-      color: tc.fg("#1451D6"),
-      fontSize: 13,
+      color: tc.dark ? BRAND_ON_DARK : BRAND,
+      fontSize: 14,
       fontWeight: "600",
     },
 
     locationAddress: {
-      color: tc.fg(COLORS.black),
-      fontSize: 14,
-      lineHeight: 20,
+      color: tc.fg(COLORS.text),
+      fontSize: 15,
+      lineHeight: 21,
       fontWeight: "500",
     },
 
     directionsButton: {
       height: 38,
       borderRadius: 19,
+      borderCurve: "continuous",
       paddingHorizontal: 14,
-      backgroundColor: tc.bg(COLORS.black),
+      backgroundColor: BRAND,
       flexDirection: "row",
       alignItems: "center",
       gap: 6,
     },
 
     directionsText: {
-      color: tc.fg(COLORS.white),
-      fontSize: 13,
+      color: COLORS.white,
+      fontSize: 14,
       fontWeight: "600",
     },
 
@@ -1143,19 +1097,19 @@ const createStyles = (tc: ThemeRoles) =>
     },
 
     aboutText: {
-      fontSize: 13,
-      lineHeight: 20,
+      fontSize: 15,
+      lineHeight: 22,
       color: tc.fg(COLORS.text),
     },
 
     emptyText: {
-      fontSize: 12,
+      fontSize: 14,
       color: tc.fg(COLORS.muted),
       paddingHorizontal: 2,
     },
 
     listRow: {
-      minHeight: 76,
+      minHeight: 68,
       paddingHorizontal: 16,
       paddingVertical: 12,
       flexDirection: "row",
@@ -1163,26 +1117,25 @@ const createStyles = (tc: ThemeRoles) =>
     },
 
     listRowDivider: {
-      borderBottomWidth: 1,
+      borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: tc.border(COLORS.border),
     },
 
     listRowIcon: {
-      width: 45,
-      height: 45,
-      borderRadius: 15,
+      width: 40,
+      height: 40,
+      borderRadius: 12,
       borderCurve: "continuous",
       marginRight: 12,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: tc.bg("rgba(17,17,17,0.055)"),
+      backgroundColor: tc.dark ? "rgba(110,155,255,0.16)" : "rgba(20,81,214,0.10)",
     },
 
     professionalImage: {
-      width: 45,
-      height: 45,
-      borderRadius: 15,
-      borderCurve: "continuous",
+      width: 44,
+      height: 44,
+      borderRadius: 22,
       marginRight: 12,
     },
 
@@ -1192,21 +1145,22 @@ const createStyles = (tc: ThemeRoles) =>
     },
 
     listRowName: {
-      color: tc.fg(COLORS.black),
-      fontSize: 13,
-      fontWeight: "700",
+      color: tc.fg(COLORS.text),
+      fontSize: 16,
+      fontWeight: "600",
     },
 
     listRowMeta: {
-      marginTop: 4,
+      marginTop: 2,
       color: tc.fg(COLORS.muted),
-      fontSize: 11,
+      fontSize: 13,
     },
 
     listRowPrice: {
-      color: tc.fg(COLORS.black),
-      fontSize: 12,
-      fontWeight: "700",
+      color: tc.fg(COLORS.text),
+      fontSize: 15,
+      fontWeight: "600",
+      fontVariant: ["tabular-nums"],
       marginLeft: 8,
     },
 
@@ -1219,8 +1173,8 @@ const createStyles = (tc: ThemeRoles) =>
 
     professionalRatingText: {
       color: tc.fg(COLORS.text),
-      fontSize: 11,
-      fontWeight: "700",
+      fontSize: 14,
+      fontWeight: "600",
     },
 
     bottomSpace: {
@@ -1244,12 +1198,12 @@ const createStyles = (tc: ThemeRoles) =>
     },
 
     reserveButton: {
-      height: 58,
-      borderRadius: 22,
+      height: 56,
+      borderRadius: 16,
       borderCurve: "continuous",
-      paddingLeft: 24,
+      paddingLeft: 22,
       paddingRight: 8,
-      backgroundColor: tc.bg(COLORS.black),
+      backgroundColor: BRAND,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
@@ -1260,17 +1214,17 @@ const createStyles = (tc: ThemeRoles) =>
     },
 
     reserveButtonText: {
-      color: tc.fg(COLORS.white),
-      fontSize: 14,
-      fontWeight: "700",
+      color: COLORS.white,
+      fontSize: 17,
+      fontWeight: "600",
     },
 
     reserveArrow: {
-      width: 42,
-      height: 42,
-      borderRadius: 15,
+      width: 40,
+      height: 40,
+      borderRadius: 12,
       borderCurve: "continuous",
-      backgroundColor: tc.bg(COLORS.gold),
+      backgroundColor: "rgba(255,255,255,0.18)",
       alignItems: "center",
       justifyContent: "center",
     },

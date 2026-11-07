@@ -19,7 +19,7 @@ import type { BusinessDTO, BusinessSortBy } from "@slotix/types";
 import { NotificationBell, Skeleton } from "@/components/HomeWidgets";
 import { useIOSColors } from "@/components/ios";
 import { CircleButton, Reveal } from "@/components/ScreenChrome";
-import { HeroSpaceCard, RowGroup, SectionTitle, SpaceRow, SpaceTile } from "@/components/SpaceCards";
+import { HeroSpaceCard, SectionTitle, SpaceListCard, SpaceTile } from "@/components/SpaceCards";
 import { CATEGORY_FILTERS as CATEGORIES } from "@/constants/categories";
 import { Typography } from "@/constants/theme";
 import { tapFeedback } from "@/services/haptics";
@@ -32,11 +32,11 @@ import type { ScrollViewInstance } from "react-native";
 type SortMode = Extract<BusinessSortBy, "recommended" | "nearest" | "topRated">;
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
 
-const SORTS: { value: SortMode; label: string; icon: IconName }[] = [
-  { value: "recommended", label: "Recomendados", icon: "sparkles" },
-  { value: "nearest", label: "Perto", icon: "navigate" },
+const SORTS: { value: SortMode; label: string }[] = [
+  { value: "recommended", label: "Recomendados" },
+  { value: "nearest", label: "Perto" },
   // A avaliação são as estrelas: primeiro os espaços com a melhor média.
-  { value: "topRated", label: "Avaliação", icon: "star" },
+  { value: "topRated", label: "Avaliação" },
 ];
 
 /* Controlo segmentado do iOS, com a pílula a deslizar até à opção escolhida. */
@@ -81,7 +81,6 @@ function Segmented({ value, onChange }: { value: SortMode; onChange: (next: Sort
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
           >
-            <Ionicons name={sort.icon} size={13} color={active ? colors.primary : colors.textSecondary} />
             <Text
               style={[styles.segmentLabel, { color: active ? colors.text : colors.textSecondary, fontWeight: active ? "600" : "500" }]}
               numberOfLines={1}
@@ -277,10 +276,10 @@ export default function ExploreScreen() {
         <View style={styles.searchRow}>
           <Pressable onPress={() => router.push("/search")} style={styles.flex} accessibilityRole="search">
             {({ pressed }) => (
-              <View style={[styles.searchBar, { backgroundColor: colors.card, opacity: pressed ? 0.7 : 1 }]}>
+              <View style={[styles.searchBar, { backgroundColor: colors.input, opacity: pressed ? 0.7 : 1 }]}>
                 <Ionicons name="search" size={18} color={colors.textSecondary} />
                 <Text style={[styles.searchPlaceholder, { color: colors.textSecondary }]} numberOfLines={1}>
-                  {t("Pesquisar")}
+                  {t("Espaços, serviços ou bairros")}
                 </Text>
               </View>
             )}
@@ -420,9 +419,9 @@ export default function ExploreScreen() {
                         browsing ? t("Todos os espaços") : `${spaces.length} ${spaces.length === 1 ? t("espaço") : t("espaços")}`
                       }
                     />
-                    <RowGroup>
+                    <View style={styles.cards}>
                       {list.map((space) => (
-                        <SpaceRow
+                        <SpaceListCard
                           key={space.id}
                           space={space}
                           favorite={isFavorite(space.id)}
@@ -430,7 +429,7 @@ export default function ExploreScreen() {
                           onPress={() => openSpace(space)}
                         />
                       ))}
-                    </RowGroup>
+                    </View>
                   </View>
                 </Reveal>
               ) : null}
@@ -446,12 +445,12 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-  flex: {
-    flex: 1,
-  },
   content: {
     paddingHorizontal: 16,
     paddingBottom: 140,
+  },
+  flex: {
+    flex: 1,
   },
   searchRow: {
     flexDirection: "row",
@@ -461,13 +460,13 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   searchBar: {
-    height: 44,
-    borderRadius: 14,
+    height: 40,
+    borderRadius: 12,
     borderCurve: "continuous",
-    paddingHorizontal: 14,
+    paddingHorizontal: 10,
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 6,
   },
   searchPlaceholder: {
     ...Typography.body,
@@ -479,7 +478,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 12,
-    gap: 12,
+    gap: 14,
   },
   filtersBorder: {
     position: "absolute",
@@ -496,26 +495,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   chip: {
-    height: 40,
-    borderRadius: 20,
-    paddingLeft: 5,
+    height: 36,
+    borderRadius: 18,
+    paddingLeft: 4,
     paddingRight: 14,
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
   },
   chipImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
   },
   chipText: {
     ...Typography.subheadline,
     fontWeight: "600",
   },
   segmented: {
-    marginTop: 16,
-    height: 36,
+    height: 34,
     borderRadius: 11,
     borderCurve: "continuous",
     padding: 2,
@@ -536,16 +534,18 @@ const styles = StyleSheet.create({
   },
   segment: {
     flex: 1,
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 5,
+    paddingHorizontal: 4,
   },
   segmentLabel: {
     ...Typography.footnote,
   },
   section: {
-    marginTop: 18,
+    marginTop: 24,
+  },
+  cards: {
+    gap: 12,
   },
   // A fila "Em alta" vai até à borda do ecrã, como na App Store.
   bleed: {
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   skeleton: {
-    marginTop: 18,
+    marginTop: 24,
     gap: 16,
   },
   skeletonRow: {

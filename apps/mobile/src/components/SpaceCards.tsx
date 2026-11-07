@@ -273,6 +273,95 @@ export function SpaceRow({
   );
 }
 
+/*
+ * Cartão de lista do Explorar: cada espaço num cartão próprio, com a foto à esquerda, a
+ * categoria, o nome, a zona e, por baixo, as estrelas e a distância. Sem avaliações, o
+ * espaço aparece como "Novo".
+ */
+export function SpaceListCard({
+  space,
+  favorite,
+  onFavorite,
+  onPress,
+}: {
+  space: BusinessDTO;
+  favorite: boolean;
+  onFavorite: () => void;
+  onPress: () => void;
+}) {
+  const t = useT();
+  const colors = useIOSColors();
+  const press = usePressScale(0.98);
+  const place = placeText(space);
+  const rated = space.ratingAvg !== null && space.ratingCount > 0;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
+      accessibilityRole="button"
+      accessibilityLabel={space.name}
+    >
+      <Animated.View
+        style={[
+          styles.listCard,
+          { backgroundColor: colors.card, borderColor: colors.divider, transform: [{ scale: press.scale }] },
+        ]}
+      >
+        <View style={styles.listCardImage}>
+          {space.imageUrl ? (
+            <Image source={{ uri: space.imageUrl }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+          ) : (
+            <Placeholder size={26} />
+          )}
+        </View>
+
+        <View style={styles.listCardBody}>
+          {space.category ? (
+            <Text style={[styles.listCardCategory, { color: colors.textSecondary }]} numberOfLines={1}>
+              {(t(space.category) ?? space.category).toUpperCase()}
+            </Text>
+          ) : null}
+          <Text style={[styles.listCardTitle, { color: colors.text }]} numberOfLines={1}>
+            {space.name}
+          </Text>
+          <View style={styles.listCardLine}>
+            <Ionicons name="location-outline" size={13} color={colors.textSecondary} />
+            <Text style={[styles.listCardPlace, { color: colors.textSecondary }]} numberOfLines={1}>
+              {place ?? t("Sem morada")}
+            </Text>
+          </View>
+
+          <View style={styles.listCardFooter}>
+            {rated ? (
+              <View style={styles.listCardLine}>
+                <Ionicons name="star" size={13} color={STAR_COLOR} />
+                <Text style={[styles.listCardRating, { color: colors.text }]}>{space.ratingAvg!.toFixed(1)}</Text>
+                <Text style={[styles.listCardMuted, { color: colors.textSecondary }]}>({space.ratingCount})</Text>
+              </View>
+            ) : (
+              <View style={[styles.listCardBadge, { backgroundColor: colors.successBackground }]}>
+                <Text style={[styles.listCardBadgeText, { color: colors.success }]}>{t("Novo")}</Text>
+              </View>
+            )}
+            {space.distanceKm !== null ? (
+              <View style={styles.listCardLine}>
+                <Ionicons name="navigate-outline" size={12} color={colors.textSecondary} />
+                <Text style={[styles.listCardMuted, { color: colors.textSecondary }]}>{formatDistance(space.distanceKm)}</Text>
+              </View>
+            ) : null}
+          </View>
+        </View>
+
+        <View style={styles.listCardFavorite}>
+          <FavoriteButton favorite={favorite} onPress={onFavorite} />
+        </View>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 /* Grupo de linhas com separadores recuados, como uma lista agrupada do iOS. */
 export function RowGroup({ children }: { children: React.ReactNode[] }) {
   const colors = useIOSColors();
@@ -435,6 +524,73 @@ const styles = StyleSheet.create({
   },
   rowMeta: {
     ...Typography.footnote,
+  },
+  listCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    padding: 12,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  listCardImage: {
+    width: 92,
+    height: 92,
+    borderRadius: 14,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+  },
+  listCardBody: {
+    flex: 1,
+    minWidth: 0,
+    gap: 3,
+    paddingRight: 26,
+  },
+  listCardCategory: {
+    ...Typography.caption2,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+  },
+  listCardTitle: {
+    ...Typography.headline,
+  },
+  listCardLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    flexShrink: 1,
+  },
+  listCardPlace: {
+    ...Typography.footnote,
+    flexShrink: 1,
+  },
+  listCardFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 4,
+  },
+  listCardRating: {
+    ...Typography.footnote,
+    fontWeight: '600',
+  },
+  listCardMuted: {
+    ...Typography.footnote,
+  },
+  listCardBadge: {
+    borderRadius: 6,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+  },
+  listCardBadgeText: {
+    ...Typography.caption1,
+    fontWeight: '600',
+  },
+  listCardFavorite: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
   },
   group: {
     borderRadius: 12,

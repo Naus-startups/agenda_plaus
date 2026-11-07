@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { UserDTO } from "@slotix/types";
-import { ApiRequestError, apiFetch, loadStoredAccessToken, setAccessToken } from "../services/api-client";
+import { ApiRequestError, apiFetch, loadStoredAccessToken, onSessionEnded, setAccessToken } from "../services/api-client";
 import { registerForPush, unregisterFromPush } from "../services/push";
 import { startRealtime, stopRealtime } from "../services/realtime";
 import { getMe } from "../services/users";
@@ -53,6 +53,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     void refresh();
   }, [refresh]);
+
+  // The API refused the refresh token (session ended elsewhere, password changed, expired
+  // after days without use): back to the login screen instead of failing every request.
+  useEffect(() => onSessionEnded(() => setUser(null)), []);
 
   // Com sessão iniciada, o telemóvel fica ligado à conta para os avisos com som, e a app
   // aberta recebe-os na hora (ligação em tempo real).

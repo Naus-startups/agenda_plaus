@@ -10,29 +10,31 @@ const API_URL =
     ? (process.env.EXPO_PUBLIC_WEB_API_URL ?? "http://localhost:3000/api/v1")
     : (process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000/api/v1");
 const ACCESS_TOKEN_KEY = "slotix.accessToken";
+const REFRESH_TOKEN_KEY = "slotix.refreshToken";
 
 let accessToken: string | null = null;
+let refreshToken: string | null = null;
 
 // expo-secure-store has no web implementation (every call throws there), so the web build
-// keeps the token in localStorage instead.
+// keeps the tokens in localStorage instead.
 const tokenStorage = {
-  async get(): Promise<string | null> {
-    if (Platform.OS !== "web") return SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
+  async get(key: string): Promise<string | null> {
+    if (Platform.OS !== "web") return SecureStore.getItemAsync(key);
     try {
-      return globalThis.localStorage?.getItem(ACCESS_TOKEN_KEY) ?? null;
+      return globalThis.localStorage?.getItem(key) ?? null;
     } catch {
       return null;
     }
   },
-  async set(token: string | null): Promise<void> {
+  async set(key: string, token: string | null): Promise<void> {
     if (Platform.OS !== "web") {
-      if (token) await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, token);
-      else await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
+      if (token) await SecureStore.setItemAsync(key, token);
+      else await SecureStore.deleteItemAsync(key);
       return;
     }
     try {
-      if (token) globalThis.localStorage?.setItem(ACCESS_TOKEN_KEY, token);
-      else globalThis.localStorage?.removeItem(ACCESS_TOKEN_KEY);
+      if (token) globalThis.localStorage?.setItem(key, token);
+      else globalThis.localStorage?.removeItem(key);
     } catch {
       // storage unavailable (private mode, static render): the session just won't persist
     }
@@ -40,7 +42,7 @@ const tokenStorage = {
 };
 
 export async function loadStoredAccessToken(): Promise<string | null> {
-  accessToken = await tokenStorage.get();
+  [accessToken, refreshToken] = await Promise.all([tokenStorage.get(ACCESS_TOKEN_KEY), tokenStorage.get(REFRESH_TOKEN_KEY)]);
   return accessToken;
 }
 
@@ -52,9 +54,26 @@ export function getAccessToken(): string | null {
   return accessToken;
 }
 
+export function getRefreshToken(): string | null {
+  return refreshToken;
+}
+
+// A new session (login, sign-up, Google/Apple): both tokens are kept, so the session
+// outlives the access token's 15 minutes.
+export async function setSession(tokens: { accessToken: string; refreshToken: string }): Promise<void> {
+  accessToken = tokens.accessToken;
+  refreshToken = tokens.refreshToken;
+  await Promise.all([tokenStorage.set(ACCESS_TOKEN_KEY, accessToken), tokenStorage.set(REFRESH_TOKEN_KEY, refreshToken)]);
+}
+
+// null ends the session on this device (logout, or a session the server refused).
 export async function setAccessToken(token: string | null): Promise<void> {
   accessToken = token;
-  await tokenStorage.set(token);
+  await tokenStorage.set(ACCESS_TOKEN_KEY, token);
+  if (token === null) {
+    refreshToken = null;
+    await tokenStorage.set(REFRESH_TOKEN_KEY, null);
+  }
 }
 
 export class ApiRequestError extends Error {
@@ -63,7 +82,56 @@ export class ApiRequestError extends Error {
   }
 }
 
-async function request(path: string, options: RequestInit = {}): Promise<Response> {
+// Told when the session is over for good (the refresh token itself was refused), so the
+// app can show the login screen instead of failing every request.
+const sessionEndedListeners = new Set<() => void>();
+export function onSessionEnded(listener: () => void): () => void {
+  sessionEndedListeners.add(listener);
+  return () => sessionEndedListeners.delete(listener);
+}
+
+/*
+ * Swaps the refresh token for a new pair. The API rotates refresh tokens (the old one stops
+ * working once used), so concurrent 401s must share ONE refresh: a second call with the
+ * same token would be seen as a stolen token and end every session of the account.
+ * Resolves true when there is a fresh access token to retry with.
+ */
+let pendingRefresh: Promise<boolean> | null = null;
+
+export function refreshSession(): Promise<boolean> {
+  if (pendingRefresh) return pendingRefresh;
+  const presented = refreshToken;
+  if (!presented) return Promise.resolve(false);
+
+  pendingRefresh = (async () => {
+    try {
+      const response = await fetch(`${API_URL}/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: presented }),
+      });
+      const body = (await response.json().catch(() => null)) as ApiResponse<{ accessToken: string; refreshToken: string }> | null;
+      if (response.ok && body?.success) {
+        await setSession(body.data);
+        return true;
+      }
+      // Only a refused refresh token ends the session; a busy or unreachable API (429, 5xx)
+      // says nothing about it, and the next request tries again.
+      if (response.status === 401 || response.status === 400) {
+        await setAccessToken(null);
+        for (const listener of sessionEndedListeners) listener();
+      }
+      return false;
+    } catch {
+      return false;
+    } finally {
+      pendingRefresh = null;
+    }
+  })();
+  return pendingRefresh;
+}
+
+function send(path: string, options: RequestInit): Promise<Response> {
   return fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
@@ -72,6 +140,15 @@ async function request(path: string, options: RequestInit = {}): Promise<Respons
       ...options.headers,
     },
   });
+}
+
+// An expired access token (401 on a signed-in request) is renewed once and the request
+// sent again. The /auth/ endpoints are left alone: a 401 there is a wrong password or an
+// invalid sign-in, not an expired session.
+async function request(path: string, options: RequestInit = {}): Promise<Response> {
+  const response = await send(path, options);
+  if (response.status !== 401 || !accessToken || path.startsWith("/auth/")) return response;
+  return (await refreshSession()) ? send(path, options) : response;
 }
 
 export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
