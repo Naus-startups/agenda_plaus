@@ -82,6 +82,17 @@ export function registerNotificationListeners(): void {
     run(notificationsService.notify(payment.userId, "PAYMENT_PAID", "Pagamento confirmado", "O seu pagamento foi confirmado."));
   });
 
+  // From the loyalty programme. Promotions and campaigns only reach clients who accept
+  // them (Definições › Notificações); points, rewards and membership changes always do.
+  domainEvents.onEvent("LoyaltyNotification", (notice) => {
+    run(
+      (async () => {
+        if (notice.promotional && !(await notificationsRepository.acceptsPromotions(notice.userId))) return;
+        await notificationsService.notify(notice.userId, notice.type, notice.title, notice.message);
+      })(),
+    );
+  });
+
   domainEvents.onEvent("PaymentRefunded", (payment) => {
     if (!payment.userId) return;
     run(notificationsService.notify(payment.userId, "PAYMENT_REFUNDED", "Pagamento reembolsado", "O seu pagamento foi reembolsado."));

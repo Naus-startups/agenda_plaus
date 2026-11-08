@@ -26,6 +26,8 @@ const MESSAGES: Record<string, string> = {
   GOOGLE_EMAIL_NOT_VERIFIED: "A Google não confirmou o e-mail desta conta.",
   APPLE_EMAIL_NOT_VERIFIED: "A Apple não confirmou o e-mail desta conta.",
   GOOGLE_HANDOFF_INVALID: "A sessão expirou. Tente novamente.",
+  // O Expo Go volta à app por um endereço exp://, que só uma API em desenvolvimento aceita.
+  GOOGLE_RETURN_URL_NOT_ALLOWED: "Este servidor não aceita o regresso ao Expo Go. Use uma build da app ou a API local.",
 };
 
 /*
@@ -85,10 +87,14 @@ export function SocialAuthButtons({
         return;
       }
 
-      Alert.alert(
-        mode === "register" ? t("Não foi possível criar a conta") : t("Não foi possível entrar"),
-        t(MESSAGES[code] ?? "Não foi possível concluir. Verifique a ligação à internet e tente novamente."),
-      );
+      if (__DEV__) console.warn(`Login com ${provider} falhou:`, error);
+
+      // Só um pedido que nem chegou ao servidor é problema de ligação; o resto diz o que foi.
+      const message =
+        MESSAGES[code] ??
+        (error instanceof ApiRequestError ? error.message : "Não foi possível contactar o servidor. Verifique a ligação à internet e tente novamente.");
+
+      Alert.alert(mode === "register" ? t("Não foi possível criar a conta") : t("Não foi possível entrar"), t(message));
     } finally {
       setBusy(null);
       onBusyChange?.(false);

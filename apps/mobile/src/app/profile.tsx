@@ -260,6 +260,7 @@ export default function ProfileScreen() {
       </View>
 
       <Group header={t("Conta")}>
+        <SettingsRow icon="ribbon" tint="#1451D6" title={t("Os meus espaços")} onPress={go("/meus-espacos")} />
         <SettingsRow icon="person" tint="#8E8E93" title={t("Informações pessoais")} onPress={go("/perfil/personalinfo")} />
         <SettingsRow icon="notifications" tint="#FF3B30" title={t("Notificações")} onPress={go("/perfil/notifications")} />
         <SettingsRow icon="language" tint="#1451D6" title={t("Idioma")} value={languageName} onPress={go("/perfil/language")} />

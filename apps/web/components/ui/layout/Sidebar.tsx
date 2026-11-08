@@ -15,6 +15,7 @@ import {
   ListChecks,
   WalletCards,
   Images,
+  Gift,
   type LucideIcon,
 } from "lucide-react";
 
@@ -49,6 +50,7 @@ const menuGroups: { title: string; items: MenuItem[] }[] = [
       { label: "Home", href: "/dashboard", icon: LayoutDashboard },
       { label: "Agenda", href: "/appointments", icon: CalendarDays },
       { label: "Clientes", href: "/clientes", icon: Users },
+      { label: "Fidelização", href: "/fidelizacao", icon: Gift },
     ],
   },
   {

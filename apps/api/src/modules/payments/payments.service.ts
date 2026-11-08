@@ -9,6 +9,14 @@ import { announceAppointmentChange, getAppointmentOrThrow } from "../appointment
 import { getBusinessOrThrow } from "../businesses";
 import { professionalsRepository } from "../professionals";
 import { paymentsRepository } from "./payments.repository";
+import { onAppointmentPaid, onPaymentRefunded } from "../loyalty";
+
+// Points, rewards and promotional uses follow the payment. A failure here never undoes the
+// payment: it is logged, and the loyalty job retries every recent paid appointment
+// (onAppointmentPaid is idempotent).
+async function settleLoyalty(task: Promise<void>) {
+  await task.catch((error) => console.error("Fidelização: falhou ao registar o pagamento, tenta de novo mais tarde.", error));
+}
 
 const PAYMENT_METHODS: PaymentMethod[] = ["CASH", "CARD", "MULTICAIXA", "BANK_TRANSFER", "OTHER"];
 
@@ -176,6 +184,7 @@ export const paymentsService = {
     }
 
     domainEvents.emitEvent("PaymentPaid", toPaymentDTO(payment));
+    await settleLoyalty(onAppointmentPaid(appointment.id));
     await announceAppointmentChange(appointment.id, "completed");
     return toPaymentDTO(payment);
   },
@@ -230,6 +239,7 @@ export const paymentsService = {
     }
     const updated = result.payment;
     domainEvents.emitEvent("PaymentPaid", toPaymentDTO(updated));
+    await settleLoyalty(onAppointmentPaid(updated.appointmentId));
     return toPaymentDTO(updated);
   },
 
@@ -263,6 +273,7 @@ export const paymentsService = {
     const updated = await paymentsRepository.updateStatusIfCurrent(id, "PAID", { status: "REFUNDED" });
     if (!updated) throw new ConflictError("Só é possível reembolsar um pagamento pago.", "PAYMENT_INVALID_STATUS");
     domainEvents.emitEvent("PaymentRefunded", toPaymentDTO(updated));
+    await settleLoyalty(onPaymentRefunded(updated.appointmentId));
     return toPaymentDTO(updated);
   },
 

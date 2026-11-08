@@ -1,12 +1,12 @@
 import { prisma } from "../../config/database";
 import type { Prisma } from "@prisma/client";
 
-function buildWhere(words: string[]): Prisma.BusinessWhereInput {
-  // Matches if ANY query word appears anywhere relevant (recall over precision — see
-  // shared/utils/textMatch.ts for why). Each business's own matchedService selection in
-  // search.service.ts is what actually surfaces the most relevant service for display.
+function buildWhere(patterns: string[]): Prisma.BusinessWhereInput {
+  // A wide net: any business mentioning any fragment of any term (see
+  // shared/utils/textMatch.ts). search.service.ts then scores each one against the terms
+  // themselves and keeps only the relevant ones, so recall here costs no precision there.
   return {
-    OR: words.map((word) => ({
+    OR: patterns.map((word) => ({
       OR: [
         { name: { contains: word, mode: "insensitive" } },
         { description: { contains: word, mode: "insensitive" } },
@@ -34,9 +34,9 @@ function buildWhere(words: string[]): Prisma.BusinessWhereInput {
 }
 
 export const searchRepository = {
-  findCandidates(words: string[]) {
+  findCandidates(patterns: string[]) {
     return prisma.business.findMany({
-      where: buildWhere(words),
+      where: buildWhere(patterns),
       include: {
         reviews: { select: { rating: true } },
         _count: { select: { favorites: true } },

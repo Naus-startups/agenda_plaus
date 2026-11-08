@@ -10,6 +10,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import FloatingNavigation, { TAB_ROUTES } from "@/components/FloatingNavigation";
 import { IntroSplash } from "@/components/Brand";
 import { AppDialogHost } from "@/components/AppDialog";
+import { MissedAppointmentNotice } from "@/components/MissedAppointmentNotice";
 import { Colors } from "@/constants/theme";
 import { AuthProvider, useAuth } from "../contexts/AuthContext";
 import { FavoritesProvider } from "../contexts/FavoritesContext";
@@ -176,6 +177,9 @@ function RootLayoutContent() {
         )}
 
         <AppDialogHost />
+
+        {/* Agendamento cancelado por não ter comparecido: a mensagem aparece ao entrar */}
+        {introDone && !isAuthRoute ? <MissedAppointmentNotice /> : null}
 
         {!introDone ? (
           <IntroSplash ready={!isLoading && (isAuthenticated || isAuthRoute)} onDone={finishIntro} />

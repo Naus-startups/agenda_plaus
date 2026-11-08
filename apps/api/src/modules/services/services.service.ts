@@ -14,6 +14,7 @@ function toServiceDTO(service: {
   category: string | null;
   imageUrl: string | null;
   active: boolean;
+  membersOnly?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }): ServiceDTO {
@@ -27,6 +28,7 @@ function toServiceDTO(service: {
     category: service.category,
     imageUrl: service.imageUrl,
     active: service.active,
+    membersOnly: service.membersOnly ?? false,
     createdAt: service.createdAt.toISOString(),
     updatedAt: service.updatedAt.toISOString(),
   };

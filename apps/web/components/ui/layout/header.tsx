@@ -48,6 +48,11 @@ const PAGES: Record<
     subtitle: "Gerencie a sua base de clientes",
   },
 
+  "/fidelizacao": {
+    title: "Fidelização e benefícios",
+    subtitle: "Membros, benefícios, recompensas e promoções",
+  },
+
   "/appointments": {
     title: "Agenda",
     subtitle: "Agendamentos e atendimentos",

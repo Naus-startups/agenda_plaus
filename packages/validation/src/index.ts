@@ -47,6 +47,13 @@ export const createAppointmentSchema = z.object({
   professionalId: z.guid(),
   scheduledAt: isoDateTime,
   notes: z.string().max(1000).optional(),
+  // A reward the client chooses to use (one they unlocked, or one bought with points).
+  // The price itself is always worked out by the API.
+  memberRewardId: z.guid().optional(),
+  pointsRewardId: z.guid().optional(),
+  // The total the app showed; if the server's differs (a promotion just ran out), the
+  // booking is refused so the client sees the new price first.
+  expectedPrice: z.number().nonnegative().optional(),
 });
 
 export const rescheduleAppointmentSchema = z.object({

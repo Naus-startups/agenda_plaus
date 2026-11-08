@@ -18,6 +18,7 @@ import {
 import type { NotificationDTO } from "@slotix/types";
 import { listNotifications, markAllNotificationsRead, markNotificationRead } from "../../services/notifications";
 import { onRealtime } from "../../services/realtime";
+import { getMe, updateMe } from "../../services/users";
 import { useThemed, type ThemeRoles } from "@/theme/roles";
 import { useT, translate, dateLocale } from "@/i18n";
 
@@ -86,6 +87,24 @@ export default function NotificationsScreen() {
   const [bookingNotifications, setBookingNotifications] = useState(true);
   const [messagesNotifications, setMessagesNotifications] = useState(true);
   const [favoriteNotifications, setFavoriteNotifications] = useState(true);
+  // Guardada no servidor: os espaços de que é membro só lhe enviam promoções e campanhas
+  // se a aceitar (pontos e recompensas chegam sempre).
+  const [promotionNotifications, setPromotionNotifications] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    getMe()
+      .then((me) => !cancelled && setPromotionNotifications(me.notifyPromotions ?? true))
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const changePromotions = (value: boolean) => {
+    setPromotionNotifications(value);
+    updateMe({ notifyPromotions: value }).catch(() => setPromotionNotifications(!value));
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -371,6 +390,30 @@ export default function NotificationsScreen() {
                       true: "#E5ECFA",
                     }}
                     thumbColor={favoriteNotifications ? COLORS.blue : "#FFFFFF"}
+                  />
+                </View>
+
+                <View style={styles.separator} />
+
+                <View style={styles.preferenceRow}>
+                  <View style={styles.preferenceIcon}>
+                    <Ionicons name="pricetags-outline" size={20} color={tc.fg(COLORS.text)} />
+                  </View>
+
+                  <View style={styles.preferenceText}>
+                    <Text style={styles.preferenceTitle}>{t("Promoções e campanhas")}</Text>
+
+                    <Text style={styles.preferenceDescription}>{t("Novas promoções e benefícios dos espaços de que é membro")}</Text>
+                  </View>
+
+                  <Switch
+                    value={promotionNotifications}
+                    onValueChange={changePromotions}
+                    trackColor={{
+                      false: "#D1D1D6",
+                      true: "#E5ECFA",
+                    }}
+                    thumbColor={promotionNotifications ? COLORS.blue : "#FFFFFF"}
                   />
                 </View>
               </View>

@@ -114,6 +114,9 @@ export default function PersonalInfoScreen() {
 
   const [phone, setPhone] = useState("");
 
+  // DD/MM/AAAA; opcional, para os espaços de que é membro lhe darem a oferta de aniversário.
+  const [birthDate, setBirthDate] = useState("");
+
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   // ==========================================================
@@ -151,6 +154,7 @@ export default function PersonalInfoScreen() {
         setFullName(me.name);
         setEmail(me.email);
         setPhone(me.phone ?? "");
+        setBirthDate(me.birthDate ? me.birthDate.split("-").reverse().join("/") : "");
         setAvatarUrl(me.avatarUrl);
       } catch (error) {
         if (!cancelled) {
@@ -393,6 +397,15 @@ export default function PersonalInfoScreen() {
       return;
     }
 
+    // "15/03/1990" → "1990-03-15"; vazio apaga a data.
+    const birthMatch = birthDate.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (birthDate.trim() && !birthMatch) {
+      Alert.alert(t("Data inválida"), t("Escreva a data de nascimento como DD/MM/AAAA."));
+
+      return;
+    }
+    const isoBirthDate = birthMatch ? `${birthMatch[3]}-${birthMatch[2].padStart(2, "0")}-${birthMatch[1].padStart(2, "0")}` : null;
+
     setSaving(true);
 
     setSaved(false);
@@ -408,6 +421,7 @@ export default function PersonalInfoScreen() {
       const updated = await updateMe({
         name: cleanName,
         phone: cleanPhone,
+        birthDate: isoBirthDate,
       });
 
       setFullName(updated.name);
@@ -590,6 +604,21 @@ export default function PersonalInfoScreen() {
                   markAsChanged();
                 }}
                 keyboardType="phone-pad"
+              />
+
+              <View style={styles.fieldDivider} />
+
+              <InputField
+                label={t("Data de nascimento")}
+                value={birthDate}
+                placeholder="DD/MM/AAAA"
+                icon="gift-outline"
+                onChangeText={(value) => {
+                  setBirthDate(value);
+                  markAsChanged();
+                }}
+                keyboardType="phone-pad"
+                helperText={t("Opcional. Os espaços de que é membro podem oferecer-lhe algo no seu aniversário.")}
               />
             </View>
           </View>

@@ -14,6 +14,7 @@ import { getMemberClientOrThrow, getWalkInClientOrThrow } from "../clients";
 import { assertStaffOfBusiness } from "../../shared/authz";
 import { appointmentsRepository } from "./appointments.repository";
 import { paymentsRepository } from "../payments/payments.repository";
+import { assertDiscountsValidAt, priceBooking, recordBookingDiscounts, releaseForAppointment } from "../loyalty";
 
 type RequesterRole = "CUSTOMER" | "OWNER" | "EMPLOYEE" | "ADMIN";
 
@@ -28,6 +29,8 @@ function toAppointmentDTO(appointment: {
   professionalId: string;
   scheduledAt: Date;
   price: { toNumber(): number };
+  originalPrice: { toNumber(): number } | null;
+  discountTotal: { toNumber(): number };
   status: AppointmentDTO["status"];
   notes: string | null;
   createdAt: Date;
@@ -42,6 +45,8 @@ function toAppointmentDTO(appointment: {
     professionalId: appointment.professionalId,
     scheduledAt: appointment.scheduledAt.toISOString(),
     price: appointment.price.toNumber(),
+    originalPrice: (appointment.originalPrice ?? appointment.price).toNumber(),
+    discountTotal: appointment.discountTotal.toNumber(),
     status: appointment.status,
     notes: appointment.notes,
     createdAt: appointment.createdAt.toISOString(),
@@ -159,10 +164,27 @@ export const appointmentsService = {
       throw new ValidationError("A data do agendamento tem de ser no futuro.", "APPOINTMENT_IN_PAST");
     }
 
+    const party = { userId: clientId, walkInClientId: null };
     const appointment = await appointmentsRepository.withProfessionalLock(input.professionalId, async (db) => {
       await assertSlotAvailable(db, input.businessId, input.professionalId, scheduledAt, service.duration);
 
-      return appointmentsRepository.create(
+      // The price is worked out here, with the promotions and the member locked: promotions,
+      // membership and the reward the client chose. Nothing the app sends sets it.
+      const pricing = await priceBooking(db, {
+        businessId: input.businessId,
+        service,
+        scheduledAt,
+        party,
+        selfBooking: true,
+        memberRewardId: input.memberRewardId,
+        pointsRewardId: input.pointsRewardId,
+        lock: true,
+      });
+      if (input.expectedPrice !== undefined && Math.abs(input.expectedPrice - pricing.result.finalPrice) > 0.009) {
+        throw new ConflictError("O preço mudou entretanto (por exemplo, uma promoção esgotou). Veja o novo preço e confirme outra vez.", "APPOINTMENT_PRICE_CHANGED");
+      }
+
+      const created = await appointmentsRepository.create(
         {
           businessId: input.businessId,
           clientId,
@@ -170,11 +192,15 @@ export const appointmentsService = {
           professionalId: input.professionalId,
           scheduledAt,
           durationMinutes: service.duration,
-          price: service.price,
+          price: pricing.result.finalPrice,
+          originalPrice: pricing.result.originalPrice,
+          discountTotal: pricing.result.discountTotal,
           notes: input.notes,
         },
         db,
       );
+      await recordBookingDiscounts(db, created.id, pricing, party);
+      return created;
     });
 
     domainEvents.emitEvent("AppointmentCreated", toAppointmentDTO(appointment));
@@ -206,10 +232,15 @@ export const appointmentsService = {
       throw new ValidationError("A data do agendamento tem de ser no futuro.", "APPOINTMENT_IN_PAST");
     }
 
+    const party = { userId: input.clientId ?? null, walkInClientId: input.clientId ? null : (input.walkInClientId ?? null) };
     const appointment = await appointmentsRepository.withProfessionalLock(input.professionalId, async (db) => {
       await assertSlotAvailable(db, input.businessId, input.professionalId, scheduledAt, service.duration);
 
-      return appointmentsRepository.create(
+      // Booked by the space: its promotions (and member prices, for an app client who is a
+      // member) apply the same way; only the client can choose to spend a reward.
+      const pricing = await priceBooking(db, { businessId: input.businessId, service, scheduledAt, party, selfBooking: false, lock: true });
+
+      const created = await appointmentsRepository.create(
         {
           businessId: input.businessId,
           ...(input.clientId ? { clientId: input.clientId } : { walkInClientId: input.walkInClientId }),
@@ -217,11 +248,15 @@ export const appointmentsService = {
           professionalId: input.professionalId,
           scheduledAt,
           durationMinutes: service.duration,
-          price: service.price,
+          price: pricing.result.finalPrice,
+          originalPrice: pricing.result.originalPrice,
+          discountTotal: pricing.result.discountTotal,
           notes: input.notes,
         },
         db,
       );
+      await recordBookingDiscounts(db, created.id, pricing, party);
+      return created;
     });
 
     if (input.clientId) domainEvents.emitEvent("AppointmentBookedForClient", toAppointmentDTO(appointment));
@@ -254,7 +289,13 @@ export const appointmentsService = {
       throw new ConflictError("Este agendamento já não pode ser cancelado.", "APPOINTMENT_NOT_CANCELLABLE");
     }
 
-    const updated = await appointmentsRepository.updateIfStatus(id, ["PENDING", "CONFIRMED"], { status: "CANCELLED" });
+    // Promotional slots and rewards go back and points spent are returned, in the same
+    // transaction as the status change.
+    const updated = await appointmentsRepository.transaction(async (db) => {
+      const cancelled = await appointmentsRepository.updateIfStatus(id, ["PENDING", "CONFIRMED"], { status: "CANCELLED" }, db);
+      if (cancelled) await releaseForAppointment(id, db);
+      return cancelled;
+    });
     if (!updated) throw new ConflictError("Este agendamento já não pode ser cancelado.", "APPOINTMENT_NOT_CANCELLABLE");
     domainEvents.emitEvent("AppointmentCancelled", { ...toAppointmentDTO(updated), byClient: requesterRole === "CUSTOMER" });
     return announce(toAppointmentDTO(updated), "cancelled");
@@ -302,7 +343,11 @@ export const appointmentsService = {
       throw new ConflictError("Este agendamento não pode ser marcado como falta.", "APPOINTMENT_NOT_NO_SHOWABLE");
     }
 
-    const updated = await appointmentsRepository.updateIfStatus(id, ["PENDING", "CONFIRMED"], { status: "NO_SHOW" });
+    const updated = await appointmentsRepository.transaction(async (db) => {
+      const missed = await appointmentsRepository.updateIfStatus(id, ["PENDING", "CONFIRMED"], { status: "NO_SHOW" }, db);
+      if (missed) await releaseForAppointment(id, db);
+      return missed;
+    });
     if (!updated) throw new ConflictError("Este agendamento não pode ser marcado como falta.", "APPOINTMENT_NOT_NO_SHOWABLE");
     return announce(toAppointmentDTO(updated), "no_show");
   },
@@ -319,6 +364,9 @@ export const appointmentsService = {
     if (scheduledAt.getTime() <= Date.now()) {
       throw new ValidationError("A data do agendamento tem de ser no futuro.", "APPOINTMENT_IN_PAST");
     }
+
+    // A promotion it was booked with must still hold at the new time (weekday, hours, period).
+    await assertDiscountsValidAt(id, scheduledAt);
 
     const updated = await appointmentsRepository.withProfessionalLock(appointment.professionalId, async (db) => {
       await assertSlotAvailable(db, appointment.businessId, appointment.professionalId, scheduledAt, appointment.durationMinutes, id);

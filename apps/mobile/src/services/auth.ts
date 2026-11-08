@@ -3,14 +3,14 @@ import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import { Platform } from "react-native";
 import type { LoginRequest, LoginResponse, RegisterRequest } from "@slotix/types";
-import { ApiRequestError, apiFetch, setAccessToken } from "./api-client";
+import { ApiRequestError, apiFetch, setSession } from "./api-client";
 
 export async function login(input: LoginRequest): Promise<LoginResponse> {
   const result = await apiFetch<LoginResponse>("/auth/login", {
     method: "POST",
     body: JSON.stringify(input),
   });
-  await setAccessToken(result.accessToken);
+  await setSession(result);
   return result;
 }
 
@@ -19,7 +19,7 @@ export async function register(input: RegisterRequest): Promise<LoginResponse> {
     method: "POST",
     body: JSON.stringify(input),
   });
-  await setAccessToken(result.accessToken);
+  await setSession(result);
   return result;
 }
 
@@ -59,7 +59,7 @@ async function browserSignIn(provider: "google" | "apple", mode: SocialMode): Pr
     method: "POST",
     body: JSON.stringify({ handoff, verifier }),
   });
-  await setAccessToken(result.accessToken);
+  await setSession(result);
   return result;
 }
 
@@ -98,6 +98,6 @@ export async function signInWithApple(mode: SocialMode): Promise<LoginResponse |
     method: "POST",
     body: JSON.stringify({ identityToken: credential.identityToken, mode, ...(name ? { name } : {}) }),
   });
-  await setAccessToken(result.accessToken);
+  await setSession(result);
   return result;
 }

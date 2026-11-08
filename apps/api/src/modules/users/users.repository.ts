@@ -11,7 +11,7 @@ export const usersRepository = {
     return prisma.user.findFirst({ where: { id: requireId(id, "userId"), deletedAt: null } });
   },
 
-  update(id: string, data: { name?: string; phone?: string; avatarUrl?: string | null }) {
+  update(id: string, data: { name?: string; phone?: string; avatarUrl?: string | null; birthDate?: Date | null; notifyPromotions?: boolean }) {
     return prisma.user.update({ where: { id }, data });
   },
 

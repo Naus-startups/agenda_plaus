@@ -560,6 +560,12 @@ function ServiceItem({
             <Text style={styles.serviceName} numberOfLines={1}>
               {service.name}
             </Text>
+            {service.membersOnly ? (
+              <View style={styles.membersOnlyBadge}>
+                <Ionicons name="ribbon" size={11} color={tc.fg(COLORS.blue)} />
+                <Text style={styles.membersOnlyText}>{t("Membros")}</Text>
+              </View>
+            ) : null}
           </View>
 
           {service.description ? (
@@ -1065,6 +1071,23 @@ const createStyles = (tc: ThemeRoles) =>
       flexDirection: "row",
       alignItems: "center",
       paddingRight: 5,
+    },
+
+    membersOnlyBadge: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 3,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 999,
+      backgroundColor: tc.bg("rgba(20,81,214,0.1)"),
+      marginLeft: 6,
+    },
+
+    membersOnlyText: {
+      fontSize: 10,
+      fontWeight: "700",
+      color: tc.fg(COLORS.blue),
     },
 
     serviceName: {

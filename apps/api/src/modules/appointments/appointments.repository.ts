@@ -17,6 +17,10 @@ export const appointmentsRepository = {
     });
   },
 
+  transaction<T>(fn: (db: Db) => Promise<T>) {
+    return prisma.$transaction(fn);
+  },
+
   create(
     data: {
       businessId: string;
@@ -27,6 +31,8 @@ export const appointmentsRepository = {
       scheduledAt: Date;
       durationMinutes: number;
       price: Prisma.Decimal | number;
+      originalPrice?: Prisma.Decimal | number;
+      discountTotal?: Prisma.Decimal | number;
       notes?: string;
     },
     db: Db = prisma,

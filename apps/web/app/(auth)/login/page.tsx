@@ -22,6 +22,24 @@ export default function LoginPage() {
 
   const [error, setError] = useState("");
 
+  // O navegador preenche sozinho o email e a palavra-passe guardados assim que a página abre
+  // (por exemplo, logo a seguir ao logout). Campos só de leitura não são preenchidos; ao clicar
+  // num deles libertamos os dois e o navegador mostra as contas guardadas para escolher.
+  const [locked, setLocked] = useState(true);
+
+  // Ao voltar com o botão "atrás", a página vem da cache com os valores antigos: limpa-os.
+  useEffect(() => {
+    function handlePageShow(event: PageTransitionEvent) {
+      if (!event.persisted) return;
+      setEmail("");
+      setPassword("");
+      setLocked(true);
+    }
+
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
+
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("error");
     if (code && GOOGLE_ERRORS[code]) setError(GOOGLE_ERRORS[code]);
@@ -90,7 +108,8 @@ export default function LoginPage() {
           placeholder="nome@exemplo.com"
           autoComplete="email"
           inputMode="email"
-          autoFocus
+          readOnly={locked}
+          onFocus={() => setLocked(false)}
           disabled={busy}
         />
 
@@ -100,6 +119,8 @@ export default function LoginPage() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           autoComplete="current-password"
+          readOnly={locked}
+          onFocus={() => setLocked(false)}
           disabled={busy}
         />
 

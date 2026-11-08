@@ -6,6 +6,13 @@ export const updateProfileSchema = z.object({
   name: personName.optional(),
   phone: phone.optional(),
   avatarUrl: imageUrl.optional(),
+  // For birthday rewards; a real past date, or null to remove it.
+  birthDate: z.iso
+    .date()
+    .refine((value) => Date.parse(value) < Date.now() && Date.parse(value) > Date.parse("1900-01-01"), "Data de nascimento inválida.")
+    .nullable()
+    .optional(),
+  notifyPromotions: z.boolean().optional(),
 });
 
 export const updateLocationSchema = z.object({

@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "a1a4838b-c7b6-47e3-8980-a6a07074a32e"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.nevrex.slotix",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}

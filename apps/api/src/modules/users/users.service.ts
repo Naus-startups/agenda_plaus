@@ -18,6 +18,8 @@ function toUserDTO(user: {
   latitude: number | null;
   longitude: number | null;
   locationUpdatedAt: Date | null;
+  birthDate?: Date | null;
+  notifyPromotions?: boolean;
   createdAt: Date;
 }): UserDTO {
   return {
@@ -30,6 +32,8 @@ function toUserDTO(user: {
     latitude: user.latitude,
     longitude: user.longitude,
     locationUpdatedAt: user.locationUpdatedAt?.toISOString() ?? null,
+    birthDate: user.birthDate ? user.birthDate.toISOString().slice(0, 10) : null,
+    notifyPromotions: user.notifyPromotions ?? true,
     createdAt: user.createdAt.toISOString(),
   };
 }
@@ -44,7 +48,11 @@ export const usersService = {
   },
 
   async updateProfile(userId: string, input: UpdateProfileInput): Promise<UserDTO> {
-    const user = await usersRepository.update(userId, input);
+    const { birthDate, ...rest } = input;
+    const user = await usersRepository.update(userId, {
+      ...rest,
+      ...(birthDate !== undefined ? { birthDate: birthDate ? new Date(`${birthDate}T00:00:00Z`) : null } : {}),
+    });
     return toUserDTO(user);
   },
 

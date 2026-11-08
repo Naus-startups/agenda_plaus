@@ -17,6 +17,9 @@ export interface DomainEvents {
   PaymentPaid: PaymentDTO;
   PaymentFailed: PaymentDTO;
   PaymentRefunded: PaymentDTO;
+  // Something from a space's loyalty programme to tell a client (points, rewards,
+  // promotions). `promotional` ones respect the client's choice to receive promotions.
+  LoyaltyNotification: { userId: string; type: string; title: string; message: string; promotional: boolean };
 }
 
 class DomainEventBus extends EventEmitter {
