@@ -14,7 +14,8 @@ export async function loyaltyFetch<T>(path: string, init: { method?: string; bod
     const message = json?.error?.message ?? json?.error ?? "Não foi possível concluir o pedido.";
     throw new Error(typeof message === "string" ? message : "Não foi possível concluir o pedido.");
   }
-  return (json?.data ?? json) as T;
+  // `data` pode ser null de propósito (ex.: o espaço ainda não criou o programa).
+  return (json && typeof json === "object" && "data" in json ? json.data : json) as T;
 }
 
 export function formatKz(value: number): string {

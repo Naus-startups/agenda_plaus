@@ -17,6 +17,7 @@ const DASHBOARD_PREFIXES = [
   "/clientes",
   "/configuracoes",
   "/equipe",
+  "/fidelizacao",
   "/financeiro",
   "/galeria",
   "/pagamentos",
