@@ -32,16 +32,17 @@ const DEFAULTS: Form = {
   pointsExpireDays: "365",
 };
 
+// Um campo que não venha preenchido fica com o valor de origem (nunca "undefined" no ecrã).
 function toForm(program: LoyaltyProgramDTO): Form {
   return {
-    active: program.active,
-    name: program.name,
+    active: program.active ?? DEFAULTS.active,
+    name: program.name ?? DEFAULTS.name,
     description: program.description ?? "",
     joinRules: program.joinRules ?? "",
     terms: program.terms ?? "",
-    pointsEnabled: program.pointsEnabled,
-    pointsPerUnit: String(program.pointsPerUnit),
-    amountPerUnit: String(program.amountPerUnit),
+    pointsEnabled: program.pointsEnabled ?? DEFAULTS.pointsEnabled,
+    pointsPerUnit: program.pointsPerUnit != null ? String(program.pointsPerUnit) : DEFAULTS.pointsPerUnit,
+    amountPerUnit: program.amountPerUnit != null ? String(program.amountPerUnit) : DEFAULTS.amountPerUnit,
     pointsExpireDays: program.pointsExpireDays ? String(program.pointsExpireDays) : "",
   };
 }
