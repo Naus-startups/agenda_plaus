@@ -1,5 +1,6 @@
 import { env } from "../../config/env";
 import { announceAppointmentChange } from "../appointments";
+import { releaseForAppointment } from "../loyalty";
 import { notificationsRepository } from "./notifications.repository";
 import { notificationsService } from "./notifications.service";
 
@@ -7,8 +8,8 @@ import { notificationsService } from "./notifications.service";
  * Avisos ligados à data de um agendamento, para o cliente que o marcou:
  *   - na véspera:        "Falta um dia…"
  *   - no próprio dia:    "Hoje é o dia…", com a hora marcada
- * e, passado o dia marcado sem ninguém o concluir nem cancelar, o agendamento é
- * cancelado — ver cancelExpiredAppointments.
+ * e, 24 horas depois da hora marcada sem o atendimento ter sido concluído nem pago, o
+ * agendamento é cancelado por o cliente não ter comparecido — ver markMissedAppointments.
  *
  * Não há eventos para isto (nada acontece no sistema quando o relógio avança), por isso um
  * ciclo verifica de minuto a minuto. Cada aviso só é criado uma vez: antes de gravar,
@@ -63,46 +64,70 @@ export function reminderText(
   }
 }
 
-export function expiredText(
+// Quanto tempo depois da hora marcada o espaço ainda pode concluir ou receber o pagamento
+// antes de o agendamento contar como falta.
+export const NO_SHOW_AFTER_MS = DAY_MS;
+
+export const NO_SHOW_NOTIFICATION = "APPOINTMENT_CANCELLED_NO_SHOW";
+
+function dayAndTime(scheduledAt: Date, timeZone: string): string {
+  const day = new Intl.DateTimeFormat("pt-PT", { timeZone, day: "2-digit", month: "2-digit" }).format(scheduledAt);
+  const time = new Intl.DateTimeFormat("pt-PT", { timeZone, hour: "2-digit", minute: "2-digit", hour12: false }).format(scheduledAt);
+  return `${day} às ${time}`;
+}
+
+export function noShowText(
   appointment: { scheduledAt: Date; business: { name: string }; service: { name: string } },
   timeZone: string,
 ): { title: string; message: string } {
-  const day = new Intl.DateTimeFormat("pt-PT", { timeZone, day: "2-digit", month: "2-digit" }).format(appointment.scheduledAt);
-  const time = new Intl.DateTimeFormat("pt-PT", { timeZone, hour: "2-digit", minute: "2-digit", hour12: false }).format(appointment.scheduledAt);
-
   return {
     title: "Agendamento cancelado",
-    message: `O seu agendamento em ${appointment.business.name} (${appointment.service.name}) de ${day} às ${time} foi cancelado: o dia passou sem ter sido realizado.`,
+    message: `O seu agendamento em ${appointment.business.name} (${appointment.service.name}) de ${dayAndTime(appointment.scheduledAt, timeZone)} foi cancelado porque não compareceu.`,
   };
 }
 
-// O dia marcado já acabou (no fuso da aplicação) — não basta a hora ter passado: até ao
-// fim do dia o espaço ainda pode confirmar ou registar o atendimento.
-export function isPastDay(scheduledAt: Date, now: Date, timeZone: string): boolean {
-  return localDay(scheduledAt, timeZone) < localDay(now, timeZone);
+export function noShowBusinessText(
+  appointment: { scheduledAt: Date; service: { name: string }; client: { name: string } | null; walkInClient: { name: string } | null },
+  timeZone: string,
+): { title: string; message: string } {
+  const client = appointment.client?.name ?? appointment.walkInClient?.name ?? "Cliente";
+  return {
+    title: "Cliente não compareceu",
+    message: `Agendamento cancelado porque o cliente não compareceu: ${client} — ${appointment.service.name}, ${dayAndTime(appointment.scheduledAt, timeZone)}.`,
+  };
 }
 
-// Os agendamentos que ficaram por concluir (pendentes ou confirmados) depois do dia marcado
-// são cancelados: saem da agenda como por fazer, e o painel e a app veem-no logo (realtime).
-// O cliente é avisado, mas só dos do último dia — os antigos que já estavam por fechar
+// Passou o prazo desde a hora marcada?
+export function isNoShowDue(scheduledAt: Date, now: Date): boolean {
+  return now.getTime() - scheduledAt.getTime() >= NO_SHOW_AFTER_MS;
+}
+
+// Os agendamentos que, 24 horas depois da hora marcada, continuam por concluir (pendentes
+// ou confirmados) e sem pagamento ficam como "Não compareceu": saem da agenda como por
+// fazer, e o painel e a app veem-no logo (realtime). O cliente e o espaço (dono e
+// profissional) são avisados — mas só dos recentes: os antigos que já estavam por fechar
 // quando isto entrou mudam de estado sem notificação.
-export async function cancelExpiredAppointments(now: Date = new Date()): Promise<number> {
+export async function markMissedAppointments(now: Date = new Date()): Promise<number> {
   const timeZone = env.APP_TIMEZONE;
-  const open = await notificationsRepository.findOpenAppointmentsBefore(now);
+  const open = await notificationsRepository.findOpenUnpaidAppointmentsBefore(new Date(now.getTime() - NO_SHOW_AFTER_MS));
 
   let marked = 0;
   for (const appointment of open) {
-    if (!isPastDay(appointment.scheduledAt, now, timeZone)) continue;
-    if (!(await notificationsRepository.cancelExpired(appointment.id))) continue;
+    if (!isNoShowDue(appointment.scheduledAt, now)) continue;
+    if (!(await notificationsRepository.markNoShowIfUnpaid(appointment.id, (db) => releaseForAppointment(appointment.id, db)))) continue;
     marked++;
 
-    await announceAppointmentChange(appointment.id, "cancelled");
+    await announceAppointmentChange(appointment.id, "no_show");
 
-    const recent = now.getTime() - appointment.scheduledAt.getTime() < 2 * DAY_MS;
-    if (appointment.clientId && recent) {
-      const { title, message } = expiredText(appointment, timeZone);
-      await notificationsService.notify(appointment.clientId, "APPOINTMENT_CANCELLED", title, message);
+    if (now.getTime() - appointment.scheduledAt.getTime() >= NO_SHOW_AFTER_MS + 2 * DAY_MS) continue;
+
+    if (appointment.clientId) {
+      const { title, message } = noShowText(appointment, timeZone);
+      await notificationsService.notify(appointment.clientId, NO_SHOW_NOTIFICATION, title, message);
     }
+    const business = noShowBusinessText(appointment, timeZone);
+    const staff = new Set([appointment.business.ownerId, appointment.professional.userId]);
+    await Promise.all([...staff].map((userId) => notificationsService.notify(userId, NO_SHOW_NOTIFICATION, business.title, business.message)));
   }
   return marked;
 }
@@ -142,7 +167,7 @@ export function startAppointmentReminders(): void {
     if (running) return;
     running = true;
     try {
-      await cancelExpiredAppointments();
+      await markMissedAppointments();
       await sendDueAppointmentReminders();
     } catch (error) {
       console.error("Avisos de agendamento: a verificação falhou, repete no próximo minuto.", error);

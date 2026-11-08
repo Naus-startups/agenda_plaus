@@ -2,7 +2,7 @@ import request from "supertest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { appointmentsRepository } from "../../src/modules/appointments/appointments.repository";
 import { paymentsRepository } from "../../src/modules/payments/payments.repository";
-import { cancelExpiredAppointments } from "../../src/modules/notifications/appointmentReminders";
+import { markMissedAppointments } from "../../src/modules/notifications/appointmentReminders";
 import { domainEvents } from "../../src/shared/events/domainEvents";
 import { resetRateLimits } from "../../src/shared/middleware/rateLimit";
 import { app, auth, createAppointment, createBusinessFixture, createPayment, prisma, resetDatabase, type BusinessFixture } from "./helpers";
@@ -285,27 +285,36 @@ describe("validação de parâmetros", () => {
   });
 });
 
-describe("agendamentos de dias que já passaram", () => {
-  it("passado o dia marcado, os que ficaram por fazer são cancelados; os de hoje e os concluídos não", async () => {
+describe("agendamentos a que o cliente não compareceu", () => {
+  it("24 horas depois da hora marcada, os que ficaram por concluir e sem pagamento passam a não compareceu", async () => {
     const now = new Date();
-    const yesterday = new Date(now.getTime() - 26 * 60 * 60_000);
-    const later = new Date(now.getTime() + 60_000);
+    const dayAndHalfAgo = new Date(now.getTime() - 26 * 60 * 60_000);
+    const hoursAgo = new Date(now.getTime() - 20 * 60 * 60_000);
 
-    const pending = await createAppointment(a, { status: "PENDING", scheduledAt: yesterday });
-    const confirmed = await createAppointment(a, { status: "CONFIRMED", scheduledAt: yesterday, walkIn: true });
-    const completed = await createAppointment(a, { status: "COMPLETED", scheduledAt: yesterday });
-    const upcoming = await createAppointment(a, { status: "PENDING", scheduledAt: later });
+    const pending = await createAppointment(a, { status: "PENDING", scheduledAt: dayAndHalfAgo });
+    const confirmed = await createAppointment(a, { status: "CONFIRMED", scheduledAt: dayAndHalfAgo, walkIn: true });
+    const paid = await createAppointment(a, { status: "CONFIRMED", scheduledAt: dayAndHalfAgo });
+    await createPayment(a, paid.id, "PAID");
+    const unpaid = await createAppointment(a, { status: "CONFIRMED", scheduledAt: dayAndHalfAgo });
+    await createPayment(a, unpaid.id, "PENDING");
+    const completed = await createAppointment(a, { status: "COMPLETED", scheduledAt: dayAndHalfAgo });
+    const recent = await createAppointment(a, { status: "PENDING", scheduledAt: hoursAgo });
 
-    expect(await cancelExpiredAppointments(now)).toBe(2);
+    expect(await markMissedAppointments(now)).toBe(3);
 
     const status = async (id: string) => (await prisma.appointment.findUniqueOrThrow({ where: { id } })).status;
-    expect(await status(pending.id)).toBe("CANCELLED");
-    expect(await status(confirmed.id)).toBe("CANCELLED");
+    expect(await status(pending.id)).toBe("NO_SHOW");
+    expect(await status(confirmed.id)).toBe("NO_SHOW");
+    expect(await status(unpaid.id)).toBe("NO_SHOW");
+    expect(await status(paid.id)).toBe("CONFIRMED");
     expect(await status(completed.id)).toBe("COMPLETED");
-    expect(await status(upcoming.id)).toBe("PENDING");
+    expect(await status(recent.id)).toBe("PENDING");
 
-    // O cliente com conta é avisado de que foi cancelado.
-    const notice = await prisma.notification.findFirst({ where: { userId: a.customer.user.id } });
-    expect(notice?.type).toBe("APPOINTMENT_CANCELLED");
+    // O cliente com conta e o dono do espaço são avisados do motivo.
+    const client = await prisma.notification.findFirst({ where: { userId: a.customer.user.id, type: "APPOINTMENT_CANCELLED_NO_SHOW" } });
+    expect(client?.message).toContain("foi cancelado porque não compareceu");
+    const owner = await prisma.notification.findFirst({ where: { userId: a.owner.user.id, type: "APPOINTMENT_CANCELLED_NO_SHOW" } });
+    expect(owner?.message).toContain("o cliente não compareceu");
   });
 });
+

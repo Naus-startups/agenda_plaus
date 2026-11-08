@@ -32,6 +32,7 @@ import {
 import { listMyAppointments } from "../services/appointments";
 import { useAuth } from "../contexts/AuthContext";
 import { RateSpaceSheet } from "@/components/RateSpaceSheet";
+import { MembershipCard } from "@/components/MembershipCard";
 import { Stars } from "@/components/Stars";
 import { STAR_COLOR } from "@/components/SpaceCards";
 
@@ -469,6 +470,9 @@ const SpaceScreen = () => {
               </Card>
             </View>
           ) : null}
+
+          {/* O programa de membros do espaço (só aparece se o espaço o tiver ligado). */}
+          <MembershipCard businessId={businessId} businessName={business.name} services={services} style={styles.section} />
 
           <View style={styles.section}>
             <SectionHeader

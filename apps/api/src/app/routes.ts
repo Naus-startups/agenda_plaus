@@ -15,6 +15,7 @@ import { galleryRoutes } from "../modules/gallery";
 import { searchRoutes } from "../modules/search";
 import { geoRoutes } from "../modules/geo";
 import { realtimeRoutes } from "../modules/realtime";
+import { businessLoyaltyRoutes, loyaltyRoutes } from "../modules/loyalty";
 import { authenticate } from "../shared/middleware/authenticate";
 import { authorize } from "../shared/middleware/authorize";
 import { validate } from "../shared/middleware/validate";
@@ -43,6 +44,10 @@ routes.use("/events", realtimeRoutes);
 // mounted nested rather than as a flat top-level resource. gallery.routes.ts uses
 // Router({ mergeParams: true }) to read :businessId from this parent path.
 routes.use("/businesses/:businessId/gallery", galleryRoutes);
+// Fidelização: o programa, membros, benefícios e promoções de um espaço; e o que é do
+// cliente em todos os espaços (as suas adesões, o preço de uma marcação).
+routes.use("/businesses/:businessId/loyalty", businessLoyaltyRoutes);
+routes.use("/loyalty", loyaltyRoutes);
 
 // Convenience nested routes composed at the top level (rather than importing across
 // businesses/services/professionals/reviews) to avoid circular module imports — those

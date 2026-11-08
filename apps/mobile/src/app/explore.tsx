@@ -8,7 +8,6 @@ import {
   Text,
   View,
   useWindowDimensions,
-  type LayoutChangeEvent,
 } from "react-native";
 import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -18,6 +17,7 @@ import type { BusinessDTO, BusinessSortBy } from "@slotix/types";
 
 import { NotificationBell, Skeleton } from "@/components/HomeWidgets";
 import { useIOSColors } from "@/components/ios";
+import { FilterButton, OptionSheet } from "@/components/FilterControls";
 import { CircleButton, Reveal } from "@/components/ScreenChrome";
 import { HeroSpaceCard, SectionTitle, SpaceListCard, SpaceTile } from "@/components/SpaceCards";
 import { CATEGORY_FILTERS as CATEGORIES } from "@/constants/categories";
@@ -32,67 +32,12 @@ import type { ScrollViewInstance } from "react-native";
 type SortMode = Extract<BusinessSortBy, "recommended" | "nearest" | "topRated">;
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
 
-const SORTS: { value: SortMode; label: string }[] = [
-  { value: "recommended", label: "Recomendados" },
-  { value: "nearest", label: "Perto" },
+const SORTS: { value: SortMode; label: string; icon: IconName }[] = [
+  { value: "recommended", label: "Recomendados", icon: "sparkles-outline" },
+  { value: "nearest", label: "Perto de mim", icon: "navigate-outline" },
   // A avaliação são as estrelas: primeiro os espaços com a melhor média.
-  { value: "topRated", label: "Avaliação" },
+  { value: "topRated", label: "Melhor avaliados", icon: "star-outline" },
 ];
-
-/* Controlo segmentado do iOS, com a pílula a deslizar até à opção escolhida. */
-function Segmented({ value, onChange }: { value: SortMode; onChange: (next: SortMode) => void }) {
-  const t = useT();
-  const colors = useIOSColors();
-  const [width, setWidth] = useState(0);
-  const index = SORTS.findIndex((sort) => sort.value === value);
-  const position = useRef(new Animated.Value(index)).current;
-
-  useEffect(() => {
-    Animated.spring(position, { toValue: index, useNativeDriver: true, speed: 20, bounciness: 0 }).start();
-  }, [index, position]);
-
-  const segment = width > 0 ? (width - 4) / SORTS.length : 0;
-
-  return (
-    <View
-      style={[styles.segmented, { backgroundColor: colors.input }]}
-      onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
-      accessibilityRole="tablist"
-    >
-      {segment > 0 ? (
-        <Animated.View
-          style={[
-            styles.segmentThumb,
-            {
-              width: segment,
-              backgroundColor: colors.surfaceElevated,
-              transform: [{ translateX: Animated.multiply(position, segment) }],
-            },
-          ]}
-        />
-      ) : null}
-      {SORTS.map((sort) => {
-        const active = sort.value === value;
-        return (
-          <Pressable
-            key={sort.value}
-            onPress={() => onChange(sort.value)}
-            style={styles.segment}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active }}
-          >
-            <Text
-              style={[styles.segmentLabel, { color: active ? colors.text : colors.textSecondary, fontWeight: active ? "600" : "500" }]}
-              numberOfLines={1}
-            >
-              {t(sort.label)}
-            </Text>
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-}
 
 /* Lugar guardado para os resultados enquanto chegam: destaque e algumas linhas. */
 function ResultsSkeleton({ width }: { width: number }) {
@@ -131,6 +76,7 @@ export default function ExploreScreen() {
   const [results, setResults] = useState<BusinessDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [sortSheet, setSortSheet] = useState(false);
   // Onde começa o bloco dos filtros na página: a partir daí ficam presos no topo.
   const [filtersY, setFiltersY] = useState(0);
 
@@ -317,13 +263,14 @@ export default function ExploreScreen() {
                       style={[
                         styles.chip,
                         {
-                          backgroundColor: active ? colors.text : colors.card,
+                          backgroundColor: active ? colors.primary : colors.card,
+                          borderColor: active ? colors.primary : colors.divider,
                           transform: [{ scale: pressed ? 0.95 : 1 }],
                         },
                       ]}
                     >
                       <Image source={item.image} style={styles.chipImage} contentFit="cover" />
-                      <Text style={[styles.chipText, { color: active ? colors.background : colors.text }]}>{t(item.name)}</Text>
+                      <Text style={[styles.chipText, { color: active ? colors.primaryForeground : colors.text }]}>{t(item.name)}</Text>
                     </View>
                   )}
                 </Pressable>
@@ -331,13 +278,29 @@ export default function ExploreScreen() {
             })}
           </ScrollView>
 
-          <Segmented value={sortMode} onChange={(mode) => void selectSort(mode)} />
+          {/* Quantos espaços há e como estão ordenados, numa linha direita */}
+          <View style={styles.toolbar}>
+            <Text style={[styles.toolbarTitle, { color: colors.text }]} numberOfLines={1}>
+              {loading
+                ? t(category === "Todos" ? "Todos os espaços" : category)
+                : spaces.length === 1
+                  ? t("1 espaço")
+                  : t("{0} espaços", [spaces.length])}
+            </Text>
+            <FilterButton
+              icon="swap-vertical"
+              label={t(SORTS.find((sort) => sort.value === sortMode)?.label ?? "")}
+              highlighted={sortMode !== "recommended"}
+              accessibilityLabel={t("Ordenar")}
+              onPress={() => setSortSheet(true)}
+            />
+          </View>
 
           <Animated.View style={[styles.filtersBorder, { backgroundColor: colors.divider, opacity: filtersBorder }]} />
         </View>
 
         {/* Resultados; a chave muda com o filtro para a entrada animada se repetir */}
-        <View key={`${category}-${sortMode}`}>
+        <View key={`${category}-${sortMode}`} style={styles.results}>
           {loading ? (
             <ResultsSkeleton width={width - 32} />
           ) : spaces.length === 0 ? (
@@ -414,11 +377,7 @@ export default function ExploreScreen() {
               {list.length > 0 ? (
                 <Reveal index={2}>
                   <View style={styles.section}>
-                    <SectionTitle
-                      title={
-                        browsing ? t("Todos os espaços") : `${spaces.length} ${spaces.length === 1 ? t("espaço") : t("espaços")}`
-                      }
-                    />
+                    {browsing && (featured || trending.length > 0) ? <SectionTitle title={t("Todos os espaços")} /> : null}
                     <View style={styles.cards}>
                       {list.map((space) => (
                         <SpaceListCard
@@ -437,6 +396,15 @@ export default function ExploreScreen() {
           )}
         </View>
       </Animated.ScrollView>
+
+      <OptionSheet
+        visible={sortSheet}
+        title={t("Ordenar por")}
+        options={SORTS.map((sort) => ({ ...sort, label: t(sort.label) }))}
+        value={sortMode}
+        onSelect={(mode) => void selectSort(mode)}
+        onClose={() => setSortSheet(false)}
+      />
     </View>
   );
 }
@@ -476,9 +444,9 @@ const styles = StyleSheet.create({
   filters: {
     marginHorizontal: -16,
     paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 12,
-    gap: 14,
+    paddingTop: 12,
+    paddingBottom: 16,
+    gap: 18,
   },
   filtersBorder: {
     position: "absolute",
@@ -495,8 +463,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   chip: {
-    height: 36,
-    borderRadius: 18,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: StyleSheet.hairlineWidth,
     paddingLeft: 4,
     paddingRight: 14,
     flexDirection: "row",
@@ -512,34 +481,20 @@ const styles = StyleSheet.create({
     ...Typography.subheadline,
     fontWeight: "600",
   },
-  segmented: {
-    height: 34,
-    borderRadius: 11,
-    borderCurve: "continuous",
-    padding: 2,
+  toolbar: {
     flexDirection: "row",
-  },
-  segmentThumb: {
-    position: "absolute",
-    top: 2,
-    bottom: 2,
-    left: 2,
-    borderRadius: 9,
-    borderCurve: "continuous",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  segment: {
-    flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 4,
+    justifyContent: "space-between",
+    gap: 12,
+    paddingTop: 2,
   },
-  segmentLabel: {
-    ...Typography.footnote,
+  toolbarTitle: {
+    ...Typography.headline,
+    flex: 1,
+  },
+  // Afasta o primeiro bloco da linha "N espaços · Ordenar", para não ficar colado a ela.
+  results: {
+    paddingTop: 8,
   },
   section: {
     marginTop: 24,

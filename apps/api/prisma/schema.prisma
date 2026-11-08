@@ -39,25 +39,25 @@ enum PaymentMethod {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  email        String    @unique
-  passwordHash String
-  name         String
-  phone        String?
-  role         Role      @default(CUSTOMER)
-  avatarUrl    String?
+  id                String    @id @default(uuid())
+  email             String    @unique
+  passwordHash      String
+  name              String
+  phone             String?
+  role              Role      @default(CUSTOMER)
+  avatarUrl         String?
   // The last position the app reported for this user (GPS, with their permission). Kept
   // so distances to businesses can be computed when no fresh reading is available.
   latitude          Float?
   longitude         Float?
   locationUpdatedAt DateTime?
-  deletedAt    DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  deletedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
-  ownedBusinesses     Business[]     @relation("BusinessOwner")
+  ownedBusinesses     Business[]       @relation("BusinessOwner")
   professionalProfile Professional?
-  appointments        Appointment[]  @relation("AppointmentClient")
+  appointments        Appointment[]    @relation("AppointmentClient")
   refreshTokens       RefreshToken[]
   favorites           Favorite[]
   reviews             Review[]
@@ -65,6 +65,12 @@ model User {
   notifications       Notification[]
   pushTokens          PushToken[]
   payments            Payment[]
+  loyaltyMemberships  LoyaltyMember[]
+
+  // Optional, given by the client: lets the spaces they are members of offer a birthday reward.
+  birthDate        DateTime? @db.Date
+  // Whether spaces may send them promotions and campaigns (points and rewards always arrive).
+  notifyPromotions Boolean   @default(true)
 
   @@map("users")
 }
@@ -108,16 +114,22 @@ model Business {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  professionals Professional[]
-  services      Service[]
-  appointments  Appointment[]
-  favorites     Favorite[]
-  reviews       Review[]
-  clients       BusinessClient[]
-  hours         BusinessHours[]
-  payments      Payment[]
-  galleryImages GalleryImage[]
-  walkInClients WalkInClient[]
+  professionals    Professional[]
+  services         Service[]
+  appointments     Appointment[]
+  favorites        Favorite[]
+  reviews          Review[]
+  clients          BusinessClient[]
+  hours            BusinessHours[]
+  payments         Payment[]
+  galleryImages    GalleryImage[]
+  walkInClients    WalkInClient[]
+  loyaltyProgram   LoyaltyProgram?
+  loyaltyMembers   LoyaltyMember[]
+  loyaltyBenefits  LoyaltyBenefit[]
+  loyaltyRewards   LoyaltyReward[]
+  promotions       Promotion[]
+  loyaltyAuditLogs LoyaltyAuditLog[]
 
   @@index([ownerId])
   @@index([provincia, bairro])
@@ -204,8 +216,8 @@ model ProfessionalBlock {
   id             String       @id @default(uuid())
   professionalId String
   professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
-  startAt        DateTime @db.Timestamptz(3)
-  endAt          DateTime @db.Timestamptz(3)
+  startAt        DateTime     @db.Timestamptz(3)
+  endAt          DateTime     @db.Timestamptz(3)
   reason         String?
   createdAt      DateTime     @default(now())
 
@@ -224,10 +236,14 @@ model Service {
   category    String?
   imageUrl    String?
   active      Boolean  @default(true)
+  // Only members of the space's loyalty programme can book it (checked when booking).
+  membersOnly Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   appointments Appointment[]
+  promotions   PromotionService[]
+  rewards      LoyaltyRewardService[]
 
   @@index([businessId])
   @@map("services")
@@ -248,16 +264,24 @@ model Appointment {
   service         Service           @relation(fields: [serviceId], references: [id])
   professionalId  String
   professional    Professional      @relation(fields: [professionalId], references: [id])
-  scheduledAt     DateTime @db.Timestamptz(3)
+  scheduledAt     DateTime          @db.Timestamptz(3)
   durationMinutes Int
+  // `price` is what the client pays (after discounts); originalPrice is the service's price
+  // at booking time. Both are set by the server — never taken from the request.
   price           Decimal           @db.Decimal(10, 2)
+  originalPrice   Decimal?          @db.Decimal(10, 2)
+  discountTotal   Decimal           @default(0) @db.Decimal(10, 2)
   status          AppointmentStatus @default(PENDING)
   notes           String?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
-  review  Review?
-  payment Payment?
+  review              Review?
+  payment             Payment?
+  discounts           AppointmentDiscount[]
+  promotionUsages     PromotionUsage[]
+  memberRewards       MemberReward[]
+  loyaltyTransactions LoyaltyTransaction[]
 
   @@index([businessId])
   @@index([clientId])
@@ -332,7 +356,7 @@ model Payment {
   currency       String        @default("AOA")
   method         PaymentMethod
   status         PaymentStatus @default(PENDING)
-  paidAt         DateTime? @db.Timestamptz(3)
+  paidAt         DateTime?     @db.Timestamptz(3)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
@@ -367,4 +391,337 @@ model PushToken {
 
   @@index([userId])
   @@map("push_tokens")
+}
+
+/**
+ * =========================================================================
+ * FIDELIZAÇÃO, BENEFÍCIOS E PROMOÇÕES
+ * Everything here belongs to one business (businessId on every row), so one space can
+ * never see or change another's programme. A client's membership is per business: being
+ * a member of one space says nothing about any other. Joining is free for now; `plan`
+ * on LoyaltyMember is where paid VIP plans would hang later.
+ * =========================================================================
+ */
+
+enum LoyaltyMemberStatus {
+  ACTIVE
+  SUSPENDED // by the business: no member prices or rewards until reactivated
+  REMOVED // by the business: cannot rejoin on their own
+  LEFT // the client left; may join again
+}
+
+enum LoyaltyTransactionType {
+  EARN // points for a paid appointment
+  REDEEM // points spent on a reward
+  REFUND // points of a cancelled redemption given back
+  REVERSAL // points of a refunded payment taken back
+  EXPIRE // points past their validity
+  ADJUST // a manual correction by the owner (positive or negative)
+}
+
+enum DiscountType {
+  PERCENT // value = 0..100
+  AMOUNT // value = Kz off
+  FREE // the service costs nothing
+}
+
+enum PromotionAudience {
+  ALL
+  MEMBERS
+}
+
+enum PromotionStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ENDED
+}
+
+enum LoyaltyRewardKind {
+  POINTS // bought with points when booking
+  VISITS // unlocked after N paid appointments in the eligible services
+  BIRTHDAY // given in the member's birthday month
+}
+
+enum MemberRewardStatus {
+  AVAILABLE
+  RESERVED // held by an upcoming appointment
+  USED
+  EXPIRED
+  CANCELLED // bought with points for an appointment that was cancelled: the points went back
+}
+
+enum DiscountUsageStatus {
+  RESERVED // the appointment is booked
+  CONSUMED // the appointment was paid
+  RELEASED // the appointment was cancelled / not attended: the slot is free again
+}
+
+model LoyaltyProgram {
+  id          String   @id @default(uuid())
+  businessId  String   @unique
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  // Off until the owner turns it on: the app shows nothing for a space without a programme.
+  active      Boolean  @default(false)
+  name        String
+  description String?
+  // Shown before joining: who can join and what is expected.
+  joinRules   String?
+  terms       String?
+
+  pointsEnabled    Boolean @default(false)
+  // `pointsPerUnit` points for every `amountPerUnit` Kz paid (e.g. 10 per 1000 Kz).
+  pointsPerUnit    Int     @default(10)
+  amountPerUnit    Int     @default(1000)
+  // Points expire this many days after being earned; null = never.
+  pointsExpireDays Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("loyalty_programs")
+}
+
+model LoyaltyMember {
+  id              String              @id @default(uuid())
+  businessId      String
+  business        Business            @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status          LoyaltyMemberStatus @default(ACTIVE)
+  plan            String              @default("FREE")
+  // Only ever changed together with a LoyaltyTransaction row, in one transaction with the
+  // member row locked (see loyalty.repository) — the ledger is the source of truth.
+  pointsBalance   Int                 @default(0)
+  joinedAt        DateTime            @default(now())
+  statusChangedAt DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  transactions LoyaltyTransaction[]
+  rewards      MemberReward[]
+  events       LoyaltyMemberEvent[]
+
+  @@unique([businessId, userId])
+  @@index([userId])
+  @@index([businessId, status])
+  @@map("loyalty_members")
+}
+
+// The membership's history: joined, suspended, reactivated, removed, left.
+model LoyaltyMemberEvent {
+  id        String        @id @default(uuid())
+  memberId  String
+  member    LoyaltyMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  action    String
+  reason    String?
+  actorId   String?
+  createdAt DateTime      @default(now())
+
+  @@index([memberId, createdAt])
+  @@map("loyalty_member_events")
+}
+
+model LoyaltyTransaction {
+  id             String                 @id @default(uuid())
+  memberId       String
+  member         LoyaltyMember          @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  businessId     String
+  type           LoyaltyTransactionType
+  // Signed: positive adds to the balance, negative takes from it.
+  points         Int
+  balanceAfter   Int
+  appointmentId  String?
+  appointment    Appointment?           @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  memberRewardId String?
+  reason         String?
+  actorId        String?
+  // EARN rows only: when these points stop counting.
+  expiresAt      DateTime?              @db.Timestamptz(3)
+  // One row per real-world event ("earn:<appointmentId>", …): a repeated request or
+  // notification can never award or take the same points twice.
+  idempotencyKey String                 @unique
+  createdAt      DateTime               @default(now())
+
+  @@index([memberId, createdAt])
+  @@index([businessId, createdAt])
+  @@map("loyalty_transactions")
+}
+
+// What the space says members get (priority service, early access…). The mechanics with
+// money attached are promotions and rewards; these are the promises shown around them.
+model LoyaltyBenefit {
+  id          String    @id @default(uuid())
+  businessId  String
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  conditions  String?
+  validFrom   DateTime? @db.Timestamptz(3)
+  validUntil  DateTime? @db.Timestamptz(3)
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([businessId])
+  @@map("loyalty_benefits")
+}
+
+model LoyaltyReward {
+  id             String            @id @default(uuid())
+  businessId     String
+  business       Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  kind           LoyaltyRewardKind
+  pointsCost     Int?
+  visitsRequired Int?
+  discountType   DiscountType
+  discountValue  Decimal           @default(0) @db.Decimal(10, 2)
+  // Unlocked rewards (VISITS/BIRTHDAY) can be used for this many days; null = no limit.
+  validDays      Int?
+  active         Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  // Empty = every service of the space.
+  services      LoyaltyRewardService[]
+  memberRewards MemberReward[]
+
+  @@index([businessId])
+  @@map("loyalty_rewards")
+}
+
+model LoyaltyRewardService {
+  rewardId  String
+  reward    LoyaltyReward @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+  serviceId String
+  service   Service       @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@id([rewardId, serviceId])
+  @@index([serviceId])
+  @@map("loyalty_reward_services")
+}
+
+// A reward a member has (unlocked, or bought with points for one appointment).
+model MemberReward {
+  id               String             @id @default(uuid())
+  memberId         String
+  member           LoyaltyMember      @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  rewardId         String
+  reward           LoyaltyReward      @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+  businessId       String
+  status           MemberRewardStatus @default(AVAILABLE)
+  appointmentId    String?
+  appointment      Appointment?       @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  expiresAt        DateTime?          @db.Timestamptz(3)
+  // "visits:<rewardId>:<memberId>:<n>", "birthday:<rewardId>:<memberId>:<year>", "points:<appointmentId>"
+  unlockKey        String             @unique
+  expiryNotifiedAt DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@index([memberId, status])
+  @@index([businessId])
+  @@map("member_rewards")
+}
+
+model Promotion {
+  id               String            @id @default(uuid())
+  businessId       String
+  business         Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name             String
+  description      String?
+  audience         PromotionAudience @default(ALL)
+  status           PromotionStatus   @default(DRAFT)
+  discountType     DiscountType
+  discountValue    Decimal           @default(0) @db.Decimal(10, 2)
+  startsAt         DateTime?         @db.Timestamptz(3)
+  endsAt           DateTime?         @db.Timestamptz(3)
+  // Members may use it from this moment (early access), before startsAt opens it to everyone.
+  membersFrom      DateTime?         @db.Timestamptz(3)
+  // ISO weekdays 1 (Monday) … 7 (Sunday); empty = every day.
+  weekdays         Int[]             @default([])
+  // Minutes after midnight (app time zone) the appointment must start in; null = any time.
+  startMinute      Int?
+  endMinute        Int?
+  // Total uses (the "20 promotional haircuts"); null = no limit. Cancelled bookings give
+  // the use back.
+  maxUses          Int?
+  maxUsesPerClient Int?
+  stackable        Boolean           @default(false)
+  // Campaign rule: a cancelled (or missed) booking gives its use back to the campaign.
+  releaseOnCancel  Boolean           @default(true)
+  notifiedAt       DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  // Empty = every service of the space.
+  services PromotionService[]
+  usages   PromotionUsage[]
+
+  @@index([businessId, status])
+  @@map("promotions")
+}
+
+model PromotionService {
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  serviceId   String
+  service     Service   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@id([promotionId, serviceId])
+  @@index([serviceId])
+  @@map("promotion_services")
+}
+
+model PromotionUsage {
+  id             String              @id @default(uuid())
+  promotionId    String
+  promotion      Promotion           @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  appointmentId  String
+  appointment    Appointment         @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  userId         String?
+  walkInClientId String?
+  status         DiscountUsageStatus @default(RESERVED)
+  discountAmount Decimal             @db.Decimal(10, 2)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@unique([promotionId, appointmentId])
+  @@index([promotionId, status])
+  @@index([appointmentId])
+  @@map("promotion_usages")
+}
+
+// Each discount an appointment got, and where it came from — the receipt of its price.
+model AppointmentDiscount {
+  id             String      @id @default(uuid())
+  appointmentId  String
+  appointment    Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  source         String // "PROMOTION" | "REWARD"
+  promotionId    String?
+  memberRewardId String?
+  label          String
+  amount         Decimal     @db.Decimal(10, 2)
+  createdAt      DateTime    @default(now())
+
+  @@index([appointmentId])
+  @@map("appointment_discounts")
+}
+
+// What the owner changed in the programme, members, promotions and rewards.
+model LoyaltyAuditLog {
+  id         String   @id @default(uuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  actorId    String
+  action     String
+  entityType String
+  entityId   String?
+  details    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([businessId, createdAt])
+  @@map("loyalty_audit_logs")
 }

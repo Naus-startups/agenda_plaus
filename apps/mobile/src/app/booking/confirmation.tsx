@@ -6,9 +6,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useNavigation, usePreventRemove, useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import type { BusinessDTO, ProfessionalDTO, ServiceDTO } from "@slotix/types";
+import type { BusinessDTO, PriceQuoteDTO, ProfessionalDTO, ServiceDTO } from "@slotix/types";
 import { getBusiness, getBusinessProfessionals, getBusinessServices, getMembership } from "../../services/businesses";
 import { ClientCheckSheet } from "@/components/ClientCheckSheet";
+import { BookingPriceSummary, rewardKey } from "@/components/BookingPriceSummary";
+import { quoteBooking } from "../../services/loyalty";
 import { createAppointment } from "../../services/appointments";
 import { syncReminders } from "../../services/reminders";
 import { usePreferences } from "../../contexts/PreferencesContext";
@@ -54,6 +56,30 @@ export default function BookingConfirmationScreen() {
   const [submitErrorCode, setSubmitErrorCode] = useState<string | null>(null);
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
+
+  // O preço é sempre o que a API calcula (promoções, preço de membro, recompensa escolhida).
+  const [quote, setQuote] = useState<PriceQuoteDTO | null>(null);
+  const [rewardChoice, setRewardChoice] = useState<string | null>(null);
+  const [quoteVersion, setQuoteVersion] = useState(0);
+  const chosenReward = quote?.rewardOptions.find((option) => rewardKey(option) === rewardChoice) ?? null;
+
+  useEffect(() => {
+    if (!businessId || !serviceId || !scheduledAt) return;
+    let cancelled = false;
+    quoteBooking({
+      businessId,
+      serviceId,
+      scheduledAt,
+      memberRewardId: chosenReward?.memberRewardId ?? undefined,
+      pointsRewardId: chosenReward?.pointsRewardId ?? undefined,
+    })
+      .then((next) => !cancelled && setQuote(next))
+      // Sem preço calculado, mostra-se o do serviço; a marcação confirma-o no servidor.
+      .catch(() => !cancelled && setQuote(null));
+    return () => {
+      cancelled = true;
+    };
+  }, [businessId, serviceId, scheduledAt, chosenReward?.memberRewardId, chosenReward?.pointsRewardId, quoteVersion]);
 
   const buttonScale = useRef(new Animated.Value(1)).current;
   const successScale = useRef(new Animated.Value(0.82)).current;
@@ -178,6 +204,11 @@ export default function BookingConfirmationScreen() {
         serviceId,
         professionalId,
         scheduledAt,
+        memberRewardId: chosenReward?.memberRewardId ?? undefined,
+        pointsRewardId: chosenReward?.pointsRewardId ?? undefined,
+        // O total que a pessoa viu: se entretanto mudou (uma promoção esgotou), a API recusa
+        // e o novo preço é mostrado antes de confirmar.
+        expectedPrice: quote ? quote.finalPrice : undefined,
       });
       // A marcação nova passa a ter os seus lembretes no telemóvel.
       void syncReminders(preferences.reminders);
@@ -205,6 +236,10 @@ export default function BookingConfirmationScreen() {
       if (err instanceof ApiRequestError) {
         setSubmitErrorCode(err.code);
         setSubmitErrorMessage(err.message);
+        if (err.code === "APPOINTMENT_PRICE_CHANGED" || err.code === "LOYALTY_REWARD_UNAVAILABLE") {
+          setRewardChoice(null);
+          setQuoteVersion((value) => value + 1);
+        }
       } else {
         setSubmitErrorCode(null);
         setSubmitErrorMessage(t("Ocorreu um erro ao confirmar a reserva. Tente novamente."));
@@ -546,11 +581,13 @@ export default function BookingConfirmationScreen() {
             </View>
           </View>
 
+          {quote ? <BookingPriceSummary quote={quote} selected={rewardChoice} onSelect={setRewardChoice} /> : null}
+
           {/* PRICE */}
           <View style={styles.priceCard}>
             <View>
               <Text style={styles.priceLabel}>{t("TOTAL DO AGENDAMENTO")}</Text>
-              <Text style={styles.priceTitle}>{formatPrice(service.price)}</Text>
+              <Text style={styles.priceTitle}>{formatPrice(quote?.finalPrice ?? service.price)}</Text>
             </View>
 
             <View style={styles.priceIcon}>
@@ -569,7 +606,9 @@ export default function BookingConfirmationScreen() {
                 <Text style={styles.errorBannerTitle}>
                   {submitErrorCode === "APPOINTMENT_NOT_AVAILABLE"
                     ? t("Este horário já não está disponível")
-                    : t("Não foi possível confirmar")}
+                    : submitErrorCode === "APPOINTMENT_PRICE_CHANGED"
+                      ? t("O preço foi atualizado")
+                      : t("Não foi possível confirmar")}
                 </Text>
 
                 <Text style={styles.errorBannerText}>{submitErrorMessage}</Text>
@@ -606,7 +645,7 @@ export default function BookingConfirmationScreen() {
           <View style={styles.bottomBarInner}>
             <View style={styles.totalPreview}>
               <Text style={styles.totalPreviewLabel}>{t("TOTAL")}</Text>
-              <Text style={styles.totalPreviewValue}>{formatPrice(service.price)}</Text>
+              <Text style={styles.totalPreviewValue}>{formatPrice(quote?.finalPrice ?? service.price)}</Text>
             </View>
 
             <Animated.View style={[styles.confirmButtonWrapper, { transform: [{ scale: buttonScale }] }]}>

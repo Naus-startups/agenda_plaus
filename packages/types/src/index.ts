@@ -47,6 +47,10 @@ export interface UserDTO {
   latitude: number | null;
   longitude: number | null;
   locationUpdatedAt: string | null;
+  // YYYY-MM-DD, given by the client for birthday rewards.
+  birthDate?: string | null;
+  // Whether the spaces they are members of may send promotions and campaigns.
+  notifyPromotions?: boolean;
   createdAt: string;
 }
 
@@ -196,6 +200,8 @@ export interface ServiceDTO {
   category: string | null;
   imageUrl: string | null;
   active: boolean;
+  // Only members of the space's loyalty programme can book it.
+  membersOnly?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -277,7 +283,10 @@ export interface AppointmentDTO {
   serviceId: string;
   professionalId: string;
   scheduledAt: string;
+  // What the client pays, after the discounts below; originalPrice is the service's price.
   price: number;
+  originalPrice: number;
+  discountTotal: number;
   status: AppointmentStatus;
   notes: string | null;
   createdAt: string;
@@ -290,6 +299,10 @@ export interface CreateAppointmentRequest {
   professionalId: string;
   scheduledAt: string;
   notes?: string;
+  // A reward to use (one unlocked, or one bought with points) and the total the app showed.
+  memberRewardId?: string;
+  pointsRewardId?: string;
+  expectedPrice?: number;
 }
 
 // Booked by the business on behalf of a walk-in client, not by the client themselves.
@@ -425,7 +438,233 @@ export interface UpdateProfileRequest {
   name?: string;
   phone?: string;
   avatarUrl?: string;
+  birthDate?: string | null;
+  notifyPromotions?: boolean;
 }
 
 export * from "./locations";
 export * from "./categories";
+
+/* =========================================================================
+   Fidelização, benefícios e promoções
+   ========================================================================= */
+
+export type DiscountType = "PERCENT" | "AMOUNT" | "FREE";
+export type PromotionAudience = "ALL" | "MEMBERS";
+export type PromotionStatus = "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED";
+export type LoyaltyMemberStatus = "ACTIVE" | "SUSPENDED" | "REMOVED" | "LEFT";
+export type LoyaltyRewardKind = "POINTS" | "VISITS" | "BIRTHDAY";
+export type MemberRewardStatus = "AVAILABLE" | "RESERVED" | "USED" | "EXPIRED" | "CANCELLED";
+export type LoyaltyTransactionType = "EARN" | "REDEEM" | "REFUND" | "REVERSAL" | "EXPIRE" | "ADJUST";
+
+export interface LoyaltyProgramDTO {
+  businessId: string;
+  active: boolean;
+  name: string;
+  description: string | null;
+  joinRules: string | null;
+  terms: string | null;
+  pointsEnabled: boolean;
+  pointsPerUnit: number;
+  amountPerUnit: number;
+  pointsExpireDays: number | null;
+}
+
+export interface LoyaltyBenefitDTO {
+  id: string;
+  title: string;
+  description: string | null;
+  conditions: string | null;
+  validFrom: string | null;
+  validUntil: string | null;
+  active: boolean;
+}
+
+export interface LoyaltyRewardDTO {
+  id: string;
+  name: string;
+  description: string | null;
+  kind: LoyaltyRewardKind;
+  pointsCost: number | null;
+  visitsRequired: number | null;
+  discountType: DiscountType;
+  discountValue: number;
+  validDays: number | null;
+  active: boolean;
+  serviceIds: string[];
+}
+
+export interface PromotionDTO {
+  id: string;
+  name: string;
+  description: string | null;
+  audience: PromotionAudience;
+  status: PromotionStatus;
+  discountType: DiscountType;
+  discountValue: number;
+  startsAt: string | null;
+  endsAt: string | null;
+  membersFrom: string | null;
+  weekdays: number[];
+  startMinute: number | null;
+  endMinute: number | null;
+  maxUses: number | null;
+  maxUsesPerClient: number | null;
+  stackable: boolean;
+  // Campaign rule: a cancelled or missed booking gives its use back.
+  releaseOnCancel: boolean;
+  serviceIds: string[];
+  // Reserved + consumed uses; remaining is null when there is no limit.
+  usedCount: number;
+  remaining: number | null;
+}
+
+export interface PromotionResultsDTO {
+  promotion: PromotionDTO;
+  reserved: number;
+  consumed: number;
+  released: number;
+  discountGiven: number;
+  usages: {
+    id: string;
+    appointmentId: string;
+    clientName: string;
+    status: "RESERVED" | "CONSUMED" | "RELEASED";
+    discountAmount: number;
+    scheduledAt: string;
+    createdAt: string;
+  }[];
+}
+
+export interface MemberRewardDTO {
+  id: string;
+  rewardId: string;
+  name: string;
+  description: string | null;
+  kind: LoyaltyRewardKind;
+  discountType: DiscountType;
+  discountValue: number;
+  serviceIds: string[];
+  status: MemberRewardStatus;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface LoyaltyTransactionDTO {
+  id: string;
+  type: LoyaltyTransactionType;
+  points: number;
+  balanceAfter: number;
+  reason: string | null;
+  appointmentId: string | null;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface NextRewardDTO {
+  rewardId: string;
+  name: string;
+  kind: LoyaltyRewardKind;
+  // How far the member still is: points still missing, or paid services still missing.
+  pointsNeeded: number | null;
+  visitsNeeded: number | null;
+}
+
+export interface MyMembershipDTO {
+  id: string;
+  businessId: string;
+  businessName: string;
+  businessLogoUrl: string | null;
+  programName: string;
+  status: LoyaltyMemberStatus;
+  plan: string;
+  joinedAt: string;
+  pointsBalance: number;
+  pointsEnabled: boolean;
+  visits: number;
+  level: string | null;
+  nextReward: NextRewardDTO | null;
+  availableRewards: MemberRewardDTO[];
+}
+
+export interface MemberAreaDTO extends MyMembershipDTO {
+  benefits: LoyaltyBenefitDTO[];
+  rewards: LoyaltyRewardDTO[];
+  promotions: PromotionDTO[];
+  transactions: LoyaltyTransactionDTO[];
+  rewardHistory: MemberRewardDTO[];
+}
+
+// What the app shows on a space's page: the programme (if it is on) and the membership.
+export interface BusinessLoyaltyDTO {
+  program: LoyaltyProgramDTO | null;
+  benefits: LoyaltyBenefitDTO[];
+  rewards: LoyaltyRewardDTO[];
+  promotions: PromotionDTO[];
+  membersOnlyServiceIds: string[];
+  membership: MyMembershipDTO | null;
+}
+
+export interface LoyaltyMemberDTO {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  avatarUrl: string | null;
+  status: LoyaltyMemberStatus;
+  plan: string;
+  pointsBalance: number;
+  joinedAt: string;
+  visits: number;
+  lastVisit: string | null;
+}
+
+export interface LoyaltyMemberDetailDTO extends LoyaltyMemberDTO {
+  transactions: LoyaltyTransactionDTO[];
+  rewards: MemberRewardDTO[];
+  history: { id: string; action: string; reason: string | null; createdAt: string }[];
+}
+
+export interface LoyaltyOverviewDTO {
+  totalMembers: number;
+  activeMembers: number;
+  newMembers30d: number;
+  pointsIssued: number;
+  pointsRedeemed: number;
+  rewardsUsed: number;
+  activePromotions: number;
+  topMembers: { memberId: string; name: string; visits: number; pointsBalance: number }[];
+  campaigns: { id: string; name: string; status: PromotionStatus; usedCount: number; maxUses: number | null; discountGiven: number }[];
+}
+
+export interface AppliedDiscountDTO {
+  source: "PROMOTION" | "REWARD";
+  label: string;
+  amount: number;
+  promotionId: string | null;
+}
+
+export interface RewardOptionDTO {
+  // memberRewardId for an unlocked reward, pointsRewardId for one bought with points.
+  memberRewardId: string | null;
+  pointsRewardId: string | null;
+  name: string;
+  pointsCost: number | null;
+  discountType: DiscountType;
+  discountValue: number;
+  expiresAt: string | null;
+}
+
+export interface PriceQuoteDTO {
+  originalPrice: number;
+  discounts: AppliedDiscountDTO[];
+  discountTotal: number;
+  finalPrice: number;
+  isMember: boolean;
+  // Offered to members only: booking it as someone else is refused.
+  membersOnlyService: boolean;
+  // Rewards the client could use on this appointment (pass one back when booking).
+  rewardOptions: RewardOptionDTO[];
+  pointsBalance: number | null;
+}
