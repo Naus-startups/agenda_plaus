@@ -171,6 +171,24 @@ export interface BusinessHoursEntryDTO {
   endMinute: number;
 }
 
+// O estado de um profissional agora (sem nada sobre os clientes que atende).
+export type ProfessionalStatus = "AVAILABLE" | "BUSY" | "AWAY" | "OFF_HOURS";
+
+export interface ProfessionalStatusDTO {
+  professionalId: string;
+  status: ProfessionalStatus;
+  // BUSY: quando acaba a marcação em curso. AWAY: até quando (null = o resto do dia).
+  until: string | null;
+  // Quando fica livre para uma marcação hoje (null = hoje já não).
+  freeAt: string | null;
+  minutesUntilFree: number | null;
+  // AVAILABLE: a próxima marcação de hoje (null = livre até fechar).
+  nextBusyAt: string | null;
+  // OFF_HOURS: quando o espaço abre hoje (null = hoje já não abre).
+  opensAt: string | null;
+  reason: string | null;
+}
+
 export interface ProfessionalBlockDTO {
   id: string;
   professionalId: string;

@@ -54,6 +54,10 @@ async function membershipOf(db: Db, businessId: string, userId: string | null, l
   if (!userId) return { member: null, program: null, isMember: false };
   const program = await loyaltyRepository.findProgram(businessId, db);
   let member = await loyaltyRepository.findMember(businessId, userId, db);
+  // A client of the space has the benefits, even if no member row was made for them yet.
+  if (!member && (await loyaltyRepository.isBusinessClient(db, businessId, userId))) {
+    member = await loyaltyRepository.ensureMemberForClient(db, businessId, userId);
+  }
   if (member && lock) member = await loyaltyRepository.lockMember(db, member.id);
   const isMember = Boolean(program?.active && member?.status === "ACTIVE");
   return { member: isMember ? member : null, program, isMember };
@@ -84,7 +88,7 @@ export async function priceBooking(
   const { member, program, isMember } = await membershipOf(db, input.businessId, input.party.userId, input.lock);
 
   if (input.service.membersOnly && input.selfBooking && !isMember) {
-    throw new AuthorizationError("Este serviço é exclusivo para membros do espaço.", "SERVICE_MEMBERS_ONLY");
+    throw new AuthorizationError("Este serviço é só para clientes do espaço.", "SERVICE_MEMBERS_ONLY");
   }
 
   const promotionRows = input.lock
@@ -106,7 +110,7 @@ export async function priceBooking(
   let reward: PricingReward | null = null;
 
   if (input.memberRewardId || input.pointsRewardId) {
-    if (!input.selfBooking || !member) throw new ValidationError("Só os membros podem usar recompensas.", "LOYALTY_REWARD_NOT_ALLOWED");
+    if (!input.selfBooking || !member) throw new ValidationError("Só os clientes do espaço podem usar recompensas.", "LOYALTY_REWARD_NOT_ALLOWED");
     if (input.memberRewardId && input.pointsRewardId) throw new ValidationError("Escolha só uma recompensa.", "LOYALTY_ONE_REWARD");
   }
 

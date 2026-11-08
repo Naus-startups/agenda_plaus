@@ -1,7 +1,5 @@
 import React, { useCallback, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
   Pressable,
   StyleSheet,
   Text,
@@ -16,9 +14,7 @@ import type { BusinessLoyaltyDTO, PromotionDTO, ServiceDTO } from "@slotix/types
 import { useIOSColors } from "@/components/ios";
 import { Typography } from "@/constants/theme";
 import { dateLocale, useT } from "@/i18n";
-import { ApiRequestError } from "../services/api-client";
-import { discountText, getBusinessLoyalty, joinLoyalty } from "../services/loyalty";
-import { tapFeedback } from "../services/haptics";
+import { discountText, getBusinessLoyalty } from "../services/loyalty";
 
 const WEEKDAYS = ["", "seg", "ter", "qua", "qui", "sex", "sáb", "dom"];
 
@@ -45,9 +41,10 @@ export function promotionConditions(promotion: PromotionDTO, t: ReturnType<typeo
 }
 
 /*
- * O programa de membros na página do espaço: o que oferece, as promoções em curso e o
- * botão "Tornar-me membro" — ou, para quem já é membro, os pontos e a área de membro.
- * Não aparece nada se o espaço não tiver o programa ligado.
+ * Os benefícios do espaço, na página do espaço. Ser cliente do espaço é o que dá direito a
+ * eles: quem já é cliente vê os seus pontos e a sua área; quem ainda não é fica a saber que
+ * se torna cliente na primeira marcação (a pergunta "É cliente do espaço?"), sem nenhum
+ * registo à parte. Não aparece nada se o espaço não tiver os benefícios ligados.
  */
 export function MembershipCard({
   businessId,
@@ -64,9 +61,8 @@ export function MembershipCard({
   const router = useRouter();
   const colors = useIOSColors();
   const [loyalty, setLoyalty] = useState<BusinessLoyaltyDTO | null>(null);
-  const [joining, setJoining] = useState(false);
 
-  // Lido sempre que se volta à página: a adesão pode ter mudado na área de membro.
+  // Lido sempre que se volta à página: depois de uma marcação a pessoa pode já ser cliente.
   useFocusEffect(
     useCallback(() => {
       let cancelled = false;
@@ -86,34 +82,6 @@ export function MembershipCard({
 
   const openArea = () => router.push({ pathname: "/membro", params: { businessId } } as never);
 
-  const join = async () => {
-    setJoining(true);
-    try {
-      await joinLoyalty(businessId);
-      tapFeedback();
-      setLoyalty(await getBusinessLoyalty(businessId));
-      Alert.alert(
-        t("Bem-vindo ao {0}", [program.name]),
-        t("Já é membro de {0}. Os seus benefícios aplicam-se nas próximas marcações.", [businessName]),
-      );
-    } catch (error) {
-      Alert.alert(
-        t("Não foi possível aderir"),
-        error instanceof ApiRequestError ? error.message : t("Tente novamente."),
-      );
-    } finally {
-      setJoining(false);
-    }
-  };
-
-  const askToJoin = () => {
-    const rules = [program.joinRules, program.terms].filter(Boolean).join("\n\n");
-    Alert.alert(t("Tornar-me membro de {0}?", [businessName]), rules || t("A adesão é gratuita."), [
-      { text: t("Cancelar"), style: "cancel" },
-      { text: t("Aderir gratuitamente"), onPress: () => void join() },
-    ]);
-  };
-
   return (
     <View style={style}>
       <View
@@ -127,18 +95,18 @@ export function MembershipCard({
             <Text style={[styles.title, { color: colors.text }]}>{program.name}</Text>
             <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
               {isMember
-                ? t("Membro desde {0}", [
+                ? t("Cliente desde {0}", [
                     new Intl.DateTimeFormat(dateLocale(), { day: "numeric", month: "long", year: "numeric" }).format(
                       new Date(membership.joinedAt),
                     ),
                   ])
-                : t("Programa de membros · adesão gratuita")}
+                : t("Benefícios para os clientes do espaço")}
             </Text>
           </View>
           {isMember ? (
             <View style={[styles.memberChip, { backgroundColor: colors.successBackground }]}>
               <Ionicons name="checkmark-circle" size={13} color={colors.success} />
-              <Text style={[styles.memberChipText, { color: colors.success }]}>{t("Membro")}</Text>
+              <Text style={[styles.memberChipText, { color: colors.success }]}>{t("Cliente")}</Text>
             </View>
           ) : null}
         </View>
@@ -175,7 +143,7 @@ export function MembershipCard({
 
         {membership?.status === "SUSPENDED" ? (
           <Text style={[styles.body, { color: colors.warning }]}>
-            {t("A sua adesão a este espaço está suspensa. Fale com o espaço para a reativar.")}
+            {t("Os seus benefícios neste espaço estão suspensos. Fale com o espaço para os reativar.")}
           </Text>
         ) : null}
 
@@ -228,7 +196,7 @@ export function MembershipCard({
                       {promotion.name}
                     </Text>
                     <Text style={[styles.promotionMeta, { color: colors.textSecondary }]} numberOfLines={1}>
-                      {forMembers ? t("Só membros") : t("Para todos")}
+                      {forMembers ? t("Só clientes do espaço") : t("Para todos")}
                       {conditions ? ` · ${conditions}` : ""}
                     </Text>
                   </View>
@@ -240,7 +208,7 @@ export function MembershipCard({
 
         {exclusive.length > 0 && !isMember ? (
           <Text style={[styles.body, { color: colors.textSecondary }]}>
-            {t("Exclusivo para membros: {0}.", [exclusive.map((service) => service.name).join(", ")])}
+            {t("Só para clientes do espaço: {0}.", [exclusive.map((service) => service.name).join(", ")])}
           </Text>
         ) : null}
 
@@ -249,32 +217,19 @@ export function MembershipCard({
             {({ pressed }) => (
               <View style={[styles.secondaryButton, { borderColor: colors.primary, opacity: pressed ? 0.7 : 1 }]}>
                 <Text style={[styles.secondaryButtonText, { color: colors.primary }]}>
-                  {t("A minha área de membro")}
+                  {t("A minha área de cliente")}
                 </Text>
                 <Ionicons name="chevron-forward" size={16} color={colors.primary} />
               </View>
             )}
           </Pressable>
         ) : membership?.status !== "SUSPENDED" && membership?.status !== "REMOVED" ? (
-          <Pressable onPress={askToJoin} disabled={joining} accessibilityRole="button">
-            {({ pressed }) => (
-              <View
-                style={[
-                  styles.primaryButton,
-                  { backgroundColor: colors.primary, opacity: pressed || joining ? 0.8 : 1 },
-                ]}
-              >
-                {joining ? (
-                  <ActivityIndicator color={colors.primaryForeground} />
-                ) : (
-                  <Ionicons name="sparkles" size={16} color={colors.primaryForeground} />
-                )}
-                <Text style={[styles.primaryButtonText, { color: colors.primaryForeground }]}>
-                  {t("Tornar-me membro")}
-                </Text>
-              </View>
-            )}
-          </Pressable>
+          <View style={[styles.hint, { backgroundColor: colors.infoBackground }]}>
+            <Ionicons name="information-circle" size={18} color={colors.primary} />
+            <Text style={[styles.hintText, { color: colors.text }]}>
+              {t("Ao fazer a sua primeira marcação, confirme que é cliente do espaço e estes benefícios passam a ser seus.")}
+            </Text>
+          </View>
         ) : null}
       </View>
     </View>
@@ -325,6 +280,8 @@ const styles = StyleSheet.create({
   discountText: { ...Typography.footnote, fontWeight: "800" },
   promotionName: { ...Typography.subheadline, fontWeight: "600" },
   promotionMeta: { ...Typography.caption1, marginTop: 1 },
+  hint: { flexDirection: "row", alignItems: "center", gap: 8, borderRadius: 12, padding: 12 },
+  hintText: { ...Typography.footnote, flex: 1 },
   primaryButton: {
     height: 48,
     borderRadius: 14,

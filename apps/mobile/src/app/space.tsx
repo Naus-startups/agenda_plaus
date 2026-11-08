@@ -20,7 +20,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 
-import { formatDistance, type AppointmentDTO, type BusinessDTO, type GalleryImageDTO, type ProfessionalDTO, type ReviewDTO, type ServiceDTO } from "@slotix/types";
+import { formatDistance, type ProfessionalStatusDTO, type AppointmentDTO, type BusinessDTO, type GalleryImageDTO, type ProfessionalDTO, type ReviewDTO, type ServiceDTO } from "@slotix/types";
 
 import {
   getBusiness,
@@ -33,6 +33,7 @@ import { listMyAppointments } from "../services/appointments";
 import { useAuth } from "../contexts/AuthContext";
 import { RateSpaceSheet } from "@/components/RateSpaceSheet";
 import { MembershipCard } from "@/components/MembershipCard";
+import { ProfessionalStatusBadge, useProfessionalsStatus } from "@/components/ProfessionalStatusBadge";
 import { Stars } from "@/components/Stars";
 import { STAR_COLOR } from "@/components/SpaceCards";
 
@@ -167,7 +168,7 @@ const ServiceRow = ({ service, last }: { service: ServiceDTO; last: boolean }) =
   );
 };
 
-const ProfessionalRow = ({ professional, last }: { professional: ProfessionalDTO; last: boolean }) => {
+const ProfessionalRow = ({ professional, last, status }: { professional: ProfessionalDTO; last: boolean; status?: ProfessionalStatusDTO }) => {
   const { tc, styles } = useThemed(createStyles);
   return (
     <View style={[styles.listRow, !last && styles.listRowDivider]}>
@@ -189,6 +190,8 @@ const ProfessionalRow = ({ professional, last }: { professional: ProfessionalDTO
             {professional.specialty ?? professional.bio}
           </Text>
         ) : null}
+
+        <ProfessionalStatusBadge status={status} />
       </View>
 
       {professional.ratingAvg !== null ? (
@@ -211,6 +214,7 @@ const SpaceScreen = () => {
   const businessId = Array.isArray(params.businessId) ? params.businessId[0] : params.businessId;
 
   const { isFavorite, toggleFavorite } = useFavorites();
+  const statuses = useProfessionalsStatus(businessId);
 
   const [business, setBusiness] = useState<BusinessDTO | null>(null);
   // Se a pessoa já tinha o espaço nos favoritos quando a contagem foi pedida: é o que
@@ -565,6 +569,7 @@ const SpaceScreen = () => {
                   <ProfessionalRow
                     key={professional.id}
                     professional={professional}
+                    status={statuses[professional.id]}
                     last={index === professionals.length - 1}
                   />
                 ))}

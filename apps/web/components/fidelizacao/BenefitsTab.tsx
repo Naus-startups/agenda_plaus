@@ -81,7 +81,7 @@ export function BenefitsTab({ isOwner }: { isOwner: boolean }) {
   };
 
   const remove = async (benefit: LoyaltyBenefitDTO) => {
-    if (!(await confirmAction(`Apagar o benefício "${benefit.title}"? Deixa de aparecer aos membros.`, "Apagar"))) return;
+    if (!(await confirmAction(`Apagar o benefício "${benefit.title}"? Deixa de aparecer aos clientes.`, "Apagar"))) return;
     try {
       await loyaltyFetch(`benefits/${benefit.id}`, { method: "DELETE" });
       toast.success("Benefício apagado.");
@@ -94,7 +94,7 @@ export function BenefitsTab({ isOwner }: { isOwner: boolean }) {
   return (
     <Panel
       title="Benefícios"
-      description="O que os membros ganham por pertencer ao programa (atendimento prioritário, acesso antecipado, ofertas…)"
+      description="O que os clientes do espaço ganham (atendimento prioritário, acesso antecipado, ofertas…)"
       actions={
         isOwner ? (
           <button type="button" className={brandButton} onClick={() => open("new")}>
@@ -186,7 +186,7 @@ export function BenefitsTab({ isOwner }: { isOwner: boolean }) {
 const KIND: Record<LoyaltyRewardKind, { label: string; describe: (reward: LoyaltyRewardDTO) => string }> = {
   POINTS: { label: "Por pontos", describe: (reward) => `Custa ${reward.pointsCost} pontos` },
   VISITS: { label: "Por frequência", describe: (reward) => `Ao fim de ${reward.visitsRequired} serviços pagos` },
-  BIRTHDAY: { label: "Aniversário", describe: () => "No mês de aniversário do membro" },
+  BIRTHDAY: { label: "Aniversário", describe: () => "No mês de aniversário do cliente" },
 };
 
 type RewardForm = {
@@ -258,10 +258,10 @@ export function RewardsTab({ isOwner, services }: { isOwner: boolean; services: 
   };
 
   const remove = async (reward: LoyaltyRewardDTO) => {
-    if (!(await confirmAction(`Apagar a recompensa "${reward.name}"? Se algum membro já a tiver, fica apenas desativada.`, "Apagar"))) return;
+    if (!(await confirmAction(`Apagar a recompensa "${reward.name}"? Se algum cliente já a tiver, fica apenas desativada.`, "Apagar"))) return;
     try {
       const result = await loyaltyFetch<{ deleted: boolean }>(`rewards/${reward.id}`, { method: "DELETE" });
-      toast.success(result.deleted ? "Recompensa apagada." : "Recompensa desativada (já foi atribuída a membros).");
+      toast.success(result.deleted ? "Recompensa apagada." : "Recompensa desativada (já foi atribuída a clientes).");
       load();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Não foi possível apagar.");
@@ -273,7 +273,7 @@ export function RewardsTab({ isOwner, services }: { isOwner: boolean; services: 
   return (
     <Panel
       title="Recompensas"
-      description="O que os membros desbloqueiam: com pontos, por frequência ou no aniversário. Usam-nas ao marcar, na app."
+      description="O que os clientes do espaço desbloqueiam: com pontos, por frequência ou no aniversário. Usam-nas ao marcar, na app."
       actions={
         isOwner ? (
           <button type="button" className={brandButton} onClick={() => open("new")}>

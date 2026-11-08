@@ -6,7 +6,7 @@ import { clientsRoutes, clientsService } from "../modules/clients";
 import { professionalsRoutes, professionalsService } from "../modules/professionals";
 import { servicesRoutes, servicesService } from "../modules/services";
 import { appointmentsRoutes } from "../modules/appointments";
-import { availabilityRoutes } from "../modules/availability";
+import { availabilityRoutes, availabilityService } from "../modules/availability";
 import { paymentsRoutes, paymentsService } from "../modules/payments";
 import { notificationsRoutes } from "../modules/notifications";
 import { favoritesRoutes } from "../modules/favorites";
@@ -56,6 +56,11 @@ routes.use("/loyalty", loyaltyRoutes);
 routes.get("/businesses/:id/services", async (req: Request<{ id: string }>, res: Response) => {
   const services = await servicesService.listByBusiness(req.params.id);
   sendSuccess(res, services);
+});
+
+// Quem está livre, a atender (e quando fica livre), ausente ou fora do horário — agora.
+routes.get("/businesses/:id/professionals/status", async (req: Request<{ id: string }>, res: Response) => {
+  sendSuccess(res, await availabilityService.professionalsStatus(req.params.id));
 });
 
 routes.get("/businesses/:id/professionals", async (req: Request<{ id: string }>, res: Response) => {

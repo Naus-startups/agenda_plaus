@@ -1,9 +1,10 @@
 import request from "supertest";
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { expirePoints, expireRewards, grantBirthdayRewards } from "../../src/modules/loyalty/loyalty.jobs";
 import { onAppointmentPaid } from "../../src/modules/loyalty/loyalty.booking";
 import { registerNotificationListeners } from "../../src/modules/notifications";
 import { resetRateLimits } from "../../src/shared/middleware/rateLimit";
+import { domainEvents } from "../../src/shared/events/domainEvents";
 import { app, auth, createBusinessFixture, createUser, prisma, resetDatabase, type BusinessFixture } from "./helpers";
 
 /*
@@ -14,9 +15,6 @@ import { app, auth, createBusinessFixture, createUser, prisma, resetDatabase, ty
 
 let a: BusinessFixture;
 let b: BusinessFixture;
-
-// Os avisos do programa passam pelos ouvintes das notificações, como no servidor.
-beforeAll(() => registerNotificationListeners());
 
 beforeEach(async () => {
   await resetDatabase();
@@ -134,6 +132,43 @@ describe("adesão", () => {
 
     const booked = await book(a, a.customer.token);
     expect(booked.body.data.price).toBe(3000);
+  });
+});
+
+describe("cliente do espaço = benefícios", () => {
+  it("quem se regista como cliente do espaço ao marcar tem logo os preços de cliente", async () => {
+    await openProgram(a);
+    await createPromotion(a, { name: "Clientes 15%", audience: "MEMBERS", discountValue: 15 });
+
+    // Ainda não é cliente: preço normal.
+    expect((await book(a, a.customer.token)).body.data.price).toBe(3000);
+
+    // A pergunta "É cliente do espaço?" da marcação: regista-se como cliente.
+    await request(app).post(`/api/v1/businesses/${a.business.id}/membership`).set(auth(a.customer.token)).expect(201);
+    expect((await book(a, a.customer.token, { expectedPrice: 2550 })).body.data.price).toBe(2550);
+
+    // E aparece na lista do painel, como cliente com benefícios.
+    const members = await request(app).get(`${base(a)}/members`).set(auth(a.owner.token));
+    expect(members.body.data.map((m: { userId: string }) => m.userId)).toEqual([a.customer.user.id]);
+  });
+
+  it("quem já era cliente registado pelo espaço (mesmo telefone) é reconhecido e tem os benefícios", async () => {
+    await openProgram(a);
+    await createPromotion(a, { audience: "MEMBERS", discountValue: 15 });
+    await prisma.user.update({ where: { id: a.customer.user.id }, data: { phone: "+244 923 000 000" } });
+
+    const check = await request(app).get(`/api/v1/businesses/${a.business.id}/membership`).set(auth(a.customer.token));
+    expect(check.body.data.isClient).toBe(true);
+    expect((await book(a, a.customer.token)).body.data.price).toBe(2550);
+  });
+
+  it("um cliente sem adesão registada (anterior a esta funcionalidade) tem os benefícios na mesma", async () => {
+    await openProgram(a);
+    await createPromotion(a, { audience: "MEMBERS", discountValue: 15 });
+    await prisma.businessClient.create({ data: { businessId: a.business.id, userId: a.customer.user.id } });
+
+    expect((await book(a, a.customer.token)).body.data.price).toBe(2550);
+    expect(await prisma.loyaltyMember.count({ where: { businessId: a.business.id, status: "ACTIVE" } })).toBe(1);
   });
 });
 
@@ -392,6 +427,9 @@ describe("permissões e isolamento", () => {
   });
 
   it("os membros que não querem promoções não são avisados delas", async () => {
+    // Só aqui os avisos passam pelos ouvintes das notificações, como no servidor: noutros
+    // testes, escritas em segundo plano chocariam com a limpeza da base entre testes.
+    registerNotificationListeners();
     await openProgram(a);
     await join(a);
     await prisma.user.update({ where: { id: a.customer.user.id }, data: { notifyPromotions: false } });
@@ -403,5 +441,8 @@ describe("permissões e isolamento", () => {
     await createPromotion(a, { name: "Outra", audience: "MEMBERS" });
     await new Promise((resolve) => setTimeout(resolve, 100));
     expect(await prisma.notification.count({ where: { userId: a.customer.user.id, type: "LOYALTY_NEW_PROMOTION" } })).toBe(1);
+
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    domainEvents.removeAllListeners();
   });
 });

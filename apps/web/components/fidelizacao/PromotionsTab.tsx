@@ -201,7 +201,7 @@ export function PromotionsTab({ isOwner, services }: { isOwner: boolean; service
   return (
     <Panel
       title="Promoções"
-      description="Campanhas com desconto, para todos os clientes ou só para membros. O desconto é aplicado automaticamente na marcação."
+      description="Campanhas com desconto, para todos ou só para os clientes do espaço. O desconto é aplicado automaticamente na marcação."
       actions={
         isOwner ? (
           <button type="button" className={brandButton} onClick={() => open("new")}>
@@ -215,7 +215,7 @@ export function PromotionsTab({ isOwner, services }: { isOwner: boolean; service
       ) : !promotions ? (
         <Loading />
       ) : promotions.length === 0 ? (
-        <EmptyState icon={<Megaphone size={20} />} title="Sem promoções" text="Ex.: 20% no corte para membros, ou 10% para todos às terças-feiras." />
+        <EmptyState icon={<Megaphone size={20} />} title="Sem promoções" text="Ex.: 20% no corte para clientes do espaço, ou 10% para todos às terças-feiras." />
       ) : (
         <ul className="divide-y divide-[var(--border)]">
           {promotions.map((promotion) => {
@@ -227,7 +227,7 @@ export function PromotionsTab({ isOwner, services }: { isOwner: boolean; service
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-medium text-[var(--foreground)]">{promotion.name}</p>
                     <Badge tone={status.tone}>{status.label}</Badge>
-                    <Badge tone="brand">{promotion.audience === "MEMBERS" ? "Só membros" : "Todos os clientes"}</Badge>
+                    <Badge tone="brand">{promotion.audience === "MEMBERS" ? "Só clientes do espaço" : "Todos"}</Badge>
                     <span className="text-sm font-semibold text-[var(--foreground)]">−{discountText(promotion.discountType, promotion.discountValue)}</span>
                   </div>
                   <p className="mt-1 text-sm text-[var(--muted)]">{describe(promotion, services)}</p>
@@ -311,8 +311,8 @@ export function PromotionsTab({ isOwner, services }: { isOwner: boolean; service
             </Field>
             <Field label="Para quem">
               <select className={inputClass} value={form.audience} onChange={(e) => set("audience", e.target.value as PromotionAudience)}>
-                <option value="MEMBERS">Só membros</option>
-                <option value="ALL">Todos os clientes</option>
+                <option value="MEMBERS">Só clientes do espaço</option>
+                <option value="ALL">Todos (incluindo quem ainda não é cliente)</option>
               </select>
             </Field>
             <div className="grid grid-cols-2 gap-3">
@@ -344,7 +344,7 @@ export function PromotionsTab({ isOwner, services }: { isOwner: boolean; service
                 <input type="datetime-local" className={inputClass} value={form.endsAt} onChange={(e) => set("endsAt", e.target.value)} />
               </Field>
               {form.audience === "ALL" ? (
-                <Field label="Acesso antecipado dos membros" hint="Os membros podem marcar com o desconto a partir desta data, antes do início." className="sm:col-span-2">
+                <Field label="Acesso antecipado dos clientes" hint="Os clientes do espaço podem marcar com o desconto a partir desta data, antes do início." className="sm:col-span-2">
                   <input type="datetime-local" className={inputClass} value={form.membersFrom} onChange={(e) => set("membersFrom", e.target.value)} />
                 </Field>
               ) : null}

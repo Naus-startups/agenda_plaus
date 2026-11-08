@@ -12,6 +12,8 @@ import type { ProfessionalDTO, ServiceDTO } from "@slotix/types";
 import { getBusinessProfessionals, getBusinessServices } from "../../services/businesses";
 import { useThemed, type ThemeRoles } from "@/theme/roles";
 import { useT } from "@/i18n";
+import { ProfessionalStatusBadge, useProfessionalsStatus } from "@/components/ProfessionalStatusBadge";
+import type { ProfessionalStatusDTO } from "@slotix/types";
 
 const COLORS = {
   background: "#F5F5F2",
@@ -43,6 +45,8 @@ export default function BookingProfessionalScreen() {
   }>();
 
   const businessId = Array.isArray(params.businessId) ? params.businessId[0] : params.businessId;
+  // Quem está livre, a atender (e quando fica livre) ou ausente, atualizado de minuto a minuto.
+  const statuses = useProfessionalsStatus(businessId);
 
   const serviceId = Array.isArray(params.serviceId) ? params.serviceId[0] : params.serviceId;
 
@@ -286,6 +290,7 @@ export default function BookingProfessionalScreen() {
                 imageUrl={professional.imageUrl}
                 rating={professional.ratingAvg}
                 ratingCount={professional.ratingCount}
+                status={statuses[professional.id]}
                 selected={selectedProfessionalId === professional.id}
                 onPress={() => handleSelect(professional)}
               />
@@ -368,6 +373,7 @@ function ProfessionalRow({
   imageUrl,
   rating,
   ratingCount,
+  status,
   selected,
   onPress,
 }: {
@@ -378,6 +384,7 @@ function ProfessionalRow({
   imageUrl?: string | null;
   rating?: number | null;
   ratingCount?: number;
+  status?: ProfessionalStatusDTO;
   selected: boolean;
   onPress: () => void;
 }) {
@@ -425,6 +432,8 @@ function ProfessionalRow({
               </Text>
             </View>
           ) : null}
+
+          <ProfessionalStatusBadge status={status} />
         </View>
 
         <View style={[styles.personCheck, selected && styles.personCheckSelected]}>

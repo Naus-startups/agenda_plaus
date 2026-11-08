@@ -177,7 +177,11 @@ export const clientsService = {
         ((email && client.email?.trim().toLowerCase() === email) || (phone && phoneKey(client.phone) === phone)),
     );
 
-    return { businessId, isClient: match !== undefined, clientSince: match?.createdAt.toISOString() ?? null };
+    if (!match) return { businessId, isClient: false, clientSince: null };
+    // Already a client the space registered by hand (same email or phone): their account
+    // becomes a client too, so the benefits of the space apply to it right away.
+    await clientsRepository.upsertMembership(businessId, userId);
+    return { businessId, isClient: true, clientSince: match.createdAt.toISOString() };
   },
 
   // The signed-in customer becomes a client of the business. Their details are read from

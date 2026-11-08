@@ -81,7 +81,7 @@ export const promotionSchema = z
     path: ["endMinute"],
   })
   .refine((value) => !value.membersFrom || !value.startsAt || Date.parse(value.membersFrom) <= Date.parse(value.startsAt), {
-    message: "O acesso antecipado dos membros tem de começar antes da promoção.",
+    message: "O acesso antecipado dos clientes tem de começar antes da promoção.",
     path: ["membersFrom"],
   });
 

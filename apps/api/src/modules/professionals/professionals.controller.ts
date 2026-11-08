@@ -57,6 +57,15 @@ export const professionalsController = {
     sendSuccess(res, blocks);
   },
 
+  async markAbsentToday(req: Request<{ id: string }>, res: Response) {
+    const reason = typeof req.body?.reason === "string" ? req.body.reason.trim().slice(0, 200) || undefined : undefined;
+    sendSuccess(res, await professionalsService.markAbsentToday(req.params.id, req.user!.id, reason), 201);
+  },
+
+  async markPresent(req: Request<{ id: string }>, res: Response) {
+    sendSuccess(res, await professionalsService.markPresent(req.params.id, req.user!.id));
+  },
+
   async removeBlock(req: Request<{ id: string; blockId: string }>, res: Response) {
     await professionalsService.removeBlock(req.params.id, req.params.blockId, req.user!.id);
     sendSuccess(res, { deleted: true });

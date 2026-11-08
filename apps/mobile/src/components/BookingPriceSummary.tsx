@@ -34,7 +34,7 @@ export function BookingPriceSummary({
         <View style={[styles.notice, { backgroundColor: colors.warningBackground }]}>
           <Ionicons name="lock-closed" size={16} color={colors.warning} />
           <Text style={[styles.noticeText, { color: colors.text }]}>
-            {t("Este serviço é exclusivo para membros do espaço. Torne-se membro na página do espaço para o marcar.")}
+            {t("Este serviço é só para clientes do espaço. Ao confirmar, registe-se como cliente para o poder marcar.")}
           </Text>
         </View>
       ) : null}
