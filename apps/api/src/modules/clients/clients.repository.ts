@@ -1,4 +1,5 @@
 import { prisma } from "../../config/database";
+import { loyaltyRepository } from "../loyalty/loyalty.repository";
 
 export const clientsRepository = {
   findUserContact(userId: string) {
@@ -9,12 +10,17 @@ export const clientsRepository = {
     return prisma.businessClient.findUnique({ where: { businessId_userId: { businessId, userId } } });
   },
 
-  // Idempotent: asking twice (two taps, two devices) keeps the first date.
+  // Idempotent: asking twice (two taps, two devices) keeps the first date. A client of
+  // the space is also in its loyalty programme, so the member row is made with it.
   upsertMembership(businessId: string, userId: string) {
-    return prisma.businessClient.upsert({
-      where: { businessId_userId: { businessId, userId } },
-      create: { businessId, userId },
-      update: {},
+    return prisma.$transaction(async (db) => {
+      const client = await db.businessClient.upsert({
+        where: { businessId_userId: { businessId, userId } },
+        create: { businessId, userId },
+        update: {},
+      });
+      await loyaltyRepository.ensureMemberForClient(db, businessId, userId);
+      return client;
     });
   },
 

@@ -16,7 +16,7 @@ type Tab = "overview" | "members" | "benefits" | "rewards" | "promotions" | "set
 
 const TABS: { id: Tab; label: string; icon: typeof Users; ownerOnly?: boolean }[] = [
   { id: "overview", label: "Visão geral", icon: BarChart3, ownerOnly: true },
-  { id: "members", label: "Membros", icon: Users },
+  { id: "members", label: "Clientes", icon: Users },
   { id: "benefits", label: "Benefícios", icon: Star },
   { id: "rewards", label: "Recompensas", icon: Gift },
   { id: "promotions", label: "Promoções", icon: Megaphone },
@@ -70,11 +70,11 @@ export function LoyaltyDashboard() {
       {isOwner && program !== undefined && !program?.active ? (
         <div className="flex flex-col gap-3 rounded-xl border border-primary/25 bg-primary/5 p-4 sm:flex-row sm:items-center">
           <div className="flex-1">
-            <p className="font-semibold text-[var(--foreground)]">{program ? "O programa de membros está desligado" : "Crie o programa de membros do seu espaço"}</p>
-            <p className="mt-0.5 text-sm text-[var(--muted)]">Enquanto estiver desligado, não aparece na app e os clientes não podem aderir.</p>
+            <p className="font-semibold text-[var(--foreground)]">{program ? "Os benefícios para clientes estão desligados" : "Ative os benefícios para os clientes do seu espaço"}</p>
+            <p className="mt-0.5 text-sm text-[var(--muted)]">Enquanto estiverem desligados, os clientes não têm descontos, pontos nem recompensas.</p>
           </div>
           <button type="button" onClick={() => setTab("settings")} className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover">
-            Configurar programa
+            Configurar benefícios
           </button>
         </div>
       ) : null}
@@ -101,7 +101,7 @@ export function LoyaltyDashboard() {
             );
           })}
         </nav>
-        {isOwner && program?.active ? <Badge tone="success">Programa ativo</Badge> : null}
+        {isOwner && program?.active ? <Badge tone="success">Benefícios ativos</Badge> : null}
       </div>
 
       {tab === "overview" ? <OverviewTab /> : null}

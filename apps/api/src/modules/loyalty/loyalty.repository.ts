@@ -58,6 +58,34 @@ export const loyaltyRepository = {
     return db.loyaltyMemberEvent.create({ data: { memberId, action, actorId, reason: reason ?? null } });
   },
 
+  /*
+   * Being a client of the space IS being in its programme: every client (BusinessClient)
+   * has a member row, created here the first time it is needed. A client who had left
+   * comes back in; one the owner suspended or removed stays as the owner left them.
+   */
+  async ensureMemberForClient(db: Db, businessId: string, userId: string) {
+    const existing = await db.loyaltyMember.findUnique({ where: { businessId_userId: { businessId, userId } } });
+    if (existing) {
+      if (existing.status !== "LEFT") return existing;
+      const back = await db.loyaltyMember.update({ where: { id: existing.id }, data: { status: "ACTIVE", joinedAt: new Date(), statusChangedAt: new Date() } });
+      await db.loyaltyMemberEvent.create({ data: { memberId: back.id, action: "JOINED", actorId: userId, reason: "Cliente do espaço" } });
+      return back;
+    }
+    try {
+      const created = await db.loyaltyMember.create({ data: { businessId, userId } });
+      await db.loyaltyMemberEvent.create({ data: { memberId: created.id, action: "JOINED", actorId: userId, reason: "Cliente do espaço" } });
+      return created;
+    } catch (error) {
+      // Two requests at once: the unique (businessId, userId) lets only one create it.
+      if ((error as { code?: string }).code === "P2002") return db.loyaltyMember.findUniqueOrThrow({ where: { businessId_userId: { businessId, userId } } });
+      throw error;
+    }
+  },
+
+  isBusinessClient(db: Db, businessId: string, userId: string) {
+    return db.businessClient.findUnique({ where: { businessId_userId: { businessId, userId } } });
+  },
+
   // The member is also a client of the space (the existing "Cliente do espaço" relation).
   ensureBusinessClient(db: Db, businessId: string, userId: string) {
     return db.businessClient.upsert({ where: { businessId_userId: { businessId, userId } }, create: { businessId, userId }, update: {} });

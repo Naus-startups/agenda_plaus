@@ -12,7 +12,10 @@ import {
   X,
   Save,
   KeyRound,
+  UserX,
+  UserCheck,
 } from "lucide-react";
+import { ProfessionalStatusPill, useTeamStatus } from "./ProfessionalStatusPill";
 import { PhotoField } from "./PhotoField";
 
 export interface TeamMember {
@@ -54,6 +57,27 @@ export default function TeamList({
 
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+  // ESTADO AGORA (livre, a atender, ausente) e a ação "ausente hoje" / "presente"
+  const { statuses, reload: reloadStatuses } = useTeamStatus();
+
+  async function handleAbsence(member: TeamMember, absent: boolean) {
+    setOpenMenu(null);
+    try {
+      const response = await fetch(`/api/professionals/${member.id}/absence`, {
+        method: absent ? "POST" : "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: absent ? JSON.stringify({}) : undefined,
+        credentials: "include",
+      });
+      const json = await response.json().catch(() => null);
+      if (!response.ok || json?.success === false) throw new Error(json?.error?.message ?? json?.error ?? "Não foi possível alterar a presença.");
+      toast.success(absent ? `${member.name} ficou ausente hoje: a app deixa de oferecer horários com ele(a) hoje.` : `${member.name} está presente.`);
+      reloadStatuses();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível alterar a presença.");
+    }
+  }
 
   // MODAIS
   
@@ -552,6 +576,8 @@ export default function TeamList({
                         </span>
                       )}
 
+                      {member.active ? <ProfessionalStatusPill status={statuses[member.id]} /> : null}
+
                       {/* EMAIL */}
 
                       {member.email &&
@@ -604,6 +630,30 @@ export default function TeamList({
                           <Pencil size={18} />
                           Editar
                         </button>
+
+                        {/* AUSENTE HOJE / PRESENTE */}
+
+                        {member.active ? (
+                          statuses[member.id]?.status === "AWAY" ? (
+                            <button
+                              type="button"
+                              onClick={() => handleAbsence(member, false)}
+                              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-700 hover:bg-gray-50"
+                            >
+                              <UserCheck size={18} />
+                              Marcar como presente
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleAbsence(member, true)}
+                              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-700 hover:bg-gray-50"
+                            >
+                              <UserX size={18} />
+                              Ausente hoje
+                            </button>
+                          )
+                        ) : null}
 
                         {/* ATIVAR / DESATIVAR */}
 

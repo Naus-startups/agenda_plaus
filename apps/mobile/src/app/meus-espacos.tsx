@@ -11,8 +11,8 @@ import { useT } from "@/i18n";
 import { listMyMemberships } from "../services/loyalty";
 
 /*
- * OS MEUS ESPAÇOS — os estabelecimentos de que a pessoa é membro, com os pontos e as
- * recompensas por usar de cada um. Tocar num abre a área de membro desse espaço.
+ * OS MEUS ESPAÇOS — os estabelecimentos de que a pessoa é cliente, com os pontos e as
+ * recompensas por usar de cada um. Tocar num abre a área de cliente desse espaço.
  */
 export default function MySpacesScreen() {
   const t = useT();
@@ -58,9 +58,9 @@ export default function MySpacesScreen() {
             <View style={[styles.emptyIcon, { backgroundColor: colors.infoBackground }]}>
               <Ionicons name="ribbon-outline" size={30} color={colors.primary} />
             </View>
-            <Text style={[styles.emptyTitle, { color: colors.text }]}>{t("Ainda não é membro de nenhum espaço")}</Text>
+            <Text style={[styles.emptyTitle, { color: colors.text }]}>{t("Ainda não é cliente de nenhum espaço")}</Text>
             <Text style={[styles.text, { color: colors.textSecondary }]}>
-              {t("Nos espaços com programa de membros, toque em “Tornar-me membro” para ter descontos, pontos e recompensas.")}
+              {t("Ao marcar num espaço, confirme que é cliente: passa a ter os descontos, os pontos e as recompensas desse espaço.")}
             </Text>
             <Pressable onPress={() => router.push("/explore" as never)} accessibilityRole="button">
               {({ pressed }) => (

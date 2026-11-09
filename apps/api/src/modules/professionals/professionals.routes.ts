@@ -31,3 +31,6 @@ professionalsRoutes.delete("/:id", authenticate, authorize("OWNER"), professiona
 professionalsRoutes.get("/:id/blocks", authenticate, professionalsController.listBlocks);
 professionalsRoutes.post("/:id/blocks", authenticate, validate(createBlockSchema), professionalsController.addBlock);
 professionalsRoutes.delete("/:id/blocks/:blockId", authenticate, professionalsController.removeBlock);
+// Atalhos do painel: "ausente hoje" (até ao fim do dia) e "presente" (termina a ausência em curso).
+professionalsRoutes.post("/:id/absence", authenticate, professionalsController.markAbsentToday);
+professionalsRoutes.delete("/:id/absence", authenticate, professionalsController.markPresent);

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { ActivityIndicator, Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
@@ -9,7 +9,7 @@ import { useIOSColors } from "@/components/ios";
 import { promotionConditions } from "@/components/MembershipCard";
 import { Typography } from "@/constants/theme";
 import { dateLocale, useT } from "@/i18n";
-import { discountText, getMemberArea, leaveLoyalty } from "../services/loyalty";
+import { discountText, getMemberArea } from "../services/loyalty";
 
 const TRANSACTION: Record<LoyaltyTransactionType, { label: string; icon: React.ComponentProps<typeof Ionicons>["name"] }> = {
   EARN: { label: "Pontos recebidos", icon: "add-circle" },
@@ -31,7 +31,7 @@ const REWARD_STATUS: Record<MemberRewardDTO["status"], string> = {
 const STATUS: Record<string, string> = { ACTIVE: "Ativa", SUSPENDED: "Suspensa", REMOVED: "Removida", LEFT: "Terminada" };
 
 /*
- * A MINHA ÁREA DE MEMBRO — num espaço: estado e data da adesão, pontos, próxima
+ * A MINHA ÁREA DE CLIENTE — num espaço de que a pessoa é cliente: estado e data da adesão, pontos, próxima
  * recompensa, recompensas por usar, benefícios, promoções exclusivas e o histórico.
  */
 export default function MemberAreaScreen() {
@@ -58,19 +58,6 @@ export default function MemberAreaScreen() {
 
   const formatDay = (iso: string) => new Intl.DateTimeFormat(dateLocale(), { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
 
-  const leave = () =>
-    Alert.alert(t("Sair do programa?"), t("Deixa de ter os preços e recompensas de membro neste espaço. Pode voltar a aderir quando quiser."), [
-      { text: t("Cancelar"), style: "cancel" },
-      {
-        text: t("Sair do programa"),
-        style: "destructive",
-        onPress: () =>
-          void leaveLoyalty(businessId)
-            .then(() => router.back())
-            .catch(() => Alert.alert(t("Não foi possível sair do programa"), t("Tente novamente."))),
-      },
-    ]);
-
   const book = () => router.push({ pathname: "/booking/service", params: { businessId } } as never);
 
   return (
@@ -82,13 +69,13 @@ export default function MemberAreaScreen() {
               <Ionicons name="chevron-back" size={20} color={colors.text} />
             </View>
           </Pressable>
-          <Text style={[styles.topTitle, { color: colors.text }]}>{t("A minha área de membro")}</Text>
+          <Text style={[styles.topTitle, { color: colors.text }]}>{t("A minha área de cliente")}</Text>
           <View style={styles.iconButtonSpace} />
         </View>
 
         {error ? (
           <View style={styles.center}>
-            <Text style={[styles.body, { color: colors.textSecondary }]}>{t("Não foi possível carregar a sua área de membro.")}</Text>
+            <Text style={[styles.body, { color: colors.textSecondary }]}>{t("Não foi possível carregar a sua área de cliente.")}</Text>
           </View>
         ) : !area ? (
           <View style={styles.center}>
@@ -127,7 +114,7 @@ export default function MemberAreaScreen() {
               ) : null}
 
               <View style={styles.heroFooter}>
-                <Text style={styles.heroLabel}>{t("Membro desde {0}", [formatDay(area.joinedAt)])}</Text>
+                <Text style={styles.heroLabel}>{t("Cliente desde {0}", [formatDay(area.joinedAt)])}</Text>
                 <Text style={styles.heroLabel}>{t("{0} serviços", [area.visits])}</Text>
               </View>
             </View>
@@ -135,7 +122,7 @@ export default function MemberAreaScreen() {
             {area.status === "SUSPENDED" ? (
               <View style={[styles.notice, { backgroundColor: colors.warningBackground }]}>
                 <Ionicons name="alert-circle" size={18} color={colors.warning} />
-                <Text style={[styles.noticeText, { color: colors.text }]}>{t("A sua adesão está suspensa pelo espaço: os benefícios não se aplicam até ser reativada.")}</Text>
+                <Text style={[styles.noticeText, { color: colors.text }]}>{t("O espaço suspendeu os seus benefícios: não se aplicam até serem reativados.")}</Text>
               </View>
             ) : null}
 
@@ -265,17 +252,12 @@ export default function MemberAreaScreen() {
                 {({ pressed }) => (
                   <View style={[styles.primaryButton, { backgroundColor: colors.primary, opacity: pressed ? 0.85 : 1 }]}>
                     <Ionicons name="calendar" size={17} color={colors.primaryForeground} />
-                    <Text style={[styles.primaryButtonText, { color: colors.primaryForeground }]}>{t("Marcar com benefícios de membro")}</Text>
+                    <Text style={[styles.primaryButtonText, { color: colors.primaryForeground }]}>{t("Marcar com os meus benefícios")}</Text>
                   </View>
                 )}
               </Pressable>
             ) : null}
 
-            {area.status === "ACTIVE" ? (
-              <Pressable onPress={leave} accessibilityRole="button" hitSlop={6}>
-                <Text style={[styles.leave, { color: colors.error }]}>{t("Sair do programa")}</Text>
-              </Pressable>
-            ) : null}
           </ScrollView>
         )}
       </SafeAreaView>
@@ -337,5 +319,4 @@ const styles = StyleSheet.create({
   historyPoints: { ...Typography.headline, fontVariant: ["tabular-nums"] },
   primaryButton: { height: 50, borderRadius: 14, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 4 },
   primaryButtonText: { ...Typography.headline },
-  leave: { ...Typography.subheadline, fontWeight: "600", textAlign: "center", paddingVertical: 8 },
 });

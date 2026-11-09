@@ -19,8 +19,8 @@ export function OverviewTab() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <StatCard label="Membros" value={data.totalMembers} icon={Users} description={`${data.activeMembers} ativos`} index={0} />
-        <StatCard label="Novos membros (30 dias)" value={data.newMembers30d} icon={UserPlus} tone="success" index={1} />
+        <StatCard label="Clientes com benefícios" value={data.totalMembers} icon={Users} description={`${data.activeMembers} ativos`} index={0} />
+        <StatCard label="Novos clientes (30 dias)" value={data.newMembers30d} icon={UserPlus} tone="success" index={1} />
         <StatCard label="Promoções ativas" value={data.activePromotions} icon={Megaphone} tone="warning" index={2} />
         <StatCard label="Pontos distribuídos" value={data.pointsIssued} icon={Sparkles} index={3} />
         <StatCard label="Pontos resgatados" value={data.pointsRedeemed} icon={Award} tone="neutral" index={4} />
@@ -28,9 +28,9 @@ export function OverviewTab() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <Panel title="Clientes mais frequentes" description="Membros com mais serviços concluídos">
+        <Panel title="Clientes mais frequentes" description="Clientes do espaço com mais serviços concluídos">
           {data.topMembers.length === 0 ? (
-            <EmptyState icon={<Users size={20} />} title="Ainda sem membros" text="Quando os clientes aderirem ao programa, aparecem aqui os mais frequentes." />
+            <EmptyState icon={<Users size={20} />} title="Ainda sem clientes" text="Quando os clientes aderirem ao programa, aparecem aqui os mais frequentes." />
           ) : (
             <ul className="divide-y divide-[var(--border)]">
               {data.topMembers.map((member, index) => (

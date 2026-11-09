@@ -13,6 +13,7 @@ import type {
   PromotionResultsDTO,
 } from "@slotix/types";
 import type { LoyaltyMember, LoyaltyProgram, Prisma } from "@prisma/client";
+import { prisma } from "../../config/database";
 import { AuthorizationError, ConflictError, NotFoundError, ValidationError } from "../../shared/errors";
 import { assertStaffOfBusiness } from "../../shared/authz";
 import { domainEvents } from "../../shared/events/domainEvents";
@@ -81,6 +82,15 @@ async function promotionsWithCounts(promotions: PromotionRow[]): Promise<Promoti
   return promotions.map((promotion) => toPromotionDTO(promotion, used.get(promotion.id) ?? 0));
 }
 
+// A adesão de quem é cliente do espaço (criada na hora para um cliente que ainda não a tenha).
+async function clientMember(businessId: string, userId: string) {
+  const member = await loyaltyRepository.findMember(businessId, userId);
+  if (member) return member;
+  return (await loyaltyRepository.isBusinessClient(prisma, businessId, userId))
+    ? loyaltyRepository.ensureMemberForClient(prisma, businessId, userId)
+    : null;
+}
+
 /* ------------------------------------------------------------------------ */
 /* A área de membro                                                         */
 /* ------------------------------------------------------------------------ */
@@ -119,7 +129,7 @@ async function toMyMembership(
     businessId: business.id,
     businessName: business.name,
     businessLogoUrl: business.logoUrl ?? business.imageUrl,
-    programName: program?.name ?? "Programa de membros",
+    programName: program?.name ?? "Benefícios de cliente",
     status: member.status,
     plan: member.plan,
     joinedAt: member.joinedAt.toISOString(),
@@ -148,7 +158,7 @@ export const loyaltyService = {
       return { program: null, benefits: [], rewards: [], promotions: [], membersOnlyServiceIds: [], membership: null };
     }
 
-    const member = userId ? await loyaltyRepository.findMember(businessId, userId) : null;
+    const member = userId ? await clientMember(businessId, userId) : null;
     const [benefits, rewards, promotions, membersOnly] = await Promise.all([
       loyaltyRepository.listBenefits(businessId, true),
       loyaltyRepository.listRewards(businessId, true),
@@ -171,11 +181,11 @@ export const loyaltyService = {
   async join(businessId: string, userId: string): Promise<MyMembershipDTO> {
     const business = await getBusinessOrThrow(businessId);
     const program = await loyaltyRepository.findProgram(businessId);
-    if (!program?.active) throw new ConflictError("Este espaço não tem um programa de membros ativo.", "LOYALTY_PROGRAM_INACTIVE");
+    if (!program?.active) throw new ConflictError("Este espaço não tem benefícios para clientes ativos.", "LOYALTY_PROGRAM_INACTIVE");
 
     const member = await loyaltyRepository.transaction(async (db) => {
       const existing = await loyaltyRepository.findMember(businessId, userId, db);
-      if (existing?.status === "ACTIVE") throw new ConflictError("Já é membro deste espaço.", "LOYALTY_ALREADY_MEMBER");
+      if (existing?.status === "ACTIVE") throw new ConflictError("Já é cliente deste espaço.", "LOYALTY_ALREADY_MEMBER");
       if (existing && existing.status !== "LEFT") {
         throw new AuthorizationError("A sua adesão a este espaço está suspensa. Fale com o espaço.", "LOYALTY_MEMBERSHIP_BLOCKED");
       }
@@ -188,7 +198,7 @@ export const loyaltyService = {
           joined = await loyaltyRepository.createMember(db, businessId, userId);
         } catch (error) {
           // Dois pedidos de adesão ao mesmo tempo: a restrição única deixa entrar só um.
-          if ((error as { code?: string }).code === "P2002") throw new ConflictError("Já é membro deste espaço.", "LOYALTY_ALREADY_MEMBER");
+          if ((error as { code?: string }).code === "P2002") throw new ConflictError("Já é cliente deste espaço.", "LOYALTY_ALREADY_MEMBER");
           throw error;
         }
       }
@@ -197,15 +207,15 @@ export const loyaltyService = {
       return joined;
     });
 
-    notify(userId, "LOYALTY_JOINED", "Bem-vindo ao programa de membros", `Agora é membro de ${business.name}. Veja os seus benefícios na área de membro.`);
-    notify(business.ownerId, "LOYALTY_NEW_MEMBER", "Novo membro", `Um cliente aderiu ao programa de membros de ${business.name}.`);
+    notify(userId, "LOYALTY_JOINED", "Agora é cliente do espaço", `Já tem os benefícios de cliente de ${business.name}. Veja-os na sua área de cliente.`);
+    notify(business.ownerId, "LOYALTY_NEW_MEMBER", "Novo cliente", `Um cliente passou a ter os benefícios de ${business.name}.`);
     return toMyMembership(member, business, program);
   },
 
   async leave(businessId: string, userId: string): Promise<{ left: boolean }> {
     await loyaltyRepository.transaction(async (db) => {
       const member = await loyaltyRepository.findMember(businessId, userId, db);
-      if (!member || member.status !== "ACTIVE") throw new NotFoundError("Não é membro deste espaço.", "LOYALTY_NOT_MEMBER");
+      if (!member || member.status !== "ACTIVE") throw new NotFoundError("Não é cliente deste espaço.", "LOYALTY_NOT_MEMBER");
       await loyaltyRepository.updateMember(db, member.id, { status: "LEFT", statusChangedAt: new Date() });
       await loyaltyRepository.addMemberEvent(db, member.id, "LEFT", userId);
     });
@@ -220,8 +230,8 @@ export const loyaltyService = {
 
   async memberArea(businessId: string, userId: string): Promise<MemberAreaDTO> {
     const business = await getBusinessOrThrow(businessId);
-    const member = await loyaltyRepository.findMember(businessId, userId);
-    if (!member || member.status === "LEFT" || member.status === "REMOVED") throw new NotFoundError("Não é membro deste espaço.", "LOYALTY_NOT_MEMBER");
+    const member = await clientMember(businessId, userId);
+    if (!member || member.status === "LEFT" || member.status === "REMOVED") throw new NotFoundError("Não é cliente deste espaço.", "LOYALTY_NOT_MEMBER");
 
     const program = await loyaltyRepository.findProgram(businessId);
     const [summary, benefits, rewards, promotions, transactions, rewardHistory] = await Promise.all([
@@ -338,7 +348,7 @@ export const loyaltyService = {
 
   async getMember(businessId: string, requesterId: string, memberId: string): Promise<LoyaltyMemberDetailDTO> {
     await assertStaff(businessId, requesterId);
-    const member = assertSameBusiness(await loyaltyRepository.findMemberById(memberId), businessId, "Membro não encontrado.", "LOYALTY_MEMBER_NOT_FOUND");
+    const member = assertSameBusiness(await loyaltyRepository.findMemberById(memberId), businessId, "Cliente não encontrado.", "LOYALTY_MEMBER_NOT_FOUND");
     const [transactions, rewards, history, stats] = await Promise.all([
       loyaltyRepository.transactionsOf(member.id, 200),
       loyaltyRepository.memberRewardsOf(member.id),
@@ -367,7 +377,7 @@ export const loyaltyService = {
 
   async setMemberStatus(businessId: string, requesterId: string, memberId: string, input: MemberStatusInput): Promise<LoyaltyMemberDetailDTO> {
     const business = await assertOwner(businessId, requesterId);
-    const member = assertSameBusiness(await loyaltyRepository.findMemberById(memberId), businessId, "Membro não encontrado.", "LOYALTY_MEMBER_NOT_FOUND");
+    const member = assertSameBusiness(await loyaltyRepository.findMemberById(memberId), businessId, "Cliente não encontrado.", "LOYALTY_MEMBER_NOT_FOUND");
     if (member.status === "LEFT") throw new ConflictError("Este cliente já saiu do programa.", "LOYALTY_MEMBER_LEFT");
     if (member.status === input.status) return this.getMember(businessId, requesterId, memberId);
 
@@ -380,23 +390,23 @@ export const loyaltyService = {
 
     const message =
       input.status === "ACTIVE"
-        ? `A sua adesão ao programa de membros de ${business.name} foi reativada.`
+        ? `Os seus benefícios de cliente em ${business.name} foram reativados.`
         : input.status === "SUSPENDED"
-          ? `A sua adesão ao programa de membros de ${business.name} foi suspensa.`
-          : `Deixou de ser membro de ${business.name}.`;
-    notify(member.userId, "LOYALTY_MEMBERSHIP_CHANGED", "Programa de membros", message);
+          ? `Os seus benefícios de cliente em ${business.name} foram suspensos.`
+          : `Deixou de ter os benefícios de cliente em ${business.name}.`;
+    notify(member.userId, "LOYALTY_MEMBERSHIP_CHANGED", "Benefícios de cliente", message);
     return this.getMember(businessId, requesterId, memberId);
   },
 
   // Correção manual de pontos pelo dono, sempre com motivo; fica no histórico e no registo.
   async adjustPoints(businessId: string, requesterId: string, memberId: string, input: PointsAdjustmentInput): Promise<LoyaltyMemberDetailDTO> {
     await assertOwner(businessId, requesterId);
-    const found = assertSameBusiness(await loyaltyRepository.findMemberById(memberId), businessId, "Membro não encontrado.", "LOYALTY_MEMBER_NOT_FOUND");
+    const found = assertSameBusiness(await loyaltyRepository.findMemberById(memberId), businessId, "Cliente não encontrado.", "LOYALTY_MEMBER_NOT_FOUND");
 
     await loyaltyRepository.transaction(async (db) => {
       const member = await loyaltyRepository.lockMember(db, found.id);
       if (member.pointsBalance + input.points < 0) {
-        throw new ValidationError(`O membro só tem ${member.pointsBalance} pontos.`, "LOYALTY_POINTS_INSUFFICIENT");
+        throw new ValidationError(`O cliente só tem ${member.pointsBalance} pontos.`, "LOYALTY_POINTS_INSUFFICIENT");
       }
       await loyaltyRepository.addTransaction(db, member, {
         type: "ADJUST",
@@ -430,7 +440,7 @@ export const loyaltyService = {
       active: input.active,
     });
     await audit(businessId, requesterId, "BENEFIT_CREATED", "LoyaltyBenefit", benefit.id, { title: benefit.title });
-    if (benefit.active) await this.tellMembers(businessId, "LOYALTY_NEW_BENEFIT", "Novo benefício para membros", `${business.name}: ${benefit.title}.`);
+    if (benefit.active) await this.tellMembers(businessId, "LOYALTY_NEW_BENEFIT", "Novo benefício para clientes", `${business.name}: ${benefit.title}.`);
     return toBenefitDTO(benefit);
   },
 
@@ -574,7 +584,7 @@ export const loyaltyService = {
       await this.tellMembers(
         businessId,
         "LOYALTY_NEW_PROMOTION",
-        promotion.audience === "MEMBERS" ? "Promoção exclusiva para membros" : "Nova promoção",
+        promotion.audience === "MEMBERS" ? "Promoção exclusiva para clientes" : "Nova promoção",
         `${business.name}: ${what}.`,
       );
     }

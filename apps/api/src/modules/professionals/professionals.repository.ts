@@ -69,6 +69,10 @@ export const professionalsRepository = {
     });
   },
 
+  updateBlockEnd(id: string, endAt: Date) {
+    return prisma.professionalBlock.update({ where: { id }, data: { endAt } });
+  },
+
   findBlockById(id: string) {
     return prisma.professionalBlock.findUnique({ where: { id } });
   },

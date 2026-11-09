@@ -22,9 +22,9 @@ type Form = {
 
 const DEFAULTS: Form = {
   active: false,
-  name: "Clube de membros",
+  name: "Clientes do espaço",
   description: "",
-  joinRules: "Adesão gratuita, para clientes com conta na app Agenda+.",
+  joinRules: "Para todos os clientes do espaço com conta na app Agenda+.",
   terms: "",
   pointsEnabled: true,
   pointsPerUnit: "10",
@@ -98,16 +98,16 @@ export function SettingsTab({ services, onSaved }: { services: ServiceOption[]; 
 
   return (
     <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_380px]">
-      <Panel title="Programa de fidelização" description="O que os clientes veem na página do espaço, antes de aderir.">
+      <Panel title="Benefícios para clientes" description="Ser cliente do espaço dá estes benefícios. É o que a app mostra na página do espaço.">
         <div className="space-y-4 p-5">
-          <Toggle checked={form.active} onChange={(value) => set("active", value)} label="Programa ativo" hint="Desligado, não aparece na app e ninguém pode aderir." />
-          <Field label="Nome do programa">
+          <Toggle checked={form.active} onChange={(value) => set("active", value)} label="Benefícios ativos" hint="Desligados, os clientes do espaço não têm descontos, pontos nem recompensas." />
+          <Field label="Nome (aparece na app)">
             <input className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} />
           </Field>
           <Field label="Descrição">
             <textarea className={inputClass} rows={3} value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Porque vale a pena ser membro deste espaço." />
           </Field>
-          <Field label="Regras de adesão">
+          <Field label="Quem tem direito">
             <textarea className={inputClass} rows={2} value={form.joinRules} onChange={(e) => set("joinRules", e.target.value)} />
           </Field>
           <Field label="Condições de utilização">
@@ -119,7 +119,7 @@ export function SettingsTab({ services, onSaved }: { services: ServiceOption[]; 
       <div className="space-y-6">
         <Panel title="Sistema de pontos" description="Os pontos só são dados quando o serviço é pago.">
           <div className="space-y-4 p-5">
-            <Toggle checked={form.pointsEnabled} onChange={(value) => set("pointsEnabled", value)} label="Dar pontos aos membros" />
+            <Toggle checked={form.pointsEnabled} onChange={(value) => set("pointsEnabled", value)} label="Dar pontos aos clientes" />
             {form.pointsEnabled ? (
               <>
                 <div className="grid grid-cols-2 gap-3">
@@ -139,7 +139,7 @@ export function SettingsTab({ services, onSaved }: { services: ServiceOption[]; 
           </div>
         </Panel>
 
-        <Panel title="Serviços exclusivos para membros" description="Só membros os podem marcar na app.">
+        <Panel title="Serviços só para clientes" description="Só os clientes do espaço os podem marcar na app.">
           <div className="p-5">
             <ServicePicker services={services} value={exclusive} onChange={setExclusive} allLabel="Nenhum serviço exclusivo" />
           </div>

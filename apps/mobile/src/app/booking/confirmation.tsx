@@ -188,13 +188,21 @@ export default function BookingConfirmationScreen() {
     await book();
   };
 
-  const finishClientCheck = (joined: boolean) => {
+  // Ao confirmar que é cliente do espaço, a pessoa passa a ter os benefícios do espaço já
+  // nesta marcação: o preço é calculado outra vez (com o desconto de cliente) antes de marcar.
+  const finishClientCheck = async (joined: boolean) => {
     setClientCheckOpen(false);
     setJoinedNow(joined);
-    void book();
+    if (!businessId || !serviceId || !scheduledAt) return;
+    const fresh = await quoteBooking({ businessId, serviceId, scheduledAt }).catch(() => null);
+    setRewardChoice(null);
+    if (fresh) setQuote(fresh);
+    void book(fresh ? fresh.finalPrice : null);
   };
 
-  const book = async () => {
+  // expected: o total a confirmar com a API (por omissão, o que está no ecrã); null = sem
+  // confirmação de preço (a API calcula-o na mesma).
+  const book = async (expected: number | null = quote ? quote.finalPrice : null) => {
     if (!businessId || !serviceId || !professionalId || !scheduledAt) return;
     setSubmitting(true);
 
@@ -204,11 +212,11 @@ export default function BookingConfirmationScreen() {
         serviceId,
         professionalId,
         scheduledAt,
-        memberRewardId: chosenReward?.memberRewardId ?? undefined,
-        pointsRewardId: chosenReward?.pointsRewardId ?? undefined,
+        memberRewardId: expected === null ? undefined : (chosenReward?.memberRewardId ?? undefined),
+        pointsRewardId: expected === null ? undefined : (chosenReward?.pointsRewardId ?? undefined),
         // O total que a pessoa viu: se entretanto mudou (uma promoção esgotou), a API recusa
         // e o novo preço é mostrado antes de confirmar.
-        expectedPrice: quote ? quote.finalPrice : undefined,
+        expectedPrice: expected ?? undefined,
       });
       // A marcação nova passa a ter os seus lembretes no telemóvel.
       void syncReminders(preferences.reminders);

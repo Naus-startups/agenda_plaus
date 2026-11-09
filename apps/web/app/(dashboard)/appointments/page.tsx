@@ -9,6 +9,8 @@ import {
   Clock3,
   CircleCheckBig,
   History,
+  CalendarClock,
+  XCircle,
   type LucideIcon,
 } from "lucide-react";
 import { StatCard, type StatTone } from "@/components/ui/StatCard";
@@ -25,9 +27,11 @@ type Filter = "all" | "confirmed" | "pending" | "completed";
 
 /*
  * "today": o dia de trabalho — é o que o funcionário vê para fazer o fecho.
+ * "upcoming": pendentes e confirmados dos próximos dias (no dia, passam para "today").
+ * "cancelled": cancelados e faltas ("não compareceu"), dos mais recentes para trás.
  * "history": todos os atendimentos concluídos, só para o proprietário.
  */
-type View = "today" | "history";
+type View = "today" | "upcoming" | "cancelled" | "history";
 
 /*
  * Opção de dropdown. `label` é o que aparece na tela e `id` é o que vai para a
@@ -524,6 +528,10 @@ export default function AppointmentsPage() {
   const today = todayKey();
 
   const showHistory = isOwner && view === "history";
+  const showUpcoming = view === "upcoming";
+  const showCancelled = view === "cancelled";
+  // Só "Hoje" tem os filtros por estado; as outras vistas já são de um estado só.
+  const listView = showHistory || showUpcoming || showCancelled;
 
   // Hoje: tudo o que está marcado para o dia. Histórico: concluídos de qualquer data.
   const todayAppointments = appointments.filter(
@@ -534,11 +542,29 @@ export default function AppointmentsPage() {
     (appointment) => appointment.status === "completed",
   );
 
-  const filteredAppointments = (
-    showHistory ? historyAppointments : todayAppointments
-  ).filter((appointment) => {
+  // Marcados para depois de hoje e ainda por fazer.
+  const upcomingAppointments = appointments.filter(
+    (appointment) =>
+      appointment.date > today &&
+      (appointment.status === "pending" || appointment.status === "confirmed"),
+  );
+
+  // Cancelados pelo cliente ou pelo espaço, e os que o sistema fechou por falta.
+  const cancelledAppointments = appointments.filter(
+    (appointment) => appointment.status === "cancelled" || appointment.status === "no_show",
+  );
+
+  const viewAppointments = showHistory
+    ? historyAppointments
+    : showUpcoming
+      ? upcomingAppointments
+      : showCancelled
+        ? cancelledAppointments
+        : todayAppointments;
+
+  const filteredAppointments = viewAppointments.filter((appointment) => {
     const matchesFilter =
-      showHistory ||
+      listView ||
       activeFilter === "all" ||
       appointment.status === activeFilter;
 
@@ -640,14 +666,15 @@ export default function AppointmentsPage() {
         />
       </section>
 
-      {/* VISTA: DIA / HISTÓRICO (PROPRIETÁRIO) */}
+      {/* VISTAS: Hoje, Próximos, Cancelados e faltas, e o histórico (só o proprietário) */}
 
-      {isOwner && (
-        <div className="inline-flex rounded-xl border border-[var(--border)] bg-[var(--surface)] p-1 shadow-sm">
+        <div className="inline-flex max-w-full flex-wrap gap-1 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-1 shadow-sm">
           {(
             [
-              { value: "today", label: "Hoje", icon: CalendarDays },
-              { value: "history", label: "Histórico de concluídos", icon: History },
+              { value: "today", label: "Hoje", icon: CalendarDays, count: todayAppointments.length },
+              { value: "upcoming", label: "Próximos", icon: CalendarClock, count: upcomingAppointments.length },
+              { value: "cancelled", label: "Cancelados e faltas", icon: XCircle, count: cancelledAppointments.length },
+              ...(isOwner ? [{ value: "history" as const, label: "Histórico de concluídos", icon: History, count: historyAppointments.length }] : []),
             ] as const
           ).map((option) => {
             const active = view === option.value;
@@ -666,22 +693,30 @@ export default function AppointmentsPage() {
               >
                 <Icon className="h-4 w-4" />
                 {option.label}
+                <span
+                  className={`rounded-full px-1.5 py-0.5 text-[11px] ${
+                    active ? "bg-white/15 text-white" : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {option.count}
+                </span>
               </button>
             );
           })}
         </div>
-      )}
 
       {/* FILTROS */}
 
       <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-sm sm:p-5">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-wrap gap-2">
-            {showHistory ? (
+            {listView ? (
               <p className="text-sm text-gray-600">
-                {historyAppointments.length} atendimento
-                {historyAppointments.length === 1 ? "" : "s"} concluído
-                {historyAppointments.length === 1 ? "" : "s"} no total
+                {showHistory
+                  ? `${historyAppointments.length} ${historyAppointments.length === 1 ? "atendimento concluído" : "atendimentos concluídos"} no total`
+                  : showUpcoming
+                    ? `${upcomingAppointments.length} ${upcomingAppointments.length === 1 ? "agendamento marcado" : "agendamentos marcados"} para os próximos dias`
+                    : `${cancelledAppointments.length} ${cancelledAppointments.length === 1 ? "agendamento cancelado ou falta" : "agendamentos cancelados ou faltas"}`}
               </p>
             ) : filters.map((filter) => {
               const active = activeFilter === filter.value;
@@ -740,7 +775,13 @@ export default function AppointmentsPage() {
       <section>
         <div className="mb-4">
           <h2 className="text-lg font-semibold text-gray-950">
-            {showHistory ? "Histórico de concluídos" : "Agendamentos de hoje"}
+            {showHistory
+              ? "Histórico de concluídos"
+              : showUpcoming
+                ? "Próximos agendamentos"
+                : showCancelled
+                  ? "Cancelados e faltas"
+                  : "Agendamentos de hoje"}
           </h2>
 
           <p className="mt-1 text-sm text-gray-500">
@@ -759,16 +800,24 @@ export default function AppointmentsPage() {
             appointments={filteredAppointments}
             onDelete={handleDeleteAppointment}
             onEdit={handleEditAppointment}
-            order={showHistory ? "desc" : "asc"}
+            order={showHistory || showCancelled ? "desc" : "asc"}
             emptyTitle={
               showHistory
                 ? "Nenhum atendimento concluído"
-                : "Nenhum agendamento para hoje"
+                : showUpcoming
+                  ? "Nenhum agendamento para os próximos dias"
+                  : showCancelled
+                    ? "Nenhum cancelamento ou falta"
+                    : "Nenhum agendamento para hoje"
             }
             emptyDescription={
               showHistory
                 ? "Os atendimentos concluídos aparecerão aqui."
-                : "Os agendamentos do dia aparecerão aqui automaticamente."
+                : showUpcoming
+                  ? "As marcações confirmadas ou à espera para outros dias aparecem aqui até chegar o dia."
+                  : showCancelled
+                    ? "Os agendamentos cancelados e os que passaram a “Não compareceu” aparecem aqui."
+                    : "Os agendamentos do dia aparecerão aqui automaticamente."
             }
           />
         )}

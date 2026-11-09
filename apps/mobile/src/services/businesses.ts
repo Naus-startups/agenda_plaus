@@ -1,6 +1,7 @@
 import type {
   BusinessDTO,
   BusinessMembershipDTO,
+  ProfessionalStatusDTO,
   BusinessHoursEntryDTO,
   BusinessListQuery,
   GalleryImageDTO,
@@ -25,6 +26,11 @@ export async function getBusinessHours(id: string): Promise<BusinessHoursEntryDT
 
 export async function getBusinessServices(id: string): Promise<ServiceDTO[]> {
   return apiFetch<ServiceDTO[]>(`/businesses/${id}/services`);
+}
+
+// O estado de cada profissional agora: livre, a atender (e quando fica livre), ausente.
+export async function getProfessionalsStatus(id: string): Promise<ProfessionalStatusDTO[]> {
+  return apiFetch<ProfessionalStatusDTO[]>(`/businesses/${id}/professionals/status`);
 }
 
 export async function getBusinessProfessionals(id: string): Promise<ProfessionalDTO[]> {

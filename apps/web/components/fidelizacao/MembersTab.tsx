@@ -54,7 +54,7 @@ export function MembersTab({ isOwner }: { isOwner: boolean }) {
       setMembers(loaded);
       setError("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao carregar os membros.");
+      setError(err instanceof Error ? err.message : "Erro ao carregar os clientes.");
     }
   }, []);
 
@@ -65,8 +65,8 @@ export function MembersTab({ isOwner }: { isOwner: boolean }) {
 
   return (
     <Panel
-      title="Membros"
-      description="Clientes que aderiram ao programa deste espaço"
+      title="Clientes do espaço"
+      description="Os clientes com conta na app, com os seus pontos e recompensas"
       actions={
         <div className="relative w-full sm:w-72">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--subtle)]" />
@@ -79,7 +79,7 @@ export function MembersTab({ isOwner }: { isOwner: boolean }) {
       ) : !members ? (
         <Loading />
       ) : members.length === 0 ? (
-        <EmptyState icon={<Users size={20} />} title={search ? "Nenhum membro encontrado" : "Ainda sem membros"} text="Os clientes aderem na página do espaço, na app, com “Tornar-me membro”." />
+        <EmptyState icon={<Users size={20} />} title={search ? "Nenhum cliente encontrado" : "Ainda sem clientes"} text="Os clientes aparecem aqui quando, ao marcar na app, confirmam que são clientes do espaço." />
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -171,7 +171,7 @@ function MemberDialog({ memberId, isOwner, onClose, onChanged }: { memberId: str
   };
 
   return (
-    <Dialog open={Boolean(memberId)} title={member?.name ?? "Membro"} description={member ? `${member.email}${member.phone ? ` · ${member.phone}` : ""}` : undefined} onClose={onClose} wide>
+    <Dialog open={Boolean(memberId)} title={member?.name ?? "Cliente"} description={member ? `${member.email}${member.phone ? ` · ${member.phone}` : ""}` : undefined} onClose={onClose} wide>
       {!member ? (
         <Loading />
       ) : (
@@ -193,17 +193,17 @@ function MemberDialog({ memberId, isOwner, onClose, onChanged }: { memberId: str
           {isOwner && member.status !== "LEFT" ? (
             <div className="flex flex-wrap gap-2">
               {member.status !== "ACTIVE" ? (
-                <button type="button" disabled={busy} className={secondaryButton} onClick={() => setStatus("ACTIVE", "Membro reativado.")}>
+                <button type="button" disabled={busy} className={secondaryButton} onClick={() => setStatus("ACTIVE", "Benefícios reativados.")}>
                   Reativar
                 </button>
               ) : (
-                <button type="button" disabled={busy} className={secondaryButton} onClick={() => setStatus("SUSPENDED", "Membro suspenso.")}>
+                <button type="button" disabled={busy} className={secondaryButton} onClick={() => setStatus("SUSPENDED", "Benefícios suspensos.")}>
                   Suspender
                 </button>
               )}
               {member.status !== "REMOVED" ? (
-                <button type="button" disabled={busy} className={dangerButton} onClick={() => setStatus("REMOVED", "Membro removido do programa.")}>
-                  Remover do programa
+                <button type="button" disabled={busy} className={dangerButton} onClick={() => setStatus("REMOVED", "Benefícios retirados.")}>
+                  Retirar benefícios
                 </button>
               ) : null}
             </div>
@@ -212,7 +212,7 @@ function MemberDialog({ memberId, isOwner, onClose, onChanged }: { memberId: str
           {isOwner && member.status === "ACTIVE" ? (
             <div className="rounded-lg border border-[var(--border)] p-4">
               <p className="text-sm font-semibold text-[var(--foreground)]">Ajustar pontos</p>
-              <p className="mt-0.5 text-xs text-[var(--muted)]">Fica registado no histórico do membro, com o motivo.</p>
+              <p className="mt-0.5 text-xs text-[var(--muted)]">Fica registado no histórico do cliente, com o motivo.</p>
               <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-[120px_1fr_auto]">
                 <input value={points} onChange={(event) => setPoints(event.target.value)} placeholder="+50 ou −20" inputMode="numeric" className={inputClass} />
                 <input value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Motivo" className={inputClass} />

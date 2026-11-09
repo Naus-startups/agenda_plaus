@@ -50,7 +50,7 @@ const PAGES: Record<
 
   "/fidelizacao": {
     title: "Fidelização e benefícios",
-    subtitle: "Membros, benefícios, recompensas e promoções",
+    subtitle: "Benefícios, recompensas e promoções para os clientes do espaço",
   },
 
   "/appointments": {

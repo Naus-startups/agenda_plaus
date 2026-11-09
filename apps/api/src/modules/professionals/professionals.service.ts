@@ -8,6 +8,8 @@ import { professionalsRepository } from "./professionals.repository";
 import type { CreateBlockInput, CreateProfessionalInput, InviteProfessionalInput, UpdateProfessionalInput } from "./professionals.schema";
 import { normalizeEmail } from "../../shared/utils/email";
 import { hashPassword } from "../../shared/utils/password";
+import { zonedDateKey, zonedDayStart } from "../../shared/utils/timezone";
+import { env } from "../../config/env";
 import { endAllSessions } from "../auth/auth.service";
 
 // Base64url, no padding — short enough to read out loud, long enough to not be guessable
@@ -185,6 +187,34 @@ export const professionalsService = {
 
     const blocks = await professionalsRepository.findBlocksByProfessional(professionalId);
     return blocks.map(toBlockDTO);
+  },
+
+  // "Hoje não veio": ausente desde agora até ao fim do dia (no fuso da app). Fica como um
+  // bloqueio, por isso a agenda deixa logo de oferecer horários com este profissional hoje.
+  async markAbsentToday(professionalId: string, requesterId: string, reason?: string, now: Date = new Date()): Promise<ProfessionalBlockDTO> {
+    const professional = await getProfessionalOrThrow(professionalId);
+    await assertCanManageBlocks(professional, requesterId);
+
+    const dayEnd = new Date(zonedDayStart(zonedDateKey(now, env.APP_TIMEZONE), env.APP_TIMEZONE).getTime() + 24 * 60 * 60_000);
+    const current = await professionalsRepository.findBlocksInRange(professionalId, now, new Date(now.getTime() + 1));
+    const already = current.find((block) => block.endAt >= dayEnd);
+    if (already) return toBlockDTO(already);
+
+    const block = await professionalsRepository.createBlock({ professionalId, startAt: now, endAt: dayEnd, reason: reason ?? "Ausente hoje" });
+    return toBlockDTO(block);
+  },
+
+  // Voltou (ou chegou): a ausência em curso termina agora. O que já passou fica no histórico.
+  async markPresent(professionalId: string, requesterId: string, now: Date = new Date()): Promise<{ ended: number }> {
+    const professional = await getProfessionalOrThrow(professionalId);
+    await assertCanManageBlocks(professional, requesterId);
+
+    const current = await professionalsRepository.findBlocksInRange(professionalId, now, new Date(now.getTime() + 1));
+    for (const block of current) {
+      if (block.startAt < now) await professionalsRepository.updateBlockEnd(block.id, now);
+      else await professionalsRepository.deleteBlock(block.id);
+    }
+    return { ended: current.length };
   },
 
   async removeBlock(professionalId: string, blockId: string, requesterId: string): Promise<void> {
