@@ -33,7 +33,14 @@ export async function GET() {
       professional: lookups.professionals.get(appointment.professionalId),
     });
 
+    // A cancelled or missed appointment was never paid for: only money that actually moved
+    // (paid, or paid and refunded) stays in the history.
     const payments = [...lookups.payments.values()]
+      .filter((payment) => {
+        const status = byId.get(payment.appointmentId)?.status;
+        const closed = status === "CANCELLED" || status === "NO_SHOW";
+        return !closed || payment.status === "PAID" || payment.status === "REFUNDED";
+      })
       .sort((a, b) => (b.paidAt ?? b.createdAt).localeCompare(a.paidAt ?? a.createdAt))
       .map((payment) => {
         const appointment = byId.get(payment.appointmentId);

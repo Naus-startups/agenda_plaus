@@ -12,6 +12,9 @@ async function lockAppointmentStatus(tx: Prisma.TransactionClient, appointmentId
   return rows[0]?.status ?? null;
 }
 
+// Appointments that will never be paid for: cancelled, or the client didn't show up.
+const CLOSED_STATUSES = new Set(["CANCELLED", "NO_SHOW"]);
+
 // Every payment read back for a DTO carries its proof's metadata — never the file's bytes.
 const withProof = {
   proof: { select: { fileName: true, mimeType: true, size: true, createdAt: true } },
@@ -76,7 +79,7 @@ export const paymentsRepository = {
     return prisma
       .$transaction(async (tx) => {
         const status = await lockAppointmentStatus(tx, data.appointmentId);
-        if (!status || status === "CANCELLED") throw new StaleAppointmentError();
+        if (!status || CLOSED_STATUSES.has(status)) throw new StaleAppointmentError();
         return tx.payment.create({ data, include: withProof });
       })
       .catch((error: unknown) => {
@@ -90,7 +93,7 @@ export const paymentsRepository = {
   markPaidIfAppointmentActive(paymentId: string, appointmentId: string) {
     return prisma.$transaction(async (tx) => {
       const status = await lockAppointmentStatus(tx, appointmentId);
-      if (!status || status === "CANCELLED") return { outcome: "appointment_cancelled" as const };
+      if (!status || CLOSED_STATUSES.has(status)) return { outcome: "appointment_cancelled" as const };
       const { count } = await tx.payment.updateMany({ where: { id: paymentId, status: "PENDING" }, data: { status: "PAID", paidAt: new Date() } });
       if (count !== 1) return { outcome: "not_pending" as const };
       return { outcome: "paid" as const, payment: await tx.payment.findUniqueOrThrow({ where: { id: paymentId }, include: withProof }) };
@@ -128,6 +131,13 @@ export const paymentsRepository = {
       },
       orderBy: { paidAt: "desc" },
     });
+  },
+
+  // An appointment that was cancelled or missed: a payment the client started in the app and
+  // that never went through no longer stands. Runs in the caller's transaction, next to the
+  // status change.
+  failPendingForAppointment(appointmentId: string, db: Prisma.TransactionClient) {
+    return db.payment.updateMany({ where: { appointmentId, status: "PENDING" }, data: { status: "FAILED" } });
   },
 
   // Same idea as appointmentsRepository.updateIfStatus: null when the payment was no longer

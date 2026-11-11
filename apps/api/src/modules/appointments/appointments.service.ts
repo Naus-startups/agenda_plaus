@@ -293,7 +293,10 @@ export const appointmentsService = {
     // transaction as the status change.
     const updated = await appointmentsRepository.transaction(async (db) => {
       const cancelled = await appointmentsRepository.updateIfStatus(id, ["PENDING", "CONFIRMED"], { status: "CANCELLED" }, db);
-      if (cancelled) await releaseForAppointment(id, db);
+      if (cancelled) {
+        await releaseForAppointment(id, db);
+        await paymentsRepository.failPendingForAppointment(id, db);
+      }
       return cancelled;
     });
     if (!updated) throw new ConflictError("Este agendamento já não pode ser cancelado.", "APPOINTMENT_NOT_CANCELLABLE");
@@ -345,7 +348,10 @@ export const appointmentsService = {
 
     const updated = await appointmentsRepository.transaction(async (db) => {
       const missed = await appointmentsRepository.updateIfStatus(id, ["PENDING", "CONFIRMED"], { status: "NO_SHOW" }, db);
-      if (missed) await releaseForAppointment(id, db);
+      if (missed) {
+        await releaseForAppointment(id, db);
+        await paymentsRepository.failPendingForAppointment(id, db);
+      }
       return missed;
     });
     if (!updated) throw new ConflictError("Este agendamento não pode ser marcado como falta.", "APPOINTMENT_NOT_NO_SHOWABLE");

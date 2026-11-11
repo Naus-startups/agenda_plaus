@@ -130,6 +130,9 @@ export const paymentsService = {
     if (appointment.status === "CANCELLED") {
       throw new ValidationError("Não é possível pagar um agendamento cancelado.", "PAYMENT_APPOINTMENT_CANCELLED");
     }
+    if (appointment.status === "NO_SHOW") {
+      throw new ValidationError(APPOINTMENT_STATUS_MESSAGES.NO_SHOW, "PAYMENT_APPOINTMENT_NO_SHOW");
+    }
     assertPaymentTimeReached(appointment.scheduledAt);
 
     const existing = await paymentsRepository.findByAppointmentId(input.appointmentId);
@@ -308,7 +311,7 @@ export const paymentsService = {
     // paidAt is always server-generated — never accepted from the client.
     const result = await paymentsRepository.markPaidIfAppointmentActive(id, payment.appointmentId);
     if (result.outcome === "appointment_cancelled") {
-      throw new ConflictError("O agendamento deste pagamento foi cancelado.", "PAYMENT_APPOINTMENT_CANCELLED");
+      throw new ConflictError("O agendamento deste pagamento foi cancelado ou marcado como falta.", "PAYMENT_APPOINTMENT_CANCELLED");
     }
     if (result.outcome === "not_pending") {
       throw new ConflictError("Só é possível marcar como pago um pagamento pendente.", "PAYMENT_INVALID_STATUS");
