@@ -48,7 +48,6 @@ type BusinessRules = {
   openingTime: string | null;
   closingTime: string | null;
   workingDays: number[];
-  slotInterval: number;
   rules: string | null;
 };
 
@@ -104,7 +103,26 @@ export default function AppointmentsPage() {
   const [serviceId, setServiceId] = useState("");
   const [professionalId, setProfessionalId] = useState("");
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [pickedTime, setTime] = useState("");
+  /*
+   * Horários livres para o serviço, profissional e dia escolhidos — os mesmos que a
+   * app mostra ao cliente, vindos da API (já sem os ocupados e fora do horário).
+   * Ficam guardados com a combinação a que pertencem: ao mudar qualquer uma, a
+   * lista e o horário escolhido deixam de valer sozinhos.
+   */
+  const [freeTimesFor, setFreeTimesFor] = useState<{
+    key: string;
+    times: string[];
+    error: string;
+  } | null>(null);
+  const timesKey =
+    isModalOpen && serviceId && professionalId && date
+      ? `${serviceId}|${professionalId}|${date}`
+      : "";
+  const freeTimes =
+    timesKey && freeTimesFor?.key === timesKey ? freeTimesFor.times : [];
+  const loadingTimes = Boolean(timesKey) && freeTimesFor?.key !== timesKey;
+  const time = freeTimes.includes(pickedTime) ? pickedTime : "";
   const [notes, setNotes] = useState("");
   const examples = useCategoryExamples();
 
@@ -185,6 +203,37 @@ export default function AppointmentsPage() {
     loadAppointments();
   }, []);
 
+  useEffect(() => {
+    if (!timesKey) return;
+
+    let active = true;
+    const query = new URLSearchParams({ serviceId, professionalId, date });
+
+    fetch(`/api/appointments/availability?${query}`, { cache: "no-store" })
+      .then(async (response) => {
+        const data = await response.json().catch(() => null);
+        if (!response.ok) {
+          throw new Error(data?.error || "Não foi possível carregar os horários livres.");
+        }
+        if (active) {
+          setFreeTimesFor({ key: timesKey, times: Array.isArray(data?.times) ? data.times : [], error: "" });
+        }
+      })
+      .catch((error: unknown) => {
+        if (active) {
+          setFreeTimesFor({
+            key: timesKey,
+            times: [],
+            error: error instanceof Error ? error.message : "Não foi possível carregar os horários livres.",
+          });
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [timesKey, serviceId, professionalId, date]);
+
   /* PAPEL: só o proprietário tem acesso ao histórico de concluídos. */
 
   useEffect(() => {
@@ -258,7 +307,6 @@ export default function AppointmentsPage() {
           workingDays: Array.isArray(businessData.workingDays)
             ? businessData.workingDays
             : [],
-          slotInterval: Number(businessData.slotInterval) || 0,
           rules: businessData.rules ?? null,
         });
       }
@@ -396,16 +444,6 @@ export default function AppointmentsPage() {
         );
         return;
       }
-
-      if (
-        businessRules.slotInterval > 0 &&
-        requested % businessRules.slotInterval !== 0
-      ) {
-        setFormError(
-          `Os agendamentos são de ${businessRules.slotInterval} em ${businessRules.slotInterval} minutos.`,
-        );
-        return;
-      }
     }
 
     try {
@@ -474,6 +512,8 @@ export default function AppointmentsPage() {
       setProfessionalId("");
       setDate("");
       setTime("");
+      // O horário acabado de marcar já não está livre: a lista volta a ser pedida.
+      setFreeTimesFor(null);
       setNotes("");
       setFormError("");
 
@@ -944,17 +984,18 @@ export default function AppointmentsPage() {
                   onChange={setDate}
                 />
 
-                <Field
+                <SelectField
                   label="Horário"
-                  type="time"
                   value={time}
                   onChange={setTime}
-                  min={businessRules?.openingTime ?? undefined}
-                  max={businessRules?.closingTime ?? undefined}
-                  step={
-                    businessRules?.slotInterval
-                      ? businessRules.slotInterval * 60
-                      : undefined
+                  options={freeTimes.map((slot) => ({ id: slot, label: slot }))}
+                  loading={loadingTimes}
+                  placeholder="Selecione o horário"
+                  emptyHint={
+                    !timesKey
+                      ? "Escolha o serviço, o profissional e a data para ver os horários livres."
+                      : freeTimesFor?.error ||
+                        "Sem horários livres neste dia para este profissional. Escolha outro dia ou profissional."
                   }
                 />
               </div>
@@ -973,12 +1014,6 @@ export default function AppointmentsPage() {
                       <p className="mt-2 text-sm text-[var(--foreground)]">
                         Aberto das {businessRules.openingTime} às{" "}
                         {businessRules.closingTime}
-                        {businessRules.slotInterval > 0 && (
-                          <>
-                            , de {businessRules.slotInterval} em{" "}
-                            {businessRules.slotInterval} minutos
-                          </>
-                        )}
                       </p>
                     )}
 
