@@ -16,22 +16,45 @@ const placeSchema = registry.register(
   }),
 );
 
+const pointSchema = { latitude: z.number(), longitude: z.number() };
+
 registry.registerPath({
   method: "get",
   path: "/geo/provinces",
   tags: ["Geo"],
-  summary: "As províncias de Angola, com o centro de cada uma (OpenStreetMap)",
+  summary: "As 21 províncias de Angola (Lei n.º 14/24), com o centro e a sede de cada uma",
   responses: {
-    200: successResponse(z.array(z.object({ name: z.string(), latitude: z.number(), longitude: z.number() }))),
+    200: successResponse(
+      z.array(z.object({ name: z.string(), ...pointSchema, capital: z.string(), municipalityCount: z.number().int() })),
+    ),
     ...commonErrors,
   },
+});
+
+const municipalitySchema = registry.register(
+  "Municipality",
+  z.object({
+    name: z.string(),
+    latitude: z.number().nullable(),
+    longitude: z.number().nullable(),
+    bairros: z.array(z.object({ name: z.string(), ...pointSchema })),
+  }),
+);
+
+registry.registerPath({
+  method: "get",
+  path: "/geo/provinces/{name}/municipalities",
+  tags: ["Geo"],
+  summary: "Os municípios de uma província, com a sede e os bairros de cada um",
+  request: { params: z.object({ name: z.string() }) },
+  responses: { 200: successResponse(z.array(municipalitySchema)), ...commonErrors },
 });
 
 registry.registerPath({
   method: "get",
   path: "/geo/provinces/{name}/zones",
   tags: ["Geo"],
-  summary: "Cidades, bairros e zonas de uma província, com o ponto de cada um (OpenStreetMap)",
+  summary: "Municípios e bairros de uma província numa só lista (versões antigas da app)",
   request: { params: z.object({ name: z.string() }) },
   responses: {
     200: successResponse(z.array(z.object({ name: z.string(), latitude: z.number(), longitude: z.number() }))),
@@ -53,7 +76,7 @@ registry.registerPath({
   method: "get",
   path: "/geo/reverse",
   tags: ["Geo"],
-  summary: "Morada e região de um ponto (OpenStreetMap); null se não houver dados",
+  summary: "Morada e região de um ponto (OpenStreetMap), com a província, o município e o bairro nos nomes oficiais; null se não houver dados",
   security: bearerAuth,
   request: { query: geoReverseQuerySchema },
   responses: { 200: successResponse(placeSchema.nullable()), ...commonErrors, ...authErrors },

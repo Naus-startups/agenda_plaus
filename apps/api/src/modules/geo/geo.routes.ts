@@ -8,17 +8,32 @@ import { geoService } from "./geo.service";
 
 export const geoRoutes = Router();
 
-// Public: takes no input and is answered from a month-long cache, so it can't be used to
-// push traffic at OpenStreetMap. The app needs it before anyone has signed in.
-geoRoutes.get("/provinces", async (_req: Request, res: Response) => {
-  sendSuccess(res, await geoService.provinces());
+// Public: answered from the data that ships with the API (nothing is asked of
+// OpenStreetMap), and the app needs it before anyone has signed in. It changes only with a
+// new release, so clients and proxies may keep it for a day.
+function cacheForADay(res: Response): void {
+  res.set("Cache-Control", "public, max-age=86400");
+}
+
+geoRoutes.get("/provinces", (_req: Request, res: Response) => {
+  cacheForADay(res);
+  sendSuccess(res, geoService.provinces());
 });
 
-// Public for the same reason: the only input is a province name, checked against the
-// province list before anything is asked of OpenStreetMap, and each answer is cached.
-geoRoutes.get("/provinces/:name/zones", async (req: Request<{ name: string }>, res: Response) => {
-  const zones = await geoService.zones(req.params.name);
+// A province's municípios, each with its seat and its bairros: the whole tree the location
+// pickers need in one answer (Luanda's is a few kB).
+geoRoutes.get("/provinces/:name/municipalities", (req: Request<{ name: string }>, res: Response) => {
+  const municipalities = geoService.municipalities(req.params.name);
+  if (!municipalities) throw new NotFoundError("Província não encontrada.", "PROVINCE_NOT_FOUND");
+  cacheForADay(res);
+  sendSuccess(res, municipalities);
+});
+
+// The same places as one flat list, for app versions released before the municípios.
+geoRoutes.get("/provinces/:name/zones", (req: Request<{ name: string }>, res: Response) => {
+  const zones = geoService.zones(req.params.name);
   if (!zones) throw new NotFoundError("Província não encontrada.", "PROVINCE_NOT_FOUND");
+  cacheForADay(res);
   sendSuccess(res, zones);
 });
 

@@ -58,8 +58,6 @@ const envSchema = z.object({
   NOMINATIM_URL: z.string().default("https://nominatim.openstreetmap.org"),
   NOMINATIM_USER_AGENT: z.string().default("AgendaPlus/1.0"),
   NOMINATIM_EMAIL: z.string().optional(),
-  // Where the list of Angola's provinces is read from (OpenStreetMap, via Overpass).
-  OVERPASS_URL: z.string().default("https://overpass-api.de/api/interpreter"),
 });
 
 export type Env = z.infer<typeof envSchema>;

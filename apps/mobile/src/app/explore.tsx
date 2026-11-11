@@ -486,7 +486,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12,
-    paddingTop: 2,
+    // Afastada das categorias por cima, para a linha "N espaços · Recomendados" respirar.
+    paddingTop: 12,
   },
   toolbarTitle: {
     ...Typography.headline,

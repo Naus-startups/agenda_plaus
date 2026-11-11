@@ -1,0 +1,2501 @@
+{
+  "source": "Províncias e municípios: Lei n.º 14/24, de 5 de Setembro (Divisão Político-Administrativa). Coordenadas e bairros: © OpenStreetMap (ODbL).",
+  "generatedAt": "2026-11-10",
+  "provinces": [
+    {"name": "Bengo", "capital": "Dande", "latitude": -8.30796, "longitude": 13.94051, "municipalities": [
+      {"name": "Ambriz", "latitude": -7.84431, "longitude": 13.10649, "bairros": []},
+      {"name": "Barra do Dande", "latitude": -8.47145, "longitude": 13.3687, "bairros": [
+        {"name": "Cerámica", "latitude": -8.3958, "longitude": 13.46857},
+        {"name": "Terra Nova", "latitude": -8.37325, "longitude": 13.48232}
+      ]},
+      {"name": "Bula Atumba", "latitude": -8.6751, "longitude": 14.79554, "bairros": []},
+      {"name": "Dande", "latitude": -8.58275, "longitude": 13.66008, "bairros": [
+        {"name": "Açucareira", "latitude": -8.6009, "longitude": 13.60937},
+        {"name": "Mabubas", "latitude": -8.53027, "longitude": 13.69143},
+        {"name": "Porto Quipiri", "latitude": -8.61302, "longitude": 13.55023},
+        {"name": "Quicabo", "latitude": -8.30974, "longitude": 13.83424},
+        {"name": "Quissari", "latitude": -8.60984, "longitude": 13.60846},
+        {"name": "Sassa Cária", "latitude": -8.58356, "longitude": 13.5959}
+      ]},
+      {"name": "Muxaluando", "latitude": -8.12361, "longitude": 14.28671, "bairros": [
+        {"name": "Moenga", "latitude": -8.04408, "longitude": 14.42394},
+        {"name": "Quiba", "latitude": -8.04172, "longitude": 14.34957}
+      ]},
+      {"name": "Nambuangongo", "latitude": -8.01787, "longitude": 14.20097, "bairros": [
+        {"name": "Canacassala", "latitude": -8.16429, "longitude": 14.11642},
+        {"name": "Quimuanassala", "latitude": -8.05093, "longitude": 14.22779},
+        {"name": "Quinguengo", "latitude": -7.98871, "longitude": 14.24935},
+        {"name": "Quizengueta", "latitude": -7.97154, "longitude": 14.30429}
+      ]},
+      {"name": "Pango Aluquém", "latitude": -8.71236, "longitude": 14.46073, "bairros": [
+        {"name": "Cazua", "latitude": -8.83679, "longitude": 14.47162}
+      ]},
+      {"name": "Panguila", "latitude": -8.69842, "longitude": 13.44749, "bairros": [
+        {"name": "Aldeia", "latitude": -8.57015, "longitude": 13.48129},
+        {"name": "Capari", "latitude": -8.65678, "longitude": 13.51918},
+        {"name": "Musseque Capari", "latitude": -8.67595, "longitude": 13.48521},
+        {"name": "Quibuco", "latitude": -8.70739, "longitude": 13.49449},
+        {"name": "Quicoca", "latitude": -8.64139, "longitude": 13.48537},
+        {"name": "Sassalemba", "latitude": -8.65918, "longitude": 13.50062}
+      ]},
+      {"name": "Piri", "latitude": -8.53215, "longitude": 14.4373, "bairros": []},
+      {"name": "Quibaxe", "latitude": -8.49721, "longitude": 14.59096, "bairros": []},
+      {"name": "Quicunzo", "latitude": -8.19405, "longitude": 14.47272, "bairros": []},
+      {"name": "Úcua", "latitude": -8.64998, "longitude": 14.16036, "bairros": []}
+    ]},
+    {"name": "Benguela", "capital": "Benguela", "latitude": -12.82761, "longitude": 13.70981, "municipalities": [
+      {"name": "Babaera", "latitude": -12.89938, "longitude": 14.8054, "bairros": [
+        {"name": "Alto Catumbela", "latitude": -12.95193, "longitude": 14.76373}
+      ]},
+      {"name": "Baía Farta", "latitude": -12.61195, "longitude": 13.19871, "bairros": [
+        {"name": "Baía Azul", "latitude": -12.62449, "longitude": 13.23419},
+        {"name": "Caota", "latitude": -12.5952, "longitude": 13.27018},
+        {"name": "Chamume", "latitude": -12.71354, "longitude": 13.09046},
+        {"name": "Praia da Caotinha", "latitude": -12.60232, "longitude": 13.26689}
+      ]},
+      {"name": "Balombo", "latitude": -12.35416, "longitude": 14.7723, "bairros": [
+        {"name": "Caengue", "latitude": -12.3023, "longitude": 14.72442},
+        {"name": "Cahala", "latitude": -12.41492, "longitude": 14.78457},
+        {"name": "Calundo", "latitude": -12.46667, "longitude": 15.03333},
+        {"name": "Langue", "latitude": -12.19247, "longitude": 14.87132},
+        {"name": "qqq", "latitude": -12.51053, "longitude": 14.91475},
+        {"name": "www", "latitude": -12.53018, "longitude": 14.90947}
+      ]},
+      {"name": "Benguela", "latitude": -12.579, "longitude": 13.40371, "bairros": [
+        {"name": "Benfica", "latitude": -12.58632, "longitude": 13.41079},
+        {"name": "Calombo", "latitude": -12.5921, "longitude": 13.39676},
+        {"name": "Cambanda", "latitude": -12.59778, "longitude": 13.40316},
+        {"name": "Camunda", "latitude": -12.59307, "longitude": 13.41119},
+        {"name": "Capira", "latitude": -12.5853, "longitude": 13.42216},
+        {"name": "Cassoco", "latitude": -12.58445, "longitude": 13.41609},
+        {"name": "Columbulaco", "latitude": -12.56886, "longitude": 13.42403},
+        {"name": "Cotel", "latitude": -12.57593, "longitude": 13.42245},
+        {"name": "Massangarala", "latitude": -12.56818, "longitude": 13.40949},
+        {"name": "Salina", "latitude": -12.56708, "longitude": 13.4044},
+        {"name": "Setenta", "latitude": -12.59563, "longitude": 13.41564},
+        {"name": "Tchioge", "latitude": -12.57107, "longitude": 13.40626}
+      ]},
+      {"name": "Biópio", "latitude": -12.46982, "longitude": 13.73481, "bairros": [
+        {"name": "Culango", "latitude": -12.3035, "longitude": 13.82908}
+      ]},
+      {"name": "Bocoio", "latitude": -12.46904, "longitude": 14.13706, "bairros": [
+        {"name": "Cateque", "latitude": -12.47073, "longitude": 14.05761},
+        {"name": "Monte Belo", "latitude": -12.4182, "longitude": 14.39454},
+        {"name": "XXYYZZ", "latitude": -12.56073, "longitude": 14.22292}
+      ]},
+      {"name": "Bolonguera", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Caimbambo", "latitude": -13.02281, "longitude": 14.00136, "bairros": []},
+      {"name": "Canhamela", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Capupa", "latitude": -13.44249, "longitude": 14.28031, "bairros": []},
+      {"name": "Catengue", "latitude": -13.0289, "longitude": 13.7368, "bairros": [
+        {"name": "Madombes", "latitude": -13.12638, "longitude": 13.76837}
+      ]},
+      {"name": "Catumbela", "latitude": -12.43343, "longitude": 13.54305, "bairros": [
+        {"name": "Acala", "latitude": -12.41859, "longitude": 13.54991},
+        {"name": "BAIRRO DA FÁBRICA VELHA", "latitude": -12.43851, "longitude": 13.52283},
+        {"name": "Cambambi", "latitude": -12.42287, "longitude": 13.54811},
+        {"name": "Luongo", "latitude": -12.45812, "longitude": 13.52638},
+        {"name": "Pedreira", "latitude": -12.48872, "longitude": 13.52772},
+        {"name": "Praia Bebé", "latitude": -12.41185, "longitude": 13.50042},
+        {"name": "Rainha", "latitude": -12.45455, "longitude": 13.53791},
+        {"name": "São António", "latitude": -12.49043, "longitude": 13.51082},
+        {"name": "São João Baptista", "latitude": -12.49565, "longitude": 13.5076},
+        {"name": "São Pedro", "latitude": -12.44499, "longitude": 13.54037}
+      ]},
+      {"name": "Chicuma", "latitude": -13.43356, "longitude": 14.87118, "bairros": [
+        {"name": "Calonundo", "latitude": -13.53544, "longitude": 14.79906},
+        {"name": "Calueio", "latitude": -13.33938, "longitude": 14.74527},
+        {"name": "Capala", "latitude": -13.61371, "longitude": 14.71476},
+        {"name": "Cassamba Capungo", "latitude": -13.35442, "longitude": 14.73996},
+        {"name": "Casseque", "latitude": -13.32072, "longitude": 14.714},
+        {"name": "Catanha", "latitude": -13.49123, "longitude": 14.8411},
+        {"name": "Sussangue", "latitude": -13.54723, "longitude": 14.7261},
+        {"name": "Tchienga", "latitude": -13.56305, "longitude": 14.77011}
+      ]},
+      {"name": "Chila", "latitude": -12.07126, "longitude": 14.48662, "bairros": [
+        {"name": "Chingongo", "latitude": -12.31984, "longitude": 14.51324},
+        {"name": "Lononga", "latitude": -12.19054, "longitude": 14.53877},
+        {"name": "Maco", "latitude": -11.85, "longitude": 14.51667}
+      ]},
+      {"name": "Chindumbo", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Chongorói", "latitude": -13.57791, "longitude": 13.94182, "bairros": []},
+      {"name": "Cubal", "latitude": -13.03982, "longitude": 14.24798, "bairros": [
+        {"name": "Calenguer", "latitude": -13.03137, "longitude": 14.12691}
+      ]},
+      {"name": "Dombe Grande", "latitude": -12.94261, "longitude": 13.09375, "bairros": [
+        {"name": "Canhoca", "latitude": -13.42446, "longitude": 12.54101},
+        {"name": "Chiome", "latitude": -12.75219, "longitude": 13.04347},
+        {"name": "Equimina", "latitude": -13.19639, "longitude": 12.78687}
+      ]},
+      {"name": "Egito Praia", "latitude": -11.96161, "longitude": 13.76503, "bairros": [
+        {"name": "Canjala", "latitude": -12.01544, "longitude": 13.96269},
+        {"name": "Cuquendo", "latitude": -11.86569, "longitude": 14.0638},
+        {"name": "Dias", "latitude": -11.96955, "longitude": 14.02349}
+      ]},
+      {"name": "Ganda", "latitude": -13.01726, "longitude": 14.63586, "bairros": []},
+      {"name": "Iambala", "latitude": -13.36552, "longitude": 14.50283, "bairros": [
+        {"name": "Calongolo", "latitude": -13.27383, "longitude": 14.68705},
+        {"name": "Hans", "latitude": -13.4663, "longitude": 14.60773}
+      ]},
+      {"name": "Lobito", "latitude": -12.35069, "longitude": 13.54643, "bairros": [
+        {"name": "Africano", "latitude": -12.37097, "longitude": 13.56184},
+        {"name": "B. Académico", "latitude": -12.35701, "longitude": 13.53545},
+        {"name": "Cabaia", "latitude": -12.36604, "longitude": 13.5276},
+        {"name": "Cajueiro", "latitude": -12.38852, "longitude": 13.54398},
+        {"name": "Canata", "latitude": -12.36281, "longitude": 13.55494},
+        {"name": "Caponte", "latitude": -12.36046, "longitude": 13.55067},
+        {"name": "Cassai", "latitude": -12.36607, "longitude": 13.53851},
+        {"name": "Compão", "latitude": -12.35529, "longitude": 13.53587},
+        {"name": "Liro", "latitude": -12.36282, "longitude": 13.56543},
+        {"name": "Lobito Velho", "latitude": -12.35408, "longitude": 13.56498},
+        {"name": "Luz", "latitude": -12.38208, "longitude": 13.54782},
+        {"name": "Vinte-Oito", "latitude": -12.35132, "longitude": 13.54693},
+        {"name": "Zona Alta", "latitude": -12.37131, "longitude": 13.56821}
+      ]},
+      {"name": "Navegantes", "latitude": -12.60255, "longitude": 13.38102, "bairros": [
+        {"name": "Bela Vista", "latitude": -12.60679, "longitude": 13.37499},
+        {"name": "Dokota", "latitude": -12.62991, "longitude": 13.4187},
+        {"name": "Ekuikui", "latitude": -12.64496, "longitude": 13.38018},
+        {"name": "Hoji-ya-Henda", "latitude": -12.63858, "longitude": 13.34778},
+        {"name": "Praia Santo Antônio", "latitude": -12.61056, "longitude": 13.32408},
+        {"name": "Santo António", "latitude": -12.61423, "longitude": 13.33326},
+        {"name": "Uche", "latitude": -12.67395, "longitude": 13.36314}
+      ]}
+    ]},
+    {"name": "Bié", "capital": "Cuito", "latitude": -12.44013, "longitude": 17.46242, "municipalities": [
+      {"name": "Andulo", "latitude": -11.48727, "longitude": 16.69794, "bairros": [
+        {"name": "Buanga", "latitude": -11.52179, "longitude": 16.44509},
+        {"name": "Cambuanda", "latitude": -11.47413, "longitude": 16.69152},
+        {"name": "Catala", "latitude": -11.49052, "longitude": 16.71848},
+        {"name": "Lucuco", "latitude": -11.54082, "longitude": 16.75773},
+        {"name": "Senge", "latitude": -11.52688, "longitude": 16.81564}
+      ]},
+      {"name": "Belo Horizonte", "latitude": -11.91658, "longitude": 16.90565, "bairros": [
+        {"name": "Canguengo", "latitude": -11.84406, "longitude": 16.81004},
+        {"name": "Capango", "latitude": -11.82084, "longitude": 17.10337},
+        {"name": "Capeça", "latitude": -11.88327, "longitude": 16.83919},
+        {"name": "Cavimo", "latitude": -11.75717, "longitude": 17.15437},
+        {"name": "Dandau", "latitude": -11.92447, "longitude": 16.91955},
+        {"name": "Gamba", "latitude": -11.75129, "longitude": 17.11033},
+        {"name": "Lussasse", "latitude": -11.98197, "longitude": 16.70515},
+        {"name": "Satacaia", "latitude": -11.8741, "longitude": 16.79838},
+        {"name": "Satchiuala", "latitude": -11.88736, "longitude": 17.09223},
+        {"name": "Tchahuila", "latitude": -11.87871, "longitude": 17.10428}
+      ]},
+      {"name": "Calucinga", "latitude": -11.32486, "longitude": 16.19514, "bairros": [
+        {"name": "Calenga", "latitude": -11.35638, "longitude": 16.23938},
+        {"name": "Chilonda", "latitude": -11.31933, "longitude": 16.19573},
+        {"name": "Chiuco", "latitude": -11.09039, "longitude": 15.91992},
+        {"name": "Loma Chita", "latitude": -11.10038, "longitude": 15.91844},
+        {"name": "Mbunja", "latitude": -11.43203, "longitude": 16.32713},
+        {"name": "Nhongo", "latitude": -11.49595, "longitude": 16.22942},
+        {"name": "Tecnil", "latitude": -11.33036, "longitude": 16.20781}
+      ]},
+      {"name": "Camacupa", "latitude": -12.02244, "longitude": 17.47052, "bairros": [
+        {"name": "Cacóco", "latitude": -11.7753, "longitude": 17.30087},
+        {"name": "Calalavela", "latitude": -11.81588, "longitude": 17.43156},
+        {"name": "Casseque", "latitude": -11.78727, "longitude": 17.42604},
+        {"name": "Cuanza", "latitude": -11.99478, "longitude": 17.65686},
+        {"name": "Mingungo", "latitude": -11.8558, "longitude": 17.36638},
+        {"name": "Tchilala", "latitude": -11.79322, "longitude": 17.27574},
+        {"name": "Tchimbonde", "latitude": -11.81528, "longitude": 17.38903}
+      ]},
+      {"name": "Cambândua", "latitude": -12.51032, "longitude": 17.32271, "bairros": []},
+      {"name": "Catabola", "latitude": -12.14224, "longitude": 17.28561, "bairros": []},
+      {"name": "Chicala", "latitude": -12.80431, "longitude": 17.05954, "bairros": [
+        {"name": "Cachingues", "latitude": -13.07105, "longitude": 16.75065},
+        {"name": "Mutumbo", "latitude": -13.18188, "longitude": 17.39594}
+      ]},
+      {"name": "Chinguar", "latitude": -12.55885, "longitude": 16.33838, "bairros": [
+        {"name": "Cutato", "latitude": -12.38699, "longitude": 16.43258}
+      ]},
+      {"name": "Chipeta", "latitude": -12.26168, "longitude": 17.12772, "bairros": []},
+      {"name": "Chitembo", "latitude": -13.51393, "longitude": 16.75666, "bairros": []},
+      {"name": "Cuemba", "latitude": -12.15, "longitude": 18.08333, "bairros": [
+        {"name": "Chindumba", "latitude": -11.99901, "longitude": 18.0358},
+        {"name": "Munhango", "latitude": -12.15846, "longitude": 18.5555}
+      ]},
+      {"name": "Cuito", "latitude": -12.38494, "longitude": 16.939, "bairros": [
+        {"name": "Azul 1", "latitude": -12.42027, "longitude": 16.9269},
+        {"name": "Cambueia", "latitude": -12.55991, "longitude": 17.03481},
+        {"name": "Cangalo", "latitude": -12.4033, "longitude": 16.92804},
+        {"name": "Centralidade do Cuíto", "latitude": -12.43749, "longitude": 16.92041},
+        {"name": "Ecovongo", "latitude": -12.52762, "longitude": 16.96064},
+        {"name": "Kunje", "latitude": -12.34199, "longitude": 16.9542},
+        {"name": "Ngandavila", "latitude": -12.54952, "longitude": 17.08153},
+        {"name": "Onogondo", "latitude": -12.34862, "longitude": 16.93976},
+        {"name": "Projeto Habitacional das 500 Casas", "latitude": -12.42734, "longitude": 16.89178},
+        {"name": "Samumba", "latitude": -12.33391, "longitude": 16.92998},
+        {"name": "Urbanização das 500 Casas", "latitude": -12.42707, "longitude": 16.89179}
+      ]},
+      {"name": "Cunhinga", "latitude": -12.23386, "longitude": 16.78177, "bairros": [
+        {"name": "Bairro 4 de Abril", "latitude": -12.23971, "longitude": 16.79351},
+        {"name": "Chibanda", "latitude": -12.16221, "longitude": 16.75077},
+        {"name": "Panda", "latitude": -12.05697, "longitude": 16.7168}
+      ]},
+      {"name": "Luando", "latitude": -11.62051, "longitude": 18.46708, "bairros": [
+        {"name": "Aldeia de Salieza", "latitude": -11.40163, "longitude": 18.713},
+        {"name": "Calambo", "latitude": -11.64855, "longitude": 17.97503}
+      ]},
+      {"name": "Lúbia", "latitude": -11.02173, "longitude": 17.09595, "bairros": [
+        {"name": "Dando", "latitude": -11.2458, "longitude": 17.41437}
+      ]},
+      {"name": "Mumbué", "latitude": -13.89574, "longitude": 17.29582, "bairros": [
+        {"name": "Mandume", "latitude": -14.04437, "longitude": 17.4417}
+      ]},
+      {"name": "Nharêa", "latitude": -11.47512, "longitude": 16.96496, "bairros": [
+        {"name": "CENTRO HABITACIONAL DAS 100 CASAS", "latitude": -11.47838, "longitude": 16.94891},
+        {"name": "Congolongolo", "latitude": -11.54396, "longitude": 16.85249}
+      ]},
+      {"name": "Ringoma", "latitude": -12.39902, "longitude": 17.54366, "bairros": []},
+      {"name": "Umpulo", "latitude": -12.70471, "longitude": 17.68949, "bairros": [
+        {"name": "Chicundo", "latitude": -12.66752, "longitude": 17.56512}
+      ]}
+    ]},
+    {"name": "Cabinda", "capital": "Cabinda", "latitude": -5.11772, "longitude": 12.4792, "municipalities": [
+      {"name": "Belize", "latitude": -4.64033, "longitude": 12.76046, "bairros": [
+        {"name": "Luali", "latitude": -4.57533, "longitude": 12.70015}
+      ]},
+      {"name": "Buco Zau", "latitude": -4.76217, "longitude": 12.53888, "bairros": []},
+      {"name": "Cabinda", "latitude": -5.55764, "longitude": 12.19195, "bairros": [
+        {"name": "1 de Maio", "latitude": -5.57981, "longitude": 12.18113},
+        {"name": "Baixa da Cidade", "latitude": -5.55439, "longitude": 12.19553},
+        {"name": "Bucomazi", "latitude": -5.45109, "longitude": 12.21946},
+        {"name": "Cabassango", "latitude": -5.55371, "longitude": 12.25515},
+        {"name": "Caio", "latitude": -5.48041, "longitude": 12.23349},
+        {"name": "Centralidade do Chibodo II", "latitude": -5.51825, "longitude": 12.2861},
+        {"name": "Chiadede", "latitude": -5.41693, "longitude": 12.28981},
+        {"name": "Chiazi", "latitude": -5.51286, "longitude": 12.23732},
+        {"name": "Chibodo", "latitude": -5.54933, "longitude": 12.2888},
+        {"name": "Chinga", "latitude": -5.53372, "longitude": 12.24078},
+        {"name": "Chiweca", "latitude": -5.6012, "longitude": 12.17939},
+        {"name": "Futila", "latitude": -5.44078, "longitude": 12.21573},
+        {"name": "Lombo-Lombo", "latitude": -5.55887, "longitude": 12.20538},
+        {"name": "Lucola", "latitude": -5.535, "longitude": 12.25534},
+        {"name": "Luvassa", "latitude": -5.58203, "longitude": 12.17445},
+        {"name": "Mazi", "latitude": -5.45214, "longitude": 12.26537},
+        {"name": "Mbaca", "latitude": -5.617, "longitude": 12.19494},
+        {"name": "Mbuco", "latitude": -5.54601, "longitude": 12.23748},
+        {"name": "Mongo Balanca", "latitude": -5.603, "longitude": 12.19501},
+        {"name": "Povo Grande", "latitude": -5.60774, "longitude": 12.19838},
+        {"name": "Santa Catarina", "latitude": -5.64124, "longitude": 12.20989},
+        {"name": "Simulambuco", "latitude": -5.55681, "longitude": 12.22765},
+        {"name": "TaliMana", "latitude": -5.6246, "longitude": 12.19807},
+        {"name": "Urbanização 4 de Abril - Chibodo", "latitude": -5.55554, "longitude": 12.28315},
+        {"name": "Vala", "latitude": -5.54931, "longitude": 12.23172},
+        {"name": "Vila Olimpica do Cabassango", "latitude": -5.55553, "longitude": 12.24846},
+        {"name": "Vitória é Certa", "latitude": -5.57088, "longitude": 12.18608},
+        {"name": "Zongoio", "latitude": -5.57315, "longitude": 12.18157},
+        {"name": "Zongolo", "latitude": -5.57941, "longitude": 12.27548}
+      ]},
+      {"name": "Cacongo", "latitude": -5.22149, "longitude": 12.14131, "bairros": [
+        {"name": "Icaso", "latitude": -5.12379, "longitude": 12.19432},
+        {"name": "Malembo", "latitude": -5.33924, "longitude": 12.18862}
+      ]},
+      {"name": "Liambo", "latitude": -5.63864, "longitude": 12.35185, "bairros": [
+        {"name": "Baca", "latitude": -5.48836, "longitude": 12.36953},
+        {"name": "Casas Sociais de Tali Sumbi", "latitude": -5.58987, "longitude": 12.30636},
+        {"name": "Projecto do Zongolo", "latitude": -5.58375, "longitude": 12.28619},
+        {"name": "Subantando", "latitude": -5.52756, "longitude": 12.33028}
+      ]},
+      {"name": "Massabi", "latitude": -4.99095, "longitude": 12.0613, "bairros": [
+        {"name": "Dinge", "latitude": -5.00864, "longitude": 12.32984}
+      ]},
+      {"name": "Miconje", "latitude": -4.5173, "longitude": 12.87871, "bairros": [
+        {"name": "Yandza", "latitude": -4.40902, "longitude": 12.88695}
+      ]},
+      {"name": "Necuto", "latitude": -4.95245, "longitude": 12.6199, "bairros": []},
+      {"name": "Ngoio", "latitude": -5.70712, "longitude": 12.26933, "bairros": [
+        {"name": "Iema", "latitude": -5.74131, "longitude": 12.29695},
+        {"name": "Sende", "latitude": -5.64913, "longitude": 12.21323}
+      ]},
+      {"name": "Tando Zinze", "latitude": -5.37614, "longitude": 12.48481, "bairros": [
+        {"name": "Zenze do Lucula", "latitude": -5.16788, "longitude": 12.51304}
+      ]}
+    ]},
+    {"name": "Cuando", "capital": "Mavinga", "latitude": -16.12334, "longitude": 21.05126, "municipalities": [
+      {"name": "Cuito Cuanavale", "latitude": -15.16303, "longitude": 19.17274, "bairros": []},
+      {"name": "Dima", "latitude": -15.36687, "longitude": 20.14869, "bairros": [
+        {"name": "Cutiti", "latitude": -14.97094, "longitude": 20.31974}
+      ]},
+      {"name": "Dirico", "latitude": -17.9847, "longitude": 20.77693, "bairros": []},
+      {"name": "Luengue", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Luiana", "latitude": -17.37534, "longitude": 23.00585, "bairros": [
+        {"name": "Jamba", "latitude": -17.50761, "longitude": 22.72662}
+      ]},
+      {"name": "Mavinga", "latitude": -15.7944, "longitude": 20.36567, "bairros": []},
+      {"name": "Mucusso", "latitude": -18.02197, "longitude": 21.42688, "bairros": []},
+      {"name": "Rivungo", "latitude": -16.32801, "longitude": 22.02455, "bairros": [
+        {"name": "Mainha", "latitude": -16.33457, "longitude": 22.03101}
+      ]},
+      {"name": "Xipundo", "latitude": null, "longitude": null, "bairros": []}
+    ]},
+    {"name": "Cuanza Norte", "capital": "Cazengo", "latitude": -8.87421, "longitude": 14.91405, "municipalities": [
+      {"name": "Aldeia Nova", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Ambaca", "latitude": -9.26723, "longitude": 15.17399, "bairros": [
+        {"name": "Canzondo", "latitude": -9.24178, "longitude": 15.04553}
+      ]},
+      {"name": "Banga", "latitude": -8.7288, "longitude": 15.16903, "bairros": [
+        {"name": "Banza Macusso", "latitude": -8.86926, "longitude": 15.10118},
+        {"name": "Bondo", "latitude": -8.85912, "longitude": 15.2017}
+      ]},
+      {"name": "Bolongongo", "latitude": -8.46408, "longitude": 15.24871, "bairros": [
+        {"name": "Lumbo Capunga", "latitude": -8.2174, "longitude": 15.32122}
+      ]},
+      {"name": "Caculo Cabaça", "latitude": -8.7288, "longitude": 15.16903, "bairros": []},
+      {"name": "Cambambe", "latitude": -9.74605, "longitude": 14.48667, "bairros": [
+        {"name": "Alto Dondo", "latitude": -9.67915, "longitude": 14.47236},
+        {"name": "Alvalade", "latitude": -9.68213, "longitude": 14.42028},
+        {"name": "Dange-Ia-Menha", "latitude": -9.53547, "longitude": 14.65565},
+        {"name": "Dondo", "latitude": -9.68557, "longitude": 14.42013},
+        {"name": "Quilemba", "latitude": -9.6825, "longitude": 14.79176}
+      ]},
+      {"name": "Cazengo", "latitude": -9.29848, "longitude": 14.9145, "bairros": [
+        {"name": "Catamba", "latitude": -9.29559, "longitude": 14.76934},
+        {"name": "Quilombo", "latitude": -9.33335, "longitude": 14.90126},
+        {"name": "Zavula", "latitude": -9.33436, "longitude": 14.77515}
+      ]},
+      {"name": "Cêrca", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Golungo Alto", "latitude": -9.13866, "longitude": 14.77345, "bairros": [
+        {"name": "Bumba Adondo", "latitude": -9.12379, "longitude": 14.50248},
+        {"name": "Cafofo", "latitude": -9.02901, "longitude": 14.55933},
+        {"name": "Caleba", "latitude": -9.14674, "longitude": 14.45993},
+        {"name": "Cambondo", "latitude": -9.1633, "longitude": 14.66587},
+        {"name": "Canaúlo", "latitude": -9.13053, "longitude": 14.85357},
+        {"name": "Canaúlo I", "latitude": -9.13275, "longitude": 14.85147},
+        {"name": "Canaúlo II", "latitude": -9.1293, "longitude": 14.85708},
+        {"name": "Canhoca", "latitude": -9.25062, "longitude": 14.68242},
+        {"name": "Cavunda", "latitude": -8.92383, "longitude": 14.6531},
+        {"name": "Mussungo Aposse", "latitude": -9.11078, "longitude": 14.50342},
+        {"name": "Quilombo-quia-Puto", "latitude": -9.08385, "longitude": 14.71319},
+        {"name": "Zongue", "latitude": -9.02351, "longitude": 14.56968}
+      ]},
+      {"name": "Lucala", "latitude": -9.26613, "longitude": 15.24025, "bairros": []},
+      {"name": "Luinga", "latitude": -8.46718, "longitude": 15.60767, "bairros": [
+        {"name": "Baia", "latitude": -8.42653, "longitude": 15.7818},
+        {"name": "Cangundo Quilalo", "latitude": -8.39315, "longitude": 15.45187},
+        {"name": "Comessa", "latitude": -8.42843, "longitude": 15.73474},
+        {"name": "Hanga", "latitude": -8.43214, "longitude": 15.70571},
+        {"name": "Lombo", "latitude": -8.43253, "longitude": 15.69938},
+        {"name": "Ndala Cateco", "latitude": -8.41632, "longitude": 15.75458},
+        {"name": "Quichina Quiatuco", "latitude": -8.40875, "longitude": 15.74342},
+        {"name": "Quixombo", "latitude": -8.42613, "longitude": 15.75828},
+        {"name": "Zequela", "latitude": -8.43297, "longitude": 15.71078}
+      ]},
+      {"name": "Massangano", "latitude": -9.62694, "longitude": 14.2563, "bairros": [
+        {"name": "Cassoalala", "latitude": -9.48733, "longitude": 14.35576},
+        {"name": "Cassualala", "latitude": -9.48796, "longitude": 14.3555},
+        {"name": "Kilometro Dezanove", "latitude": -9.39163, "longitude": 14.28854},
+        {"name": "Kilometro Dezasseis", "latitude": -9.34532, "longitude": 14.26291},
+        {"name": "Kilometro Dezoito", "latitude": -9.37685, "longitude": 14.2773},
+        {"name": "Kilometro trinta e quatro", "latitude": -9.51974, "longitude": 14.38275},
+        {"name": "Ngolome", "latitude": -9.50098, "longitude": 14.15759},
+        {"name": "Quilômetro Vinte", "latitude": -9.41307, "longitude": 14.30085},
+        {"name": "Zenza do Itombe", "latitude": -9.2895, "longitude": 14.21274}
+      ]},
+      {"name": "Ngonguembo", "latitude": -8.98797, "longitude": 14.99091, "bairros": []},
+      {"name": "Quiculungo", "latitude": -8.51701, "longitude": 15.31146, "bairros": []},
+      {"name": "Samba Cajú", "latitude": -8.76048, "longitude": 15.4107, "bairros": []},
+      {"name": "Tango", "latitude": -8.09415, "longitude": 15.63592, "bairros": [
+        {"name": "Camabatela", "latitude": -8.18867, "longitude": 15.37421},
+        {"name": "Chiquita", "latitude": -8.04847, "longitude": 15.69604},
+        {"name": "Guenzele", "latitude": -8.04972, "longitude": 15.69775},
+        {"name": "Lunguissa", "latitude": -8.07934, "longitude": 15.63281},
+        {"name": "Muange", "latitude": -8.08832, "longitude": 15.64084},
+        {"name": "Muinga", "latitude": -8.08398, "longitude": 15.62708},
+        {"name": "Mulende", "latitude": -8.06634, "longitude": 15.64604},
+        {"name": "Quenguele", "latitude": -8.05, "longitude": 15.7},
+        {"name": "Quicoca", "latitude": -8.09121, "longitude": 15.62401},
+        {"name": "Quissari", "latitude": -8.09669, "longitude": 15.61622},
+        {"name": "Sonhi", "latitude": -8.04615, "longitude": 15.70305},
+        {"name": "Tunda", "latitude": -8.09254, "longitude": 15.61987},
+        {"name": "Zaca", "latitude": -8.06549, "longitude": 15.64987},
+        {"name": "Zua", "latitude": -8.05629, "longitude": 15.68583}
+      ]},
+      {"name": "Terreiro", "latitude": -8.43324, "longitude": 15.10645, "bairros": []}
+    ]},
+    {"name": "Cuanza Sul", "capital": "Sumbe", "latitude": -10.94886, "longitude": 14.96618, "municipalities": [
+      {"name": "Amboiva", "latitude": -11.52872, "longitude": 14.73359, "bairros": [
+        {"name": "Acumba", "latitude": -11.74854, "longitude": 14.49806},
+        {"name": "Catanda", "latitude": -11.70721, "longitude": 14.46991},
+        {"name": "Dumbi", "latitude": -11.68889, "longitude": 14.8527}
+      ]},
+      {"name": "Boa Entrada", "latitude": -10.86418, "longitude": 14.32873, "bairros": [
+        {"name": "Binge", "latitude": -10.88972, "longitude": 14.35439},
+        {"name": "Boa Lembrança", "latitude": -10.80458, "longitude": 14.30808},
+        {"name": "Cachilo", "latitude": -10.93606, "longitude": 14.30486},
+        {"name": "Carla Hongo", "latitude": -10.76052, "longitude": 14.25498},
+        {"name": "Casal", "latitude": -10.93426, "longitude": 14.29588},
+        {"name": "Hengue", "latitude": -10.92171, "longitude": 14.28572},
+        {"name": "Hichingo", "latitude": -10.9051, "longitude": 14.24819},
+        {"name": "Lemboca", "latitude": -10.87992, "longitude": 14.35615},
+        {"name": "Lembu", "latitude": -10.93871, "longitude": 14.31096},
+        {"name": "Maria Augusta", "latitude": -10.91925, "longitude": 14.34488},
+        {"name": "Maria Ganza", "latitude": -10.89439, "longitude": 14.35293},
+        {"name": "Mucuco", "latitude": -10.80113, "longitude": 14.32371},
+        {"name": "Mussengue", "latitude": -10.80582, "longitude": 14.29698},
+        {"name": "Ngumba (Vinte Sete)", "latitude": -10.93991, "longitude": 14.32704},
+        {"name": "Nova-Ereira", "latitude": -10.80969, "longitude": 14.29998},
+        {"name": "Zambia", "latitude": -10.94327, "longitude": 14.14434}
+      ]},
+      {"name": "Calulo", "latitude": -9.99994, "longitude": 14.89354, "bairros": [
+        {"name": "Alto Ventura", "latitude": -10.00554, "longitude": 14.85338},
+        {"name": "Bango de Caxica", "latitude": -9.85107, "longitude": 14.88641},
+        {"name": "Bango de Magia", "latitude": -9.81156, "longitude": 14.78874},
+        {"name": "Bansa de Mussende", "latitude": -9.98639, "longitude": 14.76587},
+        {"name": "Banza dos Dambos", "latitude": -9.97837, "longitude": 14.85916},
+        {"name": "Boa Vista", "latitude": -10.03726, "longitude": 14.92486},
+        {"name": "Boa Vista da Pingana", "latitude": -9.94606, "longitude": 14.93804},
+        {"name": "Bulo", "latitude": -9.75981, "longitude": 14.83845},
+        {"name": "Cabunda", "latitude": -9.96849, "longitude": 14.82631},
+        {"name": "Cabuta-Sede", "latitude": -9.83556, "longitude": 14.86343},
+        {"name": "Cahomba", "latitude": -10.03652, "longitude": 14.93454},
+        {"name": "Camassa", "latitude": -9.90683, "longitude": 14.96832},
+        {"name": "Cambwembwe", "latitude": -10.29587, "longitude": 14.81473},
+        {"name": "Canamembe", "latitude": -10.04679, "longitude": 14.94208},
+        {"name": "Cangulo", "latitude": -10.18057, "longitude": 14.79532},
+        {"name": "Cangumba", "latitude": -10.21271, "longitude": 14.80921},
+        {"name": "Casa Manga", "latitude": -9.93604, "longitude": 14.88739},
+        {"name": "Cassange", "latitude": -10.23394, "longitude": 14.80498},
+        {"name": "Cassanha", "latitude": -9.8499, "longitude": 14.84879},
+        {"name": "Cataquele", "latitude": -9.93453, "longitude": 14.89088},
+        {"name": "Cateculo", "latitude": -9.9707, "longitude": 14.7981},
+        {"name": "Catete", "latitude": -10.08003, "longitude": 14.97339},
+        {"name": "Caxica", "latitude": -9.87793, "longitude": 14.91284},
+        {"name": "Dala Uso", "latitude": -10.00152, "longitude": 14.83923},
+        {"name": "Kissaco", "latitude": -9.92944, "longitude": 14.8959},
+        {"name": "Kituma", "latitude": -9.8528, "longitude": 14.83266},
+        {"name": "Kiulo", "latitude": -9.94579, "longitude": 14.89632},
+        {"name": "Kizou", "latitude": -10.37515, "longitude": 14.84176},
+        {"name": "Kizumbo do Mucongo", "latitude": -10.01851, "longitude": 14.81136},
+        {"name": "Lucola", "latitude": -10.03544, "longitude": 14.93076},
+        {"name": "Lussusso", "latitude": -10.2258, "longitude": 14.80646},
+        {"name": "Mabulo", "latitude": -10.27366, "longitude": 14.81274},
+        {"name": "Magia", "latitude": -9.8446, "longitude": 14.80363},
+        {"name": "Malanje", "latitude": -9.96276, "longitude": 14.92575},
+        {"name": "Mucula dos Dambos", "latitude": -9.94861, "longitude": 14.87929},
+        {"name": "Muluegi", "latitude": -10.31007, "longitude": 14.80941},
+        {"name": "Musseque dos Dambos", "latitude": -9.99066, "longitude": 14.86347},
+        {"name": "Muxixi", "latitude": -10.18744, "longitude": 14.80347},
+        {"name": "Nguelela", "latitude": -9.88101, "longitude": 14.89689},
+        {"name": "Pequeno Kizou", "latitude": -10.36723, "longitude": 14.84092},
+        {"name": "Pingana", "latitude": -9.91259, "longitude": 14.92863},
+        {"name": "Popular", "latitude": -9.9685, "longitude": 14.79439},
+        {"name": "Quiela II", "latitude": -9.87646, "longitude": 14.8428},
+        {"name": "Quilumbo", "latitude": -9.89476, "longitude": 14.98189},
+        {"name": "Quitalemba", "latitude": -9.86646, "longitude": 14.8814},
+        {"name": "Qumbondo/Bango", "latitude": -9.97642, "longitude": 14.79836},
+        {"name": "Sabendo Andar", "latitude": -9.91833, "longitude": 14.91919},
+        {"name": "Tatala", "latitude": -10.17322, "longitude": 14.7817},
+        {"name": "Tumba Grande", "latitude": -10.19377, "longitude": 14.80769},
+        {"name": "Tunda dos Dambos", "latitude": -9.91785, "longitude": 14.85695},
+        {"name": "Vila Flor", "latitude": -10.00398, "longitude": 14.85765},
+        {"name": "Zela", "latitude": -9.85683, "longitude": 14.8141}
+      ]},
+      {"name": "Cassongue", "latitude": -11.85339, "longitude": 15.05001, "bairros": [
+        {"name": "Binge Velho", "latitude": -12.13151, "longitude": 14.96551},
+        {"name": "Capondima", "latitude": -12.10514, "longitude": 15.04592},
+        {"name": "Carvalho", "latitude": -11.85129, "longitude": 15.18338},
+        {"name": "Catuta", "latitude": -12.10167, "longitude": 15.03582},
+        {"name": "Chimbaca", "latitude": -11.88346, "longitude": 15.20709},
+        {"name": "Chipuri", "latitude": -11.85052, "longitude": 15.18293},
+        {"name": "Chissaca", "latitude": -11.92723, "longitude": 15.35723},
+        {"name": "Cruzamento", "latitude": -11.84807, "longitude": 15.35086},
+        {"name": "Ndende", "latitude": -12.07639, "longitude": 14.8618},
+        {"name": "Panda", "latitude": -12.06667, "longitude": 15.03333},
+        {"name": "Queve Cangombe", "latitude": -11.86034, "longitude": 15.35428},
+        {"name": "Salomão", "latitude": -11.95471, "longitude": 14.97841}
+      ]},
+      {"name": "Conda", "latitude": -11.10708, "longitude": 14.33486, "bairros": [
+        {"name": "Cumbira Segundo", "latitude": -11.20668, "longitude": 14.33909},
+        {"name": "Huandi", "latitude": -11.02862, "longitude": 14.34294},
+        {"name": "Icuco", "latitude": -11.15185, "longitude": 14.34923},
+        {"name": "Quinguenguere", "latitude": -11.25329, "longitude": 14.33927},
+        {"name": "Saina", "latitude": -11.09986, "longitude": 14.33472},
+        {"name": "Tari", "latitude": -11.11052, "longitude": 14.35591},
+        {"name": "Tocota", "latitude": -11.06305, "longitude": 14.32861}
+      ]},
+      {"name": "Condé", "latitude": -10.84612, "longitude": 14.6759, "bairros": [
+        {"name": "Bango", "latitude": -10.84989, "longitude": 14.64674},
+        {"name": "Chongolo", "latitude": -10.77748, "longitude": 14.65606},
+        {"name": "Gambula", "latitude": -10.79079, "longitude": 14.75494},
+        {"name": "Quilemba", "latitude": -10.81932, "longitude": 14.67423}
+      ]},
+      {"name": "Ebo", "latitude": -11.04893, "longitude": 14.69893, "bairros": [
+        {"name": "Bango Ebo", "latitude": -11.09805, "longitude": 14.64148},
+        {"name": "Banza Cunda", "latitude": -11.07964, "longitude": 14.73102},
+        {"name": "Banza-Uba", "latitude": -11.09447, "longitude": 14.78012},
+        {"name": "Caquende Cunda", "latitude": -11.10359, "longitude": 14.75715},
+        {"name": "Catala Chôa", "latitude": -10.96856, "longitude": 14.61724},
+        {"name": "Hala", "latitude": -11.01377, "longitude": 14.60653},
+        {"name": "Hala Chôa", "latitude": -11.01355, "longitude": 14.60645},
+        {"name": "Jamba", "latitude": -11.09807, "longitude": 14.67134},
+        {"name": "Maquimba", "latitude": -11.08041, "longitude": 14.71146},
+        {"name": "Mussende Quissobe", "latitude": -11.14347, "longitude": 14.89048},
+        {"name": "Ndala Quissobe", "latitude": -11.13581, "longitude": 14.846},
+        {"name": "Ngungo", "latitude": -11.02236, "longitude": 14.59174},
+        {"name": "Ngungo Canhali", "latitude": -11.02213, "longitude": 14.59204},
+        {"name": "Palanca-Uba", "latitude": -11.11944, "longitude": 14.80589},
+        {"name": "Quissobe", "latitude": -11.14843, "longitude": 14.8635},
+        {"name": "Quitundo", "latitude": -11.02301, "longitude": 14.63783},
+        {"name": "Quizanga", "latitude": -11.04681, "longitude": 14.73447},
+        {"name": "Tacanho", "latitude": -11.14476, "longitude": 14.8863},
+        {"name": "Zenguele", "latitude": -11.05914, "longitude": 14.74422}
+      ]},
+      {"name": "Gabela", "latitude": -10.85147, "longitude": 14.37993, "bairros": [
+        {"name": "Cambondo", "latitude": -10.79402, "longitude": 14.36589},
+        {"name": "Cassengula", "latitude": -10.75304, "longitude": 14.3728},
+        {"name": "Cassuala A", "latitude": -10.75001, "longitude": 14.36826},
+        {"name": "Cassuala B", "latitude": -10.74912, "longitude": 14.35895},
+        {"name": "Cudissanga", "latitude": -10.81299, "longitude": 14.48872},
+        {"name": "Hengue A", "latitude": -10.78628, "longitude": 14.36301},
+        {"name": "Hengue B", "latitude": -10.77399, "longitude": 14.36617},
+        {"name": "Kapango", "latitude": -10.82805, "longitude": 14.42383},
+        {"name": "Lupembe", "latitude": -10.79593, "longitude": 14.391},
+        {"name": "Mbala", "latitude": -10.76422, "longitude": 14.38302},
+        {"name": "Pepa", "latitude": -10.82741, "longitude": 14.44227},
+        {"name": "Praca de Cima", "latitude": -10.85213, "longitude": 14.40822},
+        {"name": "Quipindo (Kilamba)", "latitude": -10.83107, "longitude": 14.36824},
+        {"name": "Quipindo (Maria Luísa)", "latitude": -10.82037, "longitude": 14.36312},
+        {"name": "Quipindo A", "latitude": -10.82532, "longitude": 14.36873},
+        {"name": "Quisseque", "latitude": -10.77768, "longitude": 14.38437},
+        {"name": "Vunge", "latitude": -10.79482, "longitude": 14.3452},
+        {"name": "Zambla-Zambla", "latitude": -10.82849, "longitude": 14.38474},
+        {"name": "Zona A", "latitude": -10.85128, "longitude": 14.36628},
+        {"name": "Zona B", "latitude": -10.85191, "longitude": 14.36938},
+        {"name": "Zona C", "latitude": -10.85183, "longitude": 14.37508},
+        {"name": "Zunzua", "latitude": -10.80701, "longitude": 14.36789}
+      ]},
+      {"name": "Gangula", "latitude": -11.00531, "longitude": 13.91254, "bairros": [
+        {"name": "Aldeia N'gangula", "latitude": -11.00531, "longitude": 13.91254},
+        {"name": "Atango", "latitude": -10.96282, "longitude": 14.10972},
+        {"name": "Cachoeira", "latitude": -10.98346, "longitude": 14.09664},
+        {"name": "Caputo", "latitude": -10.90179, "longitude": 13.86021},
+        {"name": "CENTRALIDADE DO QUIBAÚLA (SUMBE)", "latitude": -11.10346, "longitude": 13.90402},
+        {"name": "Quilunda", "latitude": -10.99313, "longitude": 14.06249}
+      ]},
+      {"name": "Gungo", "latitude": -11.8151, "longitude": 14.14988, "bairros": [
+        {"name": "Banda", "latitude": -11.71095, "longitude": 14.41577},
+        {"name": "Calei", "latitude": -11.83333, "longitude": 14.51667},
+        {"name": "Camanja", "latitude": -11.67887, "longitude": 14.32978},
+        {"name": "Chipomba", "latitude": -11.80357, "longitude": 14.29259},
+        {"name": "Chitende", "latitude": -11.64103, "longitude": 14.30699},
+        {"name": "Chitundo", "latitude": -11.71544, "longitude": 14.4515},
+        {"name": "Evale", "latitude": -11.8094, "longitude": 13.94944}
+      ]},
+      {"name": "Lonhe", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Munenga", "latitude": -10.02721, "longitude": 14.63297, "bairros": [
+        {"name": "Banza de Munenga", "latitude": -10.02721, "longitude": 14.63297},
+        {"name": "Cambingo", "latitude": -9.81778, "longitude": 14.54347},
+        {"name": "Catoto4", "latitude": -10.09772, "longitude": 14.64019},
+        {"name": "Fuque", "latitude": -10.0519, "longitude": 14.60224},
+        {"name": "Leha", "latitude": -10.0155, "longitude": 14.66822},
+        {"name": "Pedra Escrita", "latitude": -10.15383, "longitude": 14.74202},
+        {"name": "Quicole:", "latitude": -10.27757, "longitude": 14.77333},
+        {"name": "Samba Karinje", "latitude": -9.9954, "longitude": 14.6961},
+        {"name": "Tumba Pequena", "latitude": -9.989, "longitude": 14.70695}
+      ]},
+      {"name": "Mussende", "latitude": -10.51125, "longitude": 16.01371, "bairros": [
+        {"name": "Epanda", "latitude": -10.53206, "longitude": 16.01513},
+        {"name": "Salvador", "latitude": -10.59944, "longitude": 16.04998},
+        {"name": "São Lucas", "latitude": -10.94359, "longitude": 16.11941},
+        {"name": "Terra Nova", "latitude": -10.5147, "longitude": 16.00726}
+      ]},
+      {"name": "Pambangala", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Porto Amboím", "latitude": -10.72791, "longitude": 13.7579, "bairros": [
+        {"name": "Capolo", "latitude": -10.39067, "longitude": 13.98574},
+        {"name": "Centralidade do Porto Amboim", "latitude": -10.70254, "longitude": 13.78394},
+        {"name": "Pinda", "latitude": -10.82125, "longitude": 13.83936}
+      ]},
+      {"name": "Quenha", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Quibala", "latitude": -10.73254, "longitude": 14.98055, "bairros": [
+        {"name": "Bondo", "latitude": -10.76908, "longitude": 14.82525},
+        {"name": "Cacungulo", "latitude": -10.72006, "longitude": 14.97722},
+        {"name": "Caima", "latitude": -10.73419, "longitude": 14.977},
+        {"name": "Capopa", "latitude": -10.73049, "longitude": 14.99953},
+        {"name": "Catofe", "latitude": -10.86452, "longitude": 15.05485},
+        {"name": "Kamungo", "latitude": -10.39738, "longitude": 14.85357},
+        {"name": "Kassamba", "latitude": -11.0081, "longitude": 15.08084},
+        {"name": "Kazanga", "latitude": -10.97558, "longitude": 15.07771},
+        {"name": "Kifangondo", "latitude": -10.74362, "longitude": 14.99205},
+        {"name": "Kigia", "latitude": -10.67692, "longitude": 14.9711},
+        {"name": "Kijanga", "latitude": -10.78567, "longitude": 15.00364},
+        {"name": "Kimone", "latitude": -10.62915, "longitude": 14.96102},
+        {"name": "Kimplina", "latitude": -10.55121, "longitude": 14.92441},
+        {"name": "Kumbi-Calemba", "latitude": -10.73198, "longitude": 14.91978},
+        {"name": "Lembo", "latitude": -10.76436, "longitude": 14.8412},
+        {"name": "Lucala", "latitude": -10.56305, "longitude": 14.92681},
+        {"name": "Luxanda", "latitude": -10.46202, "longitude": 14.88513},
+        {"name": "Mugango", "latitude": -10.51632, "longitude": 14.91101},
+        {"name": "Mulemba", "latitude": -10.40817, "longitude": 14.85644},
+        {"name": "Palanga", "latitude": -10.73218, "longitude": 14.9902},
+        {"name": "Santa Isabel", "latitude": -10.7562, "longitude": 14.99136},
+        {"name": "Tranganda", "latitude": -10.76595, "longitude": 14.82327},
+        {"name": "Upela", "latitude": -11.05343, "longitude": 15.08223},
+        {"name": "Vumbe", "latitude": -10.59205, "longitude": 15.44368},
+        {"name": "Xele", "latitude": -10.44062, "longitude": 14.87314}
+      ]},
+      {"name": "Quilenda", "latitude": -10.64145, "longitude": 14.33582, "bairros": [
+        {"name": "Banza Cassussua", "latitude": -10.7415, "longitude": 14.34083},
+        {"name": "Caetela", "latitude": -10.7177, "longitude": 14.34437},
+        {"name": "Cafululo", "latitude": -10.65542, "longitude": 14.35953},
+        {"name": "Calumbi", "latitude": -10.40075, "longitude": 14.04783},
+        {"name": "Cangingila", "latitude": -10.63072, "longitude": 14.3239},
+        {"name": "Carioneca", "latitude": -10.65175, "longitude": 14.33325},
+        {"name": "Charua", "latitude": -10.73541, "longitude": 14.36259},
+        {"name": "Currissanga", "latitude": -10.74592, "longitude": 14.35216},
+        {"name": "Guarna", "latitude": -10.69554, "longitude": 14.33945},
+        {"name": "Mucuso", "latitude": -10.7504, "longitude": 14.25507},
+        {"name": "Ngombe", "latitude": -10.66728, "longitude": 14.32805},
+        {"name": "Quimbangi", "latitude": -10.72209, "longitude": 14.35303},
+        {"name": "Quingondondo", "latitude": -10.63986, "longitude": 14.32745},
+        {"name": "Quitacata", "latitude": -10.6867, "longitude": 14.33544},
+        {"name": "Santana", "latitude": -10.63529, "longitude": 14.34033}
+      ]},
+      {"name": "Quirimbo", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Quissongo", "latitude": -10.03639, "longitude": 15.08118, "bairros": [
+        {"name": "Cambulungo", "latitude": -10.06069, "longitude": 15.07699},
+        {"name": "Carinje", "latitude": -10.1102, "longitude": 15.07054},
+        {"name": "Kissumbata", "latitude": -10.17117, "longitude": 15.08629},
+        {"name": "Mugilaengue", "latitude": -9.99009, "longitude": 15.07842},
+        {"name": "Quissuto", "latitude": -10.05132, "longitude": 15.09315},
+        {"name": "Ubalanga", "latitude": -10.15519, "longitude": 15.06558}
+      ]},
+      {"name": "Sanga", "latitude": -10.85551, "longitude": 14.59881, "bairros": [
+        {"name": "Assembleia", "latitude": -10.96944, "longitude": 14.60158},
+        {"name": "Assembleia Chôa", "latitude": -10.96917, "longitude": 14.6},
+        {"name": "Banza Chôa", "latitude": -10.95242, "longitude": 14.59429},
+        {"name": "Bem-vindo", "latitude": -10.83747, "longitude": 14.55637},
+        {"name": "Cahana", "latitude": -11.00194, "longitude": 14.5113},
+        {"name": "Jia", "latitude": -10.80562, "longitude": 14.52122},
+        {"name": "Kissanje", "latitude": -10.85316, "longitude": 14.59055},
+        {"name": "Londa", "latitude": -10.98014, "longitude": 14.55943},
+        {"name": "Mussende Chôa", "latitude": -10.95235, "longitude": 14.61657},
+        {"name": "Nhuma", "latitude": -10.99165, "longitude": 14.50592},
+        {"name": "Quianeca", "latitude": -10.80165, "longitude": 14.50348}
+      ]},
+      {"name": "Seles", "latitude": -11.40657, "longitude": 14.30063, "bairros": [
+        {"name": "Botera", "latitude": -11.61642, "longitude": 14.26281}
+      ]},
+      {"name": "Sumbe", "latitude": -11.20194, "longitude": 13.83968, "bairros": [
+        {"name": "Alto Chingo", "latitude": -11.16132, "longitude": 13.88518},
+        {"name": "BAIRRO É-15", "latitude": -11.19309, "longitude": 13.85377},
+        {"name": "Base de Vida - FCKS - Fábrica de Cimento do Kwanza Sul", "latitude": -11.19446, "longitude": 14.02157},
+        {"name": "Chingo", "latitude": -11.1792, "longitude": 13.86675},
+        {"name": "Projecto Habitacional Nova Cuacra", "latitude": -11.1935, "longitude": 14.04142},
+        {"name": "Projecto Habitacional “Saber Andar”", "latitude": -11.18452, "longitude": 13.9314},
+        {"name": "Quicombo", "latitude": -11.32082, "longitude": 13.81795},
+        {"name": "Zona 1", "latitude": -11.19423, "longitude": 13.8519}
+      ]},
+      {"name": "Waku Kungo", "latitude": -11.42282, "longitude": 15.12556, "bairros": [
+        {"name": "Aldeiamento 9", "latitude": -11.26849, "longitude": 15.06124},
+        {"name": "Banza", "latitude": -11.40764, "longitude": 15.13348},
+        {"name": "Caçoço", "latitude": -11.3384, "longitude": 15.27314},
+        {"name": "Cumbúndi Cungo", "latitude": -11.42747, "longitude": 15.07524},
+        {"name": "Etunda", "latitude": -11.2461, "longitude": 15.13855},
+        {"name": "Kachongono", "latitude": -11.24345, "longitude": 15.05437},
+        {"name": "Kissuquila", "latitude": -11.16048, "longitude": 15.04937},
+        {"name": "Kitundo-tungo", "latitude": -11.09755, "longitude": 15.07333},
+        {"name": "Mande Cungo", "latitude": -11.44935, "longitude": 15.10365},
+        {"name": "Quicocoto", "latitude": -11.40769, "longitude": 15.10541},
+        {"name": "Quissecula", "latitude": -11.39412, "longitude": 15.08836},
+        {"name": "Santomistas", "latitude": -11.42923, "longitude": 15.11982}
+      ]}
+    ]},
+    {"name": "Cubango", "capital": "Menongue", "latitude": -15.73491, "longitude": 18.23056, "municipalities": [
+      {"name": "Caiundo", "latitude": -15.70141, "longitude": 17.45992, "bairros": [
+        {"name": "Cabindele", "latitude": -15.79643, "longitude": 17.54723},
+        {"name": "Chimbueta", "latitude": -15.95942, "longitude": 17.62117},
+        {"name": "Diziva", "latitude": -15.51955, "longitude": 17.30656},
+        {"name": "Jamba-Cueio", "latitude": -15.42484, "longitude": 17.97646},
+        {"name": "Mucundi", "latitude": -16.28009, "longitude": 17.67685}
+      ]},
+      {"name": "Calai", "latitude": -17.88741, "longitude": 19.76926, "bairros": [
+        {"name": "Bulo", "latitude": -17.85092, "longitude": 19.67972}
+      ]},
+      {"name": "Chinguanja", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Cuangar", "latitude": -17.60977, "longitude": 18.62233, "bairros": [
+        {"name": "Cabo", "latitude": -17.31667, "longitude": 18.35},
+        {"name": "Camuenha", "latitude": -17.38888, "longitude": 18.4077},
+        {"name": "Capasso", "latitude": -17.33848, "longitude": 18.35189},
+        {"name": "Dala", "latitude": -17.65883, "longitude": 18.66394},
+        {"name": "Muoca", "latitude": -17.35838, "longitude": 18.36903}
+      ]},
+      {"name": "Cuchi", "latitude": -14.65197, "longitude": 16.89399, "bairros": []},
+      {"name": "Cutato", "latitude": -14.3719, "longitude": 16.49416, "bairros": []},
+      {"name": "Longa", "latitude": -14.60501, "longitude": 18.47837, "bairros": [
+        {"name": "Masseca", "latitude": -14.68714, "longitude": 18.66395}
+      ]},
+      {"name": "Mavengue", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Menongue", "latitude": -14.66107, "longitude": 17.68203, "bairros": [
+        {"name": "Agostinho Neto", "latitude": -14.65514, "longitude": 17.64478},
+        {"name": "Cachimbo", "latitude": -14.60371, "longitude": 17.69751},
+        {"name": "Camosso", "latitude": -14.62627, "longitude": 17.65173},
+        {"name": "Candingo", "latitude": -14.70113, "longitude": 17.65832},
+        {"name": "Cavaco", "latitude": -14.66022, "longitude": 17.70021},
+        {"name": "Centro de Larvicultura do Missombo - Base de Vida", "latitude": -14.79808, "longitude": 17.68749},
+        {"name": "Chioca", "latitude": -14.22354, "longitude": 17.75418},
+        {"name": "Comandante Gika", "latitude": -14.68113, "longitude": 17.6787},
+        {"name": "Combambe Velho", "latitude": -14.68104, "longitude": 17.7113},
+        {"name": "Cuenha", "latitude": -14.70949, "longitude": 17.66372},
+        {"name": "Cutala", "latitude": -14.61748, "longitude": 17.66535},
+        {"name": "Dangereux", "latitude": -14.66754, "longitude": 17.74336},
+        {"name": "Garcia Neto", "latitude": -14.68385, "longitude": 17.69489},
+        {"name": "Hoji-ya-Henda", "latitude": -14.64204, "longitude": 17.67597},
+        {"name": "Iaonga", "latitude": -14.06118, "longitude": 17.47376},
+        {"name": "Lumeta", "latitude": -14.68308, "longitude": 17.73086},
+        {"name": "Mabaia", "latitude": -14.66186, "longitude": 17.7574},
+        {"name": "Macueba", "latitude": -14.65404, "longitude": 17.65569},
+        {"name": "Missombo", "latitude": -14.79214, "longitude": 17.68188},
+        {"name": "Novo", "latitude": -14.6726, "longitude": 17.70918},
+        {"name": "Pandera", "latitude": -14.65004, "longitude": 17.67149},
+        {"name": "Saidy Mingas", "latitude": -14.64358, "longitude": 17.68827},
+        {"name": "Samuel", "latitude": -14.63129, "longitude": 17.70945},
+        {"name": "São José", "latitude": -14.63609, "longitude": 17.65574},
+        {"name": "Saúde", "latitude": -14.65689, "longitude": 17.67585},
+        {"name": "Tchifuaia", "latitude": -14.68299, "longitude": 17.70476},
+        {"name": "Tchihongo", "latitude": -14.56143, "longitude": 17.71989},
+        {"name": "Tomás", "latitude": -14.64098, "longitude": 17.67434},
+        {"name": "Tucuve", "latitude": -14.69579, "longitude": 17.6691},
+        {"name": "Victória", "latitude": -14.65084, "longitude": 17.69326}
+      ]},
+      {"name": "Nancova", "latitude": -16.3894, "longitude": 18.98654, "bairros": [
+        {"name": "Baixo Longa", "latitude": -15.71348, "longitude": 18.63997}
+      ]},
+      {"name": "Savate", "latitude": -16.8334, "longitude": 17.96207, "bairros": [
+        {"name": "Aldeia", "latitude": -17.00347, "longitude": 18.1354},
+        {"name": "Catambue", "latitude": -17.06475, "longitude": 18.16815},
+        {"name": "Deleto", "latitude": -17.13021, "longitude": 18.20874},
+        {"name": "Gunda", "latitude": -16.92486, "longitude": 18.0734},
+        {"name": "Matende", "latitude": -17.01254, "longitude": 18.53998},
+        {"name": "Tunga", "latitude": -16.67855, "longitude": 17.87272}
+      ]}
+    ]},
+    {"name": "Cunene", "capital": "Cuanhama", "latitude": -16.27222, "longitude": 15.26805, "municipalities": [
+      {"name": "Cafima", "latitude": -16.63512, "longitude": 16.0318, "bairros": []},
+      {"name": "Cahama", "latitude": -16.28279, "longitude": 14.30251, "bairros": [
+        {"name": "Kavalawa", "latitude": -16.13178, "longitude": 14.11249},
+        {"name": "Otchinjau", "latitude": -16.50329, "longitude": 13.92491},
+        {"name": "Uia", "latitude": -16.41936, "longitude": 14.63243}
+      ]},
+      {"name": "Chiéde", "latitude": -17.17342, "longitude": 15.99153, "bairros": [
+        {"name": "Chipela", "latitude": -17.21403, "longitude": 16.23283},
+        {"name": "Mukua", "latitude": -17.20894, "longitude": 16.06562},
+        {"name": "Omandobe", "latitude": -17.25366, "longitude": 16.11363}
+      ]},
+      {"name": "Chissuata", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Chitado", "latitude": -17.31283, "longitude": 13.90458, "bairros": []},
+      {"name": "Cuanhama", "latitude": -17.07052, "longitude": 15.72801, "bairros": [
+        {"name": "Ekuma", "latitude": -17.04034, "longitude": 15.733},
+        {"name": "Kafitu", "latitude": -17.07144, "longitude": 15.71481},
+        {"name": "Kakuluvale", "latitude": -17.06518, "longitude": 15.7064}
+      ]},
+      {"name": "Curoca", "latitude": -16.65629, "longitude": 13.42353, "bairros": []},
+      {"name": "Cuvelai", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Humbe", "latitude": -16.68579, "longitude": 14.90486, "bairros": [
+        {"name": "Chiulo", "latitude": -16.5372, "longitude": 14.84907}
+      ]},
+      {"name": "Mupa", "latitude": -16.18048, "longitude": 15.74591, "bairros": [
+        {"name": "Calonga", "latitude": -16.12204, "longitude": 15.21918},
+        {"name": "Chimue", "latitude": -15.16839, "longitude": 16.69694},
+        {"name": "Cuvati", "latitude": -15.32956, "longitude": 16.8506},
+        {"name": "Cuvelai-Mucolongodijo", "latitude": -15.66452, "longitude": 15.80241}
+      ]},
+      {"name": "Namacunde", "latitude": -17.30489, "longitude": 15.84221, "bairros": [
+        {"name": "Santa Clara", "latitude": -17.38266, "longitude": 15.88874}
+      ]},
+      {"name": "Naulila", "latitude": -17.20503, "longitude": 14.67816, "bairros": [
+        {"name": "Calueque", "latitude": -17.27864, "longitude": 14.53663},
+        {"name": "Estaleiro Mota-Engil Angola - Área Social", "latitude": -17.27842, "longitude": 14.5425},
+        {"name": "Onangobe", "latitude": -17.38921, "longitude": 14.97899},
+        {"name": "Oswin Mukulu", "latitude": -17.38808, "longitude": 15.01536}
+      ]},
+      {"name": "Nehone", "latitude": -16.63512, "longitude": 16.0318, "bairros": [
+        {"name": "Evale", "latitude": -16.55266, "longitude": 15.74021},
+        {"name": "Nehone Cafima", "latitude": -16.63512, "longitude": 16.0318},
+        {"name": "Tchomporo Oximolo", "latitude": -16.32089, "longitude": 16.69645}
+      ]},
+      {"name": "Ombadja", "latitude": -16.74688, "longitude": 14.97198, "bairros": [
+        {"name": "Hengue", "latitude": -16.60851, "longitude": 15.06122},
+        {"name": "Môngua", "latitude": -16.72694, "longitude": 15.35442},
+        {"name": "Ombala yo Mungo", "latitude": -17.0822, "longitude": 15.12545},
+        {"name": "Xangongo", "latitude": -16.74373, "longitude": 14.97583}
+      ]}
+    ]},
+    {"name": "Huambo", "capital": "Huambo", "latitude": -12.60028, "longitude": 15.68685, "municipalities": [
+      {"name": "Alto Hama", "latitude": -12.22235, "longitude": 15.55014, "bairros": [
+        {"name": "Águas Quentas", "latitude": -12.15, "longitude": 15.51667},
+        {"name": "António Bastos e Silva", "latitude": -12.12023, "longitude": 15.43394},
+        {"name": "Banganga", "latitude": -12.41495, "longitude": 15.4556},
+        {"name": "Bango", "latitude": -12.1, "longitude": 15.63333},
+        {"name": "Baú", "latitude": -12.06667, "longitude": 15.66667},
+        {"name": "Bonga", "latitude": -12.30061, "longitude": 15.60642},
+        {"name": "Cabongo", "latitude": -12.37202, "longitude": 15.46895},
+        {"name": "Cacula", "latitude": -12.36728, "longitude": 15.56571},
+        {"name": "Caiaiula", "latitude": -12.18333, "longitude": 15.66667},
+        {"name": "Caiengue", "latitude": -12.43082, "longitude": 15.71562},
+        {"name": "Cambala", "latitude": -12.14196, "longitude": 15.58331},
+        {"name": "Canchindor", "latitude": -12.37907, "longitude": 15.48046},
+        {"name": "Candande", "latitude": -12.16667, "longitude": 15.61667},
+        {"name": "Candimbe", "latitude": -12.11379, "longitude": 15.56449},
+        {"name": "Cangir", "latitude": -12.4526, "longitude": 15.69157},
+        {"name": "Capanda", "latitude": -12.26155, "longitude": 15.65601},
+        {"name": "Caué", "latitude": -12.38249, "longitude": 15.63654},
+        {"name": "Cauita", "latitude": -12.44736, "longitude": 15.61931},
+        {"name": "Cavinda", "latitude": -12.1, "longitude": 15.51667},
+        {"name": "Chicombo", "latitude": -12.18492, "longitude": 15.46863},
+        {"name": "Chicondo", "latitude": -12.29203, "longitude": 15.59206},
+        {"name": "Chiconguli", "latitude": -12.36133, "longitude": 15.62627},
+        {"name": "Chimuamo", "latitude": -12.32977, "longitude": 15.69365},
+        {"name": "Chinhara", "latitude": -12.11667, "longitude": 15.63333},
+        {"name": "Chipata", "latitude": -12.42242, "longitude": 15.4958},
+        {"name": "Chipepe", "latitude": -12.08333, "longitude": 15.48333},
+        {"name": "Chissita", "latitude": -12.44641, "longitude": 15.5407},
+        {"name": "Condambo", "latitude": -12.434, "longitude": 15.5344},
+        {"name": "Cungungo", "latitude": -12.11468, "longitude": 15.63275},
+        {"name": "Fernandes Almeida", "latitude": -12.34529, "longitude": 15.70744},
+        {"name": "Gaiambuca", "latitude": -12.11667, "longitude": 15.43333},
+        {"name": "Gumbe", "latitude": -12.10356, "longitude": 15.50061},
+        {"name": "Humbi", "latitude": -12.22252, "longitude": 15.49591},
+        {"name": "Lemiro", "latitude": -12.1, "longitude": 15.43333},
+        {"name": "Lonundo", "latitude": -12.1, "longitude": 15.5},
+        {"name": "Luvemba (São Miguel)", "latitude": -12.0219, "longitude": 15.59602},
+        {"name": "Malungo", "latitude": -12.13333, "longitude": 15.46667},
+        {"name": "Mendes e Sobrinho", "latitude": -12.18333, "longitude": 15.7},
+        {"name": "Missassa", "latitude": -12.24622, "longitude": 15.69858},
+        {"name": "Muecária", "latitude": -12.20851, "longitude": 15.64527},
+        {"name": "Numba", "latitude": -12.24901, "longitude": 15.44035},
+        {"name": "Panguire", "latitude": -12.31906, "longitude": 15.52955},
+        {"name": "Quipeio", "latitude": -12.43633, "longitude": 15.49894},
+        {"name": "Salomão", "latitude": -12.22107, "longitude": 15.54402},
+        {"name": "Sangombe", "latitude": -12.41478, "longitude": 15.54468},
+        {"name": "Simba", "latitude": -12.08006, "longitude": 15.54783},
+        {"name": "Tchindjeque", "latitude": -12.36503, "longitude": 15.51562},
+        {"name": "Ussito", "latitude": -12.31294, "longitude": 15.54557},
+        {"name": "Village", "latitude": -11.87681, "longitude": 15.46514},
+        {"name": "Wama", "latitude": -12.23207, "longitude": 15.55125}
+      ]},
+      {"name": "Bailundo", "latitude": -12.19216, "longitude": 15.86092, "bairros": [
+        {"name": "Alcides Silva", "latitude": -12.16667, "longitude": 15.76667},
+        {"name": "António Braz", "latitude": -12.13333, "longitude": 15.7},
+        {"name": "Banda", "latitude": -12.0852, "longitude": 15.80223},
+        {"name": "Bulo", "latitude": -12.43522, "longitude": 15.82274},
+        {"name": "Cachaca", "latitude": -12.46373, "longitude": 15.74166},
+        {"name": "Caiaia", "latitude": -12.36401, "longitude": 15.72589},
+        {"name": "Caiti", "latitude": -12.27504, "longitude": 15.84875},
+        {"name": "Camissanga", "latitude": -12.08333, "longitude": 15.8},
+        {"name": "Cangôme", "latitude": -12.19754, "longitude": 15.85193},
+        {"name": "Canguengue", "latitude": -12.1, "longitude": 15.71667},
+        {"name": "Catuta", "latitude": -12.18333, "longitude": 15.71667},
+        {"name": "Centralidade da Halavala", "latitude": -12.18058, "longitude": 15.83824},
+        {"name": "Chicaca Primeiro", "latitude": -12.34857, "longitude": 15.78239},
+        {"name": "Chicaca Segundo", "latitude": -12.36613, "longitude": 15.77428},
+        {"name": "Chinene", "latitude": -12.26582, "longitude": 15.766},
+        {"name": "Dimba", "latitude": -12.32854, "longitude": 15.79794},
+        {"name": "Ganga", "latitude": -12.08676, "longitude": 15.80239},
+        {"name": "Lunge", "latitude": -12.21131, "longitude": 16.10965},
+        {"name": "Oliveira", "latitude": -12.06667, "longitude": 15.85},
+        {"name": "Quinje", "latitude": -12.1643, "longitude": 15.82879},
+        {"name": "Samachuca", "latitude": -12.23935, "longitude": 15.79592},
+        {"name": "Súria", "latitude": -12.46793, "longitude": 15.78368},
+        {"name": "Tchindumbo", "latitude": -12.38333, "longitude": 15.81667},
+        {"name": "Val Verde", "latitude": -12.23602, "longitude": 15.86269},
+        {"name": "Vila Moisés", "latitude": -12.2041, "longitude": 15.85415}
+      ]},
+      {"name": "Bimbe", "latitude": -11.81994, "longitude": 15.82948, "bairros": [
+        {"name": "Cululo", "latitude": -11.64516, "longitude": 15.64674}
+      ]},
+      {"name": "Caála", "latitude": -12.84841, "longitude": 15.55819, "bairros": [
+        {"name": "Aleva", "latitude": -12.96919, "longitude": 15.66076},
+        {"name": "Belém do Ndango", "latitude": -12.81527, "longitude": 15.64739},
+        {"name": "Cacondá", "latitude": -12.86778, "longitude": 15.57639},
+        {"name": "Cahopa", "latitude": -12.98639, "longitude": 15.56667},
+        {"name": "Calenga", "latitude": -12.85025, "longitude": 15.46653},
+        {"name": "Calenguele I", "latitude": -12.94111, "longitude": 15.57278},
+        {"name": "Calenguele II", "latitude": -12.95222, "longitude": 15.57611},
+        {"name": "Calilongue", "latitude": -12.84221, "longitude": 15.57053},
+        {"name": "Calipi", "latitude": -13.00898, "longitude": 15.70883},
+        {"name": "Camihamba I", "latitude": -12.9, "longitude": 15.56972},
+        {"name": "Camihamba II", "latitude": -12.91611, "longitude": 15.57083},
+        {"name": "Camunda", "latitude": -12.90122, "longitude": 15.54287},
+        {"name": "Cangote", "latitude": -12.82638, "longitude": 15.60067},
+        {"name": "Capinganlo", "latitude": -12.96802, "longitude": 15.45323},
+        {"name": "Capungue", "latitude": -12.93795, "longitude": 15.46842},
+        {"name": "Cassoco", "latitude": -12.88623, "longitude": 15.51942},
+        {"name": "Cassoma", "latitude": -12.86855, "longitude": 15.52426},
+        {"name": "Cauengula", "latitude": -12.8663, "longitude": 15.54537},
+        {"name": "Cavincia", "latitude": -12.89806, "longitude": 15.64028},
+        {"name": "Centralidade Faustino Muteka", "latitude": -12.81323, "longitude": 15.59632},
+        {"name": "Cossito", "latitude": -12.90198, "longitude": 15.4849},
+        {"name": "Lilila", "latitude": -13.00306, "longitude": 15.58889},
+        {"name": "Lua Cheia", "latitude": -12.83079, "longitude": 15.57},
+        {"name": "Lumbandi Nova", "latitude": -13.02675, "longitude": 15.63253},
+        {"name": "Lupambala", "latitude": -13.00526, "longitude": 15.44429},
+        {"name": "Lupili", "latitude": -12.98971, "longitude": 15.47859},
+        {"name": "Luquissa", "latitude": -12.90845, "longitude": 15.62579},
+        {"name": "Mâma", "latitude": -12.94405, "longitude": 15.51836},
+        {"name": "Mandele", "latitude": -13.05757, "longitude": 15.51057},
+        {"name": "Mendes", "latitude": -12.78032, "longitude": 15.52801},
+        {"name": "Muangundja", "latitude": -12.81751, "longitude": 15.55005},
+        {"name": "Mussili", "latitude": -12.87861, "longitude": 15.57778},
+        {"name": "Nacandiango", "latitude": -12.82732, "longitude": 15.54883},
+        {"name": "Ndango de Cima", "latitude": -12.82031, "longitude": 15.64023},
+        {"name": "Ndôngua", "latitude": -12.87472, "longitude": 15.58694},
+        {"name": "Nguia", "latitude": -12.88184, "longitude": 15.55215},
+        {"name": "Ngumbe", "latitude": -12.98946, "longitude": 15.53679},
+        {"name": "Ngundji", "latitude": -12.8775, "longitude": 15.61861},
+        {"name": "Pahula", "latitude": -12.89889, "longitude": 15.59059},
+        {"name": "Pambala", "latitude": -12.98883, "longitude": 15.4538},
+        {"name": "Pinheiro", "latitude": -12.80336, "longitude": 15.6386},
+        {"name": "Puacha", "latitude": -13.00097, "longitude": 15.55959},
+        {"name": "Pumumo", "latitude": -12.96998, "longitude": 15.48683},
+        {"name": "Salumenne", "latitude": -12.93185, "longitude": 15.6965},
+        {"name": "Severiano", "latitude": -12.97333, "longitude": 15.59389},
+        {"name": "Sipiti", "latitude": -12.96444, "longitude": 15.56583},
+        {"name": "Tchandenda", "latitude": -12.83724, "longitude": 15.54944},
+        {"name": "Tchivala", "latitude": -13.03696, "longitude": 15.44249},
+        {"name": "Ussissi", "latitude": -13.0625, "longitude": 15.49806}
+      ]},
+      {"name": "Cachiungo", "latitude": -12.56692, "longitude": 16.22704, "bairros": []},
+      {"name": "Chicala Choloanga", "latitude": -12.63388, "longitude": 16.04613, "bairros": [
+        {"name": "Aldeia Camela Amões", "latitude": -12.39095, "longitude": 16.03777},
+        {"name": "Cachembi", "latitude": -12.78067, "longitude": 15.96807},
+        {"name": "Chitungo", "latitude": -12.47656, "longitude": 15.81035},
+        {"name": "Nunda", "latitude": -12.86369, "longitude": 15.97321}
+      ]},
+      {"name": "Chilata", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Chinjenje", "latitude": -12.8213, "longitude": 14.93148, "bairros": [
+        {"name": "Caloponde", "latitude": -12.86926, "longitude": 14.86707},
+        {"name": "Salanda", "latitude": -12.86367, "longitude": 14.84627},
+        {"name": "Sangiri", "latitude": -12.8428, "longitude": 14.85229}
+      ]},
+      {"name": "Cuima", "latitude": -13.24302, "longitude": 15.64073, "bairros": [
+        {"name": "Balavandê", "latitude": -13.16079, "longitude": 15.36905},
+        {"name": "Calongondjo", "latitude": -13.11827, "longitude": 15.64017},
+        {"name": "Catata", "latitude": -13.39652, "longitude": 15.41613},
+        {"name": "Catchululo", "latitude": -13.20173, "longitude": 15.44703},
+        {"name": "Cuahamba", "latitude": -13.03408, "longitude": 15.66775},
+        {"name": "Cutambela", "latitude": -13.24639, "longitude": 15.40139},
+        {"name": "Elanda", "latitude": -13.1825, "longitude": 15.40806},
+        {"name": "Elenga", "latitude": -13.10524, "longitude": 15.47496},
+        {"name": "Gove", "latitude": -13.45924, "longitude": 15.84649},
+        {"name": "Joaquim Pinto", "latitude": -13.13375, "longitude": 15.43095},
+        {"name": "Lombalaca", "latitude": -13.14694, "longitude": 15.49639},
+        {"name": "Lomué", "latitude": -13.17227, "longitude": 15.65799},
+        {"name": "Loquengo", "latitude": -13.0475, "longitude": 15.63654},
+        {"name": "Lungo", "latitude": -13.06472, "longitude": 15.55917},
+        {"name": "Ndosse", "latitude": -13.1854, "longitude": 15.49409},
+        {"name": "Ndumbo", "latitude": -13.19392, "longitude": 15.36335},
+        {"name": "Sacandumbo", "latitude": -13.18056, "longitude": 15.38528},
+        {"name": "Sahama", "latitude": -13.24, "longitude": 15.35917},
+        {"name": "Tchitete", "latitude": -13.24833, "longitude": 15.29833}
+      ]},
+      {"name": "Ecunha", "latitude": -12.68276, "longitude": 15.50553, "bairros": [
+        {"name": "Augusto", "latitude": -12.54726, "longitude": 15.4665},
+        {"name": "Bundo de Baixo", "latitude": -12.51694, "longitude": 15.53757},
+        {"name": "Bundo de Cima", "latitude": -12.50676, "longitude": 15.53184},
+        {"name": "Cahenda", "latitude": -12.57523, "longitude": 15.5689},
+        {"name": "Cahocua", "latitude": -12.62438, "longitude": 15.28774},
+        {"name": "Calei Tchitue", "latitude": -12.6893, "longitude": 15.56244},
+        {"name": "Cália", "latitude": -12.75917, "longitude": 15.5175},
+        {"name": "Calobombo", "latitude": -12.74572, "longitude": 15.34682},
+        {"name": "Calombo", "latitude": -12.61424, "longitude": 15.49258},
+        {"name": "Calongue", "latitude": -12.56801, "longitude": 15.26883},
+        {"name": "Calumba", "latitude": -12.61193, "longitude": 15.44221},
+        {"name": "Caluponde", "latitude": -12.56667, "longitude": 15.35},
+        {"name": "Candala", "latitude": -12.54602, "longitude": 15.31977},
+        {"name": "Candingo", "latitude": -12.74289, "longitude": 15.46923},
+        {"name": "Candjamba", "latitude": -12.61259, "longitude": 15.399},
+        {"name": "Candjangui", "latitude": -12.51804, "longitude": 15.57634},
+        {"name": "Canhala Colohombo", "latitude": -12.64399, "longitude": 15.428},
+        {"name": "Canhendjengo", "latitude": -12.75266, "longitude": 15.44953},
+        {"name": "Canjunjo", "latitude": -12.6749, "longitude": 15.48543},
+        {"name": "Cassamba", "latitude": -12.60709, "longitude": 15.54934},
+        {"name": "Cassólio", "latitude": -12.54113, "longitude": 15.40593},
+        {"name": "Catanha", "latitude": -12.58575, "longitude": 15.44245},
+        {"name": "Catapi", "latitude": -12.60209, "longitude": 15.33204},
+        {"name": "Catchilala", "latitude": -12.72951, "longitude": 15.54284},
+        {"name": "Chambuluca", "latitude": -12.71078, "longitude": 15.53159},
+        {"name": "Chatruda", "latitude": -12.59768, "longitude": 15.25406},
+        {"name": "Chicuco", "latitude": -12.60562, "longitude": 15.26082},
+        {"name": "Chidanguite", "latitude": -12.63365, "longitude": 15.31032},
+        {"name": "Chimbango", "latitude": -12.6044, "longitude": 15.53257},
+        {"name": "Chivela", "latitude": -12.5429, "longitude": 15.21764},
+        {"name": "Dondelo", "latitude": -12.63643, "longitude": 15.54721},
+        {"name": "Dumbo", "latitude": -12.49262, "longitude": 15.5595},
+        {"name": "Evaristo", "latitude": -12.69504, "longitude": 15.56591},
+        {"name": "Faria", "latitude": -12.67135, "longitude": 15.46935},
+        {"name": "Forte da Tchissala", "latitude": -12.64213, "longitude": 15.6196},
+        {"name": "Ilha dos Amores", "latitude": -12.46451, "longitude": 15.50005},
+        {"name": "J. A. Lopes", "latitude": -12.7571, "longitude": 15.43556},
+        {"name": "J. Correia", "latitude": -12.60067, "longitude": 15.46506},
+        {"name": "J. Ricardo", "latitude": -12.54567, "longitude": 15.27094},
+        {"name": "Juila", "latitude": -12.62148, "longitude": 15.54891},
+        {"name": "L. Pereira", "latitude": -12.53616, "longitude": 15.44245},
+        {"name": "Liavata", "latitude": -12.59598, "longitude": 15.58823},
+        {"name": "Livongue", "latitude": -12.72567, "longitude": 15.60754},
+        {"name": "Lombimba", "latitude": -12.4885, "longitude": 15.72268},
+        {"name": "Luhamo", "latitude": -12.55581, "longitude": 15.27813},
+        {"name": "Mabombo", "latitude": -12.69879, "longitude": 15.49986},
+        {"name": "Maiaia", "latitude": -12.59807, "longitude": 15.66521},
+        {"name": "Mbangela I", "latitude": -12.57306, "longitude": 15.33611},
+        {"name": "Mbuengo", "latitude": -12.56889, "longitude": 15.34667},
+        {"name": "Missão do Quipeio", "latitude": -12.52529, "longitude": 15.49441},
+        {"name": "Ngongo", "latitude": -12.55646, "longitude": 15.67646},
+        {"name": "Ningui", "latitude": -12.70087, "longitude": 15.55364},
+        {"name": "Olivério", "latitude": -12.6892, "longitude": 15.45786},
+        {"name": "Quilono", "latitude": -12.53943, "longitude": 15.30796},
+        {"name": "Sacuparica", "latitude": -12.63047, "longitude": 15.49356},
+        {"name": "Saluquelessi", "latitude": -12.7335, "longitude": 15.49857},
+        {"name": "Samacala", "latitude": -12.52941, "longitude": 15.41511},
+        {"name": "Samahina", "latitude": -12.54925, "longitude": 15.6814},
+        {"name": "Sambalundo", "latitude": -12.56405, "longitude": 15.53944},
+        {"name": "Sambemba", "latitude": -12.59344, "longitude": 15.43332},
+        {"name": "Samussesse", "latitude": -12.77006, "longitude": 15.41231},
+        {"name": "Sanga", "latitude": -12.62281, "longitude": 15.61394},
+        {"name": "Saniuhini", "latitude": -12.58056, "longitude": 15.34278},
+        {"name": "Santa Maria", "latitude": -12.52409, "longitude": 15.47892},
+        {"name": "Santa Teresa", "latitude": -12.51904, "longitude": 15.49825},
+        {"name": "Santo António", "latitude": -12.57944, "longitude": 15.46317},
+        {"name": "Sico", "latitude": -12.701, "longitude": 15.56524},
+        {"name": "Sovital", "latitude": -12.5483, "longitude": 15.2437},
+        {"name": "Tchavaca", "latitude": -12.58221, "longitude": 15.47977},
+        {"name": "Tchianga", "latitude": -12.51646, "longitude": 15.65831},
+        {"name": "Tchicala", "latitude": -12.76708, "longitude": 15.45573},
+        {"name": "Tchicalambue", "latitude": -12.74069, "longitude": 15.54007},
+        {"name": "Tchicoma", "latitude": -12.51841, "longitude": 15.51848},
+        {"name": "Tchiengo", "latitude": -12.5908, "longitude": 15.23205},
+        {"name": "Tchilanda", "latitude": -12.63499, "longitude": 15.45581},
+        {"name": "Tchilumbo", "latitude": -12.58581, "longitude": 15.41947},
+        {"name": "Tchimbaca Segundo", "latitude": -12.56099, "longitude": 15.1991},
+        {"name": "Tchitue Sambaieta", "latitude": -12.68503, "longitude": 15.54668},
+        {"name": "Viluia", "latitude": -12.5627, "longitude": 15.47464},
+        {"name": "Vilulo", "latitude": -12.57239, "longitude": 15.52265}
+      ]},
+      {"name": "Galanga", "latitude": -12.06227, "longitude": 15.13876, "bairros": [
+        {"name": "Albuquerque", "latitude": -12.05524, "longitude": 15.20741},
+        {"name": "Bala", "latitude": -12.09823, "longitude": 15.19077},
+        {"name": "Beú", "latitude": -12.13333, "longitude": 15.11667},
+        {"name": "Bunje", "latitude": -12.1, "longitude": 15.23333},
+        {"name": "Cacande", "latitude": -12.1, "longitude": 15.26667},
+        {"name": "Cachetiongue", "latitude": -12.18333, "longitude": 15.15},
+        {"name": "Cachiombo", "latitude": -12.08333, "longitude": 15.21667},
+        {"name": "Candeleia", "latitude": -12.08333, "longitude": 15.11667},
+        {"name": "Capondima", "latitude": -12.10514, "longitude": 15.04592},
+        {"name": "Casimiro Borges", "latitude": -12.25059, "longitude": 15.09974},
+        {"name": "Catuculuca", "latitude": -12.22267, "longitude": 15.09275},
+        {"name": "Catucuma", "latitude": -12.07071, "longitude": 15.13333},
+        {"name": "Chacumba", "latitude": -12.1, "longitude": 15.13333},
+        {"name": "Chicala", "latitude": -12.04847, "longitude": 15.22504},
+        {"name": "Chilundulo", "latitude": -12.15, "longitude": 15.21667},
+        {"name": "Chimbungue", "latitude": -12.14725, "longitude": 15.03042},
+        {"name": "Chinjonga", "latitude": -12.11667, "longitude": 15.08333},
+        {"name": "Chipala", "latitude": -12.08333, "longitude": 15.26667},
+        {"name": "Chipuaio", "latitude": -12.22074, "longitude": 15.05622},
+        {"name": "Chiquea", "latitude": -12.08333, "longitude": 15.06667},
+        {"name": "Chitonga", "latitude": -12.19635, "longitude": 15.06158},
+        {"name": "Cumbira", "latitude": -12.18333, "longitude": 15.13333},
+        {"name": "Dunduma", "latitude": -12.08333, "longitude": 15.2},
+        {"name": "Essanjo", "latitude": -12.06667, "longitude": 15.23333},
+        {"name": "Franca", "latitude": -11.98689, "longitude": 15.36432},
+        {"name": "Javaiala", "latitude": -12.24756, "longitude": 15.02675},
+        {"name": "Linha", "latitude": -12.06667, "longitude": 15.21667},
+        {"name": "Lumango", "latitude": -12.09781, "longitude": 15.25025},
+        {"name": "Maculata", "latitude": -12.13333, "longitude": 15.23333},
+        {"name": "Mandumbo", "latitude": -12.08333, "longitude": 15.23333},
+        {"name": "Nunguno", "latitude": -12.0729, "longitude": 15.08754},
+        {"name": "Santo", "latitude": -12.08333, "longitude": 15.28333},
+        {"name": "Serrote", "latitude": -12.1, "longitude": 15.25},
+        {"name": "Tunda", "latitude": -12.22589, "longitude": 15.0268},
+        {"name": "Vila Franca", "latitude": -11.98666, "longitude": 15.36152}
+      ]},
+      {"name": "Huambo", "latitude": -12.77725, "longitude": 15.73467, "bairros": [
+        {"name": "Academico", "latitude": -12.77136, "longitude": 15.74872},
+        {"name": "Aviação", "latitude": -12.78583, "longitude": 15.72083},
+        {"name": "Benfica", "latitude": -12.88281, "longitude": 15.8163},
+        {"name": "Bomba Alta", "latitude": -12.76462, "longitude": 15.78823},
+        {"name": "Cacilhas", "latitude": -12.77793, "longitude": 15.75732},
+        {"name": "Cacoio", "latitude": -12.76901, "longitude": 15.67732},
+        {"name": "Cahumba", "latitude": -12.72506, "longitude": 15.74546},
+        {"name": "Calandula", "latitude": -12.85011, "longitude": 15.87264},
+        {"name": "Calanga", "latitude": -12.58357, "longitude": 15.70188},
+        {"name": "Calicoque", "latitude": -12.72422, "longitude": 15.6682},
+        {"name": "Calumanda", "latitude": -12.7739, "longitude": 15.71533},
+        {"name": "Calunbringo", "latitude": -12.78367, "longitude": 15.70279},
+        {"name": "Cambiote", "latitude": -12.76866, "longitude": 15.81374},
+        {"name": "Canata", "latitude": -12.76792, "longitude": 15.76209},
+        {"name": "Capingana", "latitude": -12.83333, "longitude": 15.91667},
+        {"name": "Carneiro", "latitude": -12.8919, "longitude": 15.88931},
+        {"name": "Cassenda", "latitude": -12.76916, "longitude": 15.62896},
+        {"name": "Catica", "latitude": -12.83066, "longitude": 15.95019},
+        {"name": "Chipango", "latitude": -12.88785, "longitude": 15.92611},
+        {"name": "Chipipa", "latitude": -12.56371, "longitude": 15.74026},
+        {"name": "Chiva", "latitude": -12.73199, "longitude": 15.792},
+        {"name": "Cidade Baixa", "latitude": -12.76797, "longitude": 15.74404},
+        {"name": "Compao", "latitude": -12.78438, "longitude": 15.74995},
+        {"name": "Damiasco", "latitude": -12.57377, "longitude": 15.69176},
+        {"name": "Dende", "latitude": -12.56488, "longitude": 15.75962},
+        {"name": "Fátima", "latitude": -12.78158, "longitude": 15.74262},
+        {"name": "Kamussamba", "latitude": -12.78658, "longitude": 15.75579},
+        {"name": "Kapango", "latitude": -12.78933, "longitude": 15.73007},
+        {"name": "Kaquereua", "latitude": -12.75759, "longitude": 15.70794},
+        {"name": "Longueve", "latitude": -12.90015, "longitude": 15.69751},
+        {"name": "Lossambo", "latitude": -12.84439, "longitude": 15.76378},
+        {"name": "Mbumba Jelombe", "latitude": -12.54847, "longitude": 15.71278},
+        {"name": "Mesero", "latitude": -12.51769, "longitude": 15.74195},
+        {"name": "Messele", "latitude": -12.52289, "longitude": 15.74635},
+        {"name": "Militar", "latitude": -12.77788, "longitude": 15.7257},
+        {"name": "Moinesse", "latitude": -12.63148, "longitude": 15.84033},
+        {"name": "Munda", "latitude": -12.75002, "longitude": 15.69276},
+        {"name": "Nicolau", "latitude": -12.75141, "longitude": 15.6489},
+        {"name": "Paiva", "latitude": -12.74487, "longitude": 15.68568},
+        {"name": "Queimama", "latitude": -12.52698, "longitude": 15.78355},
+        {"name": "Quissala", "latitude": -12.74238, "longitude": 15.66635},
+        {"name": "Reimundo", "latitude": -12.73561, "longitude": 15.63786},
+        {"name": "Salucombo", "latitude": -12.83597, "longitude": 15.77307},
+        {"name": "Samutaca", "latitude": -12.84556, "longitude": 15.73861},
+        {"name": "Santa Nganguela", "latitude": -12.79048, "longitude": 15.67368},
+        {"name": "Santo Amaro", "latitude": -12.72114, "longitude": 15.86179},
+        {"name": "São António", "latitude": -12.78993, "longitude": 15.71938},
+        {"name": "São Bartolomeu", "latitude": -12.75486, "longitude": 15.77298},
+        {"name": "São João", "latitude": -12.76353, "longitude": 15.75781},
+        {"name": "São José", "latitude": -12.76858, "longitude": 15.77495},
+        {"name": "São Luís", "latitude": -12.80422, "longitude": 15.73945},
+        {"name": "São Pedro Urbano", "latitude": -12.77138, "longitude": 15.72278},
+        {"name": "Sécamo", "latitude": -12.9501, "longitude": 15.90143},
+        {"name": "Tchimbondè", "latitude": -12.51621, "longitude": 15.71303},
+        {"name": "Vila Graça", "latitude": -12.7458, "longitude": 15.78711},
+        {"name": "Xipuli", "latitude": -12.74063, "longitude": 15.75086}
+      ]},
+      {"name": "Londuimbali", "latitude": -12.24156, "longitude": 15.31223, "bairros": [
+        {"name": "Afonso Calei", "latitude": -12.22563, "longitude": 15.33162},
+        {"name": "Albano Vieira", "latitude": -12.18333, "longitude": 15.31667},
+        {"name": "Arnaldo Barbedo", "latitude": -12.24433, "longitude": 15.12701},
+        {"name": "Assipi", "latitude": -12.1, "longitude": 15.31667},
+        {"name": "Benguela", "latitude": -12.1, "longitude": 15.28333},
+        {"name": "Binde", "latitude": -12.36667, "longitude": 15.15},
+        {"name": "Boondangue", "latitude": -12.48457, "longitude": 15.24716},
+        {"name": "Caiumboca", "latitude": -12.0869, "longitude": 15.40061},
+        {"name": "Caliaca", "latitude": -12.24983, "longitude": 15.31659},
+        {"name": "Calpiongo", "latitude": -12.37821, "longitude": 15.19182},
+        {"name": "Cambondo", "latitude": -12.35, "longitude": 15.2},
+        {"name": "Camenhe", "latitude": -12.26619, "longitude": 15.417},
+        {"name": "Cangôlo", "latitude": -12.33987, "longitude": 15.35252},
+        {"name": "Cangôma", "latitude": -12.36667, "longitude": 15.08333},
+        {"name": "Canjimbe", "latitude": -12.28333, "longitude": 15.28333},
+        {"name": "Canjunca", "latitude": -12.27472, "longitude": 15.36519},
+        {"name": "Canuandundo", "latitude": -12.35877, "longitude": 15.27196},
+        {"name": "Cariqueimala", "latitude": -12.36722, "longitude": 15.36468},
+        {"name": "Casimiro Coelho Borges", "latitude": -12.25, "longitude": 15.23333},
+        {"name": "Catanda", "latitude": -12.2716, "longitude": 15.35679},
+        {"name": "Catongo", "latitude": -12.06667, "longitude": 15.35},
+        {"name": "Caueal", "latitude": -12.30278, "longitude": 15.26667},
+        {"name": "Cavaiongo", "latitude": -12.23497, "longitude": 15.16089},
+        {"name": "Chacuma", "latitude": -12.48333, "longitude": 15.05},
+        {"name": "Chaiuala", "latitude": -12.11667, "longitude": 15.3},
+        {"name": "Chela", "latitude": -12.30313, "longitude": 15.43285},
+        {"name": "Chibandua", "latitude": -12.11667, "longitude": 15.28333},
+        {"name": "Chicoco", "latitude": -12.23218, "longitude": 15.31742},
+        {"name": "Chicula", "latitude": -12.06667, "longitude": 15.41667},
+        {"name": "Chilala", "latitude": -12.29884, "longitude": 15.4231},
+        {"name": "Chilembo", "latitude": -12.3, "longitude": 15.26667},
+        {"name": "Chiqueme", "latitude": -12.18333, "longitude": 15.21667},
+        {"name": "Chissamba", "latitude": -12.26029, "longitude": 15.3155},
+        {"name": "Chisseia", "latitude": -12.48908, "longitude": 15.29104},
+        {"name": "Chiuvo", "latitude": -12.30013, "longitude": 15.2334},
+        {"name": "Conga", "latitude": -12.31667, "longitude": 15.2},
+        {"name": "Cucalesse", "latitude": -12.2, "longitude": 15.2},
+        {"name": "Cumiandundo", "latitude": -12.36667, "longitude": 15.2},
+        {"name": "Cuunjo", "latitude": -12.0994, "longitude": 15.30323},
+        {"name": "Cuvombua", "latitude": -12.15888, "longitude": 15.28577},
+        {"name": "Embala do Soque", "latitude": -12.33333, "longitude": 15.11667},
+        {"name": "Gandauira", "latitude": -12.5256, "longitude": 15.23581},
+        {"name": "Jinga", "latitude": -12.2, "longitude": 15.28333},
+        {"name": "Jossei", "latitude": -12.44466, "longitude": 15.29789},
+        {"name": "Lienque", "latitude": -12.3785, "longitude": 15.18439},
+        {"name": "Longoloé", "latitude": -12.38249, "longitude": 15.4356},
+        {"name": "Lumbino", "latitude": -12.40174, "longitude": 15.21641},
+        {"name": "Lussengue", "latitude": -12.51914, "longitude": 15.23285},
+        {"name": "Mange", "latitude": -12.4837, "longitude": 15.2379},
+        {"name": "Martinho", "latitude": -12.13333, "longitude": 15.41667},
+        {"name": "Miguel Zamora", "latitude": -12.40196, "longitude": 15.43158},
+        {"name": "Muanga", "latitude": -12.32844, "longitude": 15.1526},
+        {"name": "Mutite", "latitude": -12.28333, "longitude": 15.25},
+        {"name": "Nossi", "latitude": -12.35, "longitude": 15.21667},
+        {"name": "Numbala", "latitude": -12.31632, "longitude": 15.29935},
+        {"name": "Palanca", "latitude": -12.23333, "longitude": 15.23333},
+        {"name": "Pereira e Pinto", "latitude": -12.28333, "longitude": 15.23333},
+        {"name": "Sacauaua", "latitude": -12.35, "longitude": 15.11667},
+        {"name": "Saiobe", "latitude": -12.08333, "longitude": 15.4},
+        {"name": "Salgado", "latitude": -12.4731, "longitude": 15.25736},
+        {"name": "Sambiano", "latitude": -12.2, "longitude": 15.25},
+        {"name": "Samuel", "latitude": -12.27399, "longitude": 15.1167},
+        {"name": "Sango", "latitude": -12.31667, "longitude": 15.05},
+        {"name": "Sangungo", "latitude": -12.32889, "longitude": 15.42392},
+        {"name": "Sassiri", "latitude": -12.11667, "longitude": 15.26667},
+        {"name": "Sauanda", "latitude": -12.38333, "longitude": 15.13333},
+        {"name": "Soquela", "latitude": -12.34351, "longitude": 15.16156},
+        {"name": "Tchimbungue", "latitude": -12.15266, "longitude": 15.26753},
+        {"name": "Tinguita", "latitude": -12.37691, "longitude": 15.36386},
+        {"name": "Ussoque", "latitude": -12.35316, "longitude": 15.10146},
+        {"name": "Viana", "latitude": -12.29909, "longitude": 15.34574}
+      ]},
+      {"name": "Longonjo", "latitude": -12.90904, "longitude": 15.24709, "bairros": [
+        {"name": "A. M. Ribeiro", "latitude": -12.80796, "longitude": 15.22678},
+        {"name": "Cambamba", "latitude": -12.92047, "longitude": 15.38655},
+        {"name": "Candjila", "latitude": -12.9963, "longitude": 15.32871},
+        {"name": "Canjangue", "latitude": -12.64109, "longitude": 15.23051},
+        {"name": "Cassupi I", "latitude": -13.02602, "longitude": 15.42518},
+        {"name": "Cassupi II", "latitude": -13.04391, "longitude": 15.42739},
+        {"name": "Catáli Novo", "latitude": -13.22528, "longitude": 15.26361},
+        {"name": "Damasco", "latitude": -13.17722, "longitude": 15.29389},
+        {"name": "Elundi", "latitude": -12.99278, "longitude": 15.39194},
+        {"name": "Epamba", "latitude": -13.20556, "longitude": 15.28028},
+        {"name": "Iava", "latitude": -13.19306, "longitude": 15.28833},
+        {"name": "Lépi", "latitude": -12.87606, "longitude": 15.39579},
+        {"name": "Lucamba Segundo", "latitude": -12.97669, "longitude": 15.21956},
+        {"name": "Lumingo", "latitude": -12.92918, "longitude": 15.24759},
+        {"name": "Mbongo", "latitude": -12.99425, "longitude": 15.34289},
+        {"name": "Ndanga", "latitude": -12.91858, "longitude": 15.26237},
+        {"name": "Ngolo", "latitude": -13.15556, "longitude": 15.34306},
+        {"name": "Sacahuma", "latitude": -13.18806, "longitude": 15.31806},
+        {"name": "Sacanda", "latitude": -13.20056, "longitude": 15.30611},
+        {"name": "Sacandondo", "latitude": -13.14167, "longitude": 15.29111},
+        {"name": "Sangue do Povo", "latitude": -12.93675, "longitude": 15.33148},
+        {"name": "Sapalanca", "latitude": -12.80717, "longitude": 15.34925},
+        {"name": "Sassoque", "latitude": -12.70228, "longitude": 15.26139},
+        {"name": "Sima", "latitude": -13.14861, "longitude": 15.26889},
+        {"name": "Somalia", "latitude": -13.18056, "longitude": 15.26667},
+        {"name": "Tchilavi", "latitude": -12.87238, "longitude": 15.38622},
+        {"name": "Tchinila", "latitude": -12.8864, "longitude": 15.38454}
+      ]},
+      {"name": "Mungo", "latitude": -11.83731, "longitude": 16.22092, "bairros": [
+        {"name": "Chindundo", "latitude": -11.72245, "longitude": 16.34127}
+      ]},
+      {"name": "Sambo", "latitude": -13.06045, "longitude": 16.121, "bairros": [
+        {"name": "Caluco Cambadula", "latitude": -13.11374, "longitude": 15.96526},
+        {"name": "Casseque", "latitude": -12.99686, "longitude": 15.92375},
+        {"name": "Sacaundo", "latitude": -12.96307, "longitude": 15.95089}
+      ]},
+      {"name": "Ucuma", "latitude": -12.86314, "longitude": 15.06554, "bairros": [
+        {"name": "Baluco", "latitude": -12.69723, "longitude": 15.18687},
+        {"name": "Cacoma", "latitude": -12.59346, "longitude": 15.20825},
+        {"name": "Caloquembe", "latitude": -12.85, "longitude": 15.06667},
+        {"name": "Caluache", "latitude": -12.70857, "longitude": 15.16537},
+        {"name": "Chipupa", "latitude": -12.60157, "longitude": 15.20822},
+        {"name": "D. F. Lopes", "latitude": -12.74938, "longitude": 15.11827},
+        {"name": "Dundo", "latitude": -12.59144, "longitude": 15.20305},
+        {"name": "L. Pinto", "latitude": -12.64787, "longitude": 15.21291}
+      ]}
+    ]},
+    {"name": "Huíla", "capital": "Lubango", "latitude": -14.83963, "longitude": 14.9738, "municipalities": [
+      {"name": "Caconda", "latitude": -13.73885, "longitude": 15.06197, "bairros": [
+        {"name": "Bandeira", "latitude": -14.00933, "longitude": 15.18169},
+        {"name": "Calungo", "latitude": -13.44043, "longitude": 15.22898},
+        {"name": "Camunda", "latitude": -13.43444, "longitude": 15.29016},
+        {"name": "Canassi Primeiro", "latitude": -13.58689, "longitude": 15.15289},
+        {"name": "Canduco", "latitude": -13.59078, "longitude": 14.93169},
+        {"name": "Catchipitassi", "latitude": -13.56869, "longitude": 15.11762},
+        {"name": "Catumbela", "latitude": -13.55136, "longitude": 15.14415},
+        {"name": "Chicambe", "latitude": -13.78462, "longitude": 15.25435},
+        {"name": "Chingolonga", "latitude": -14.06226, "longitude": 15.23721},
+        {"name": "Cusse", "latitude": -13.51779, "longitude": 15.19031},
+        {"name": "Gungue", "latitude": -13.73366, "longitude": 15.40872},
+        {"name": "Lele", "latitude": -14.04176, "longitude": 15.19374},
+        {"name": "Liangonga", "latitude": -13.96442, "longitude": 15.16048},
+        {"name": "Liauéua", "latitude": -13.89835, "longitude": 15.0916},
+        {"name": "Lundeia", "latitude": -13.56086, "longitude": 15.17137},
+        {"name": "Lutene", "latitude": -13.91118, "longitude": 15.09311},
+        {"name": "Malanca", "latitude": -14.06224, "longitude": 15.21364},
+        {"name": "Missão Católica de Caconda", "latitude": -13.70863, "longitude": 15.08565},
+        {"name": "Moma", "latitude": -13.54001, "longitude": 14.8911},
+        {"name": "Mussica", "latitude": -13.9306, "longitude": 15.15017},
+        {"name": "Nonguenha", "latitude": -13.4477, "longitude": 15.3227},
+        {"name": "Singue", "latitude": -13.48675, "longitude": 15.17238},
+        {"name": "Tchiambi", "latitude": -13.44127, "longitude": 15.28448},
+        {"name": "Tchilanda", "latitude": -13.54574, "longitude": 14.99189},
+        {"name": "Tchissende", "latitude": -13.5614, "longitude": 15.25439},
+        {"name": "Uaba", "latitude": -13.87429, "longitude": 14.88976}
+      ]},
+      {"name": "Cacula", "latitude": -14.49461, "longitude": 14.11712, "bairros": []},
+      {"name": "Caluquembe", "latitude": -13.78712, "longitude": 14.6887, "bairros": [
+        {"name": "Cacomba", "latitude": -13.82951, "longitude": 14.6753},
+        {"name": "Calanda", "latitude": -13.77737, "longitude": 14.69764},
+        {"name": "Calépi", "latitude": -13.87207, "longitude": 14.49772},
+        {"name": "Caloningui", "latitude": -13.82936, "longitude": 14.66573},
+        {"name": "Campo de Aviação", "latitude": -13.78079, "longitude": 14.69196},
+        {"name": "Catchicacala", "latitude": -13.77865, "longitude": 14.67319},
+        {"name": "Leprosaria", "latitude": -13.80593, "longitude": 14.67288},
+        {"name": "Ngola", "latitude": -14.14025, "longitude": 14.49384},
+        {"name": "Paróquia", "latitude": -13.78725, "longitude": 14.68903},
+        {"name": "Santo José", "latitude": -13.77979, "longitude": 14.66266},
+        {"name": "Tchicossa", "latitude": -13.76816, "longitude": 14.70073}
+      ]},
+      {"name": "Capelongo", "latitude": -14.88717, "longitude": 15.081, "bairros": [
+        {"name": "Alcácer", "latitude": -14.8428, "longitude": 15.04558},
+        {"name": "Castanheira", "latitude": -14.82611, "longitude": 15.02652},
+        {"name": "Freixiel", "latitude": -14.92275, "longitude": 15.10262},
+        {"name": "Micosse", "latitude": -14.76219, "longitude": 15.25828},
+        {"name": "Mulondo", "latitude": -15.6432, "longitude": 15.19686},
+        {"name": "Ochi", "latitude": -15.07994, "longitude": 15.40758},
+        {"name": "Sociedade de Desenvolvimento da Matala", "latitude": -14.88905, "longitude": 15.08089}
+      ]},
+      {"name": "Capunda Cavilongo", "latitude": -14.96251, "longitude": 13.98254, "bairros": [
+        {"name": "Cangolo", "latitude": -15.00273, "longitude": 13.87207},
+        {"name": "Capembe", "latitude": -14.86547, "longitude": 14.11118}
+      ]},
+      {"name": "Chibia", "latitude": -15.18533, "longitude": 13.68989, "bairros": [
+        {"name": "Chibemba", "latitude": -15.75213, "longitude": 14.07639},
+        {"name": "fasenda", "latitude": -15.72432, "longitude": 13.90323},
+        {"name": "Gambos-Chiange", "latitude": -15.73307, "longitude": 13.89015},
+        {"name": "Hungéria", "latitude": -15.31631, "longitude": 13.533},
+        {"name": "Marlin Natural Stones - Base de Vida", "latitude": -15.25613, "longitude": 13.66715},
+        {"name": "missao catolica", "latitude": -15.40691, "longitude": 13.96696},
+        {"name": "Nene", "latitude": -15.11685, "longitude": 13.50662},
+        {"name": "Quihita", "latitude": -15.37774, "longitude": 13.96208},
+        {"name": "Quimbo", "latitude": -15.71497, "longitude": 13.88134}
+      ]},
+      {"name": "Chicomba", "latitude": -14.13841, "longitude": 14.91242, "bairros": [
+        {"name": "Balambande", "latitude": -14.35752, "longitude": 15.19511},
+        {"name": "Catimba", "latitude": -14.3637, "longitude": 15.20342},
+        {"name": "Cavongui", "latitude": -14.2239, "longitude": 15.36589},
+        {"name": "Cherequera", "latitude": -14.51756, "longitude": 15.04182},
+        {"name": "Chicomba Velha", "latitude": -14.19574, "longitude": 14.90015},
+        {"name": "Chilenguela", "latitude": -14.44225, "longitude": 15.06011},
+        {"name": "Chinguenda", "latitude": -14.09206, "longitude": 15.28937},
+        {"name": "Chipipa", "latitude": -14.10044, "longitude": 15.04584},
+        {"name": "Chitapua", "latitude": -14.40851, "longitude": 15.28261},
+        {"name": "Cucala", "latitude": -14.08026, "longitude": 15.18098},
+        {"name": "Cutenda", "latitude": -14.36829, "longitude": 15.07351},
+        {"name": "Jamba iá Mina", "latitude": -14.21365, "longitude": 15.39476},
+        {"name": "Livongue", "latitude": -14.16279, "longitude": 15.15631},
+        {"name": "Missão Católica Madre Isabel", "latitude": -14.10033, "longitude": 14.92712},
+        {"name": "Qué", "latitude": -14.44237, "longitude": 14.79188},
+        {"name": "Tchicumandumbo", "latitude": -14.29484, "longitude": 15.36323},
+        {"name": "Uissingue", "latitude": -14.39008, "longitude": 15.18748}
+      ]},
+      {"name": "Chicungo", "latitude": -14.87724, "longitude": 14.19081, "bairros": [
+        {"name": "Chicuaqueia", "latitude": -14.61597, "longitude": 14.30054}
+      ]},
+      {"name": "Chipindo", "latitude": -13.81784, "longitude": 15.78787, "bairros": [
+        {"name": "Bunjei", "latitude": -13.54074, "longitude": 16.02063},
+        {"name": "Capuca", "latitude": -13.77898, "longitude": 15.8333}
+      ]},
+      {"name": "Chituto", "latitude": -15.07711, "longitude": 13.44181, "bairros": [
+        {"name": "Caholo", "latitude": -15.13328, "longitude": 13.33333}
+      ]},
+      {"name": "Cuvango", "latitude": -14.46594, "longitude": 16.29108, "bairros": [
+        {"name": "Cassangui", "latitude": -14.46727, "longitude": 16.27129},
+        {"name": "Catala", "latitude": -14.32174, "longitude": 16.34133},
+        {"name": "Indungo", "latitude": -14.8214, "longitude": 16.2582},
+        {"name": "Mangonga", "latitude": -14.39942, "longitude": 16.2828},
+        {"name": "São José", "latitude": -14.4079, "longitude": 16.2812}
+      ]},
+      {"name": "Dongo", "latitude": -14.59525, "longitude": 15.71868, "bairros": [
+        {"name": "Sassi", "latitude": -14.59336, "longitude": 15.74332}
+      ]},
+      {"name": "Galangue", "latitude": -13.79244, "longitude": 16.10538, "bairros": [
+        {"name": "Cambole", "latitude": -14.06562, "longitude": 16.42258},
+        {"name": "Mingueve", "latitude": -13.5146, "longitude": 16.50004}
+      ]},
+      {"name": "Gambos", "latitude": -14.82563, "longitude": 14.54879, "bairros": [
+        {"name": "Capato", "latitude": -14.82084, "longitude": 14.5565},
+        {"name": "Casa de Função - Instituto Nacional de Habitação (INH)", "latitude": -14.81585, "longitude": 14.51866},
+        {"name": "Catutula", "latitude": -14.83363, "longitude": 14.54175},
+        {"name": "Ferroviário", "latitude": -14.82309, "longitude": 14.54556},
+        {"name": "Hombo", "latitude": -14.90928, "longitude": 14.77756},
+        {"name": "Massumba", "latitude": -14.81134, "longitude": 14.55115},
+        {"name": "Mavinda I", "latitude": -14.82381, "longitude": 14.53825},
+        {"name": "Mavinda II", "latitude": -14.82209, "longitude": 14.52775},
+        {"name": "Mucuio", "latitude": -14.80964, "longitude": 14.52657}
+      ]},
+      {"name": "Hoque", "latitude": -14.6617, "longitude": 13.89942, "bairros": [
+        {"name": "Casa das Madres", "latitude": -14.77523, "longitude": 13.78087},
+        {"name": "Simion Mukune", "latitude": -14.66817, "longitude": 13.89992}
+      ]},
+      {"name": "Humpata", "latitude": -15.01036, "longitude": 13.37661, "bairros": []},
+      {"name": "Jamba Mineira", "latitude": -14.69024, "longitude": 16.03059, "bairros": [
+        {"name": "Académico", "latitude": -14.69832, "longitude": 16.02526},
+        {"name": "Antero", "latitude": -14.68903, "longitude": 16.0242},
+        {"name": "Areia", "latitude": -14.69765, "longitude": 16.01741},
+        {"name": "Cacola", "latitude": -14.71853, "longitude": 16.03911},
+        {"name": "Cassinga", "latitude": -15.12365, "longitude": 16.07237},
+        {"name": "Cavinga", "latitude": -14.72348, "longitude": 16.00368},
+        {"name": "Chamutete", "latitude": -15.23208, "longitude": 16.04083},
+        {"name": "Colui", "latitude": -14.513, "longitude": 15.99667},
+        {"name": "Cuanja", "latitude": -14.68316, "longitude": 16.02017},
+        {"name": "Cului", "latitude": -14.69679, "longitude": 16.00653},
+        {"name": "Eyela", "latitude": -14.66202, "longitude": 16.03531},
+        {"name": "Ferroviário (CFM)", "latitude": -14.68502, "longitude": 16.03368},
+        {"name": "Lucunga A", "latitude": -14.70309, "longitude": 16.03137},
+        {"name": "Lucunga B", "latitude": -14.70289, "longitude": 16.01509},
+        {"name": "Morro", "latitude": -14.66763, "longitude": 16.04863},
+        {"name": "Ndjamba", "latitude": -14.68787, "longitude": 16.03407},
+        {"name": "Novo", "latitude": -14.66913, "longitude": 16.05989},
+        {"name": "Operário", "latitude": -14.68273, "longitude": 16.03119},
+        {"name": "Passi", "latitude": -15.05904, "longitude": 15.7983},
+        {"name": "Quanza", "latitude": -14.67737, "longitude": 15.99616},
+        {"name": "Santa Terezinha", "latitude": -14.69396, "longitude": 16.03286},
+        {"name": "Techacaia", "latitude": -15.07639, "longitude": 15.94663},
+        {"name": "Zona A", "latitude": -14.68967, "longitude": 16.03217},
+        {"name": "Zona B", "latitude": -14.69354, "longitude": 16.02733}
+      ]},
+      {"name": "Lubango", "latitude": -14.91956, "longitude": 13.48975, "bairros": [
+        {"name": "14 de Abril", "latitude": -14.91608, "longitude": 13.50654},
+        {"name": "A Luta Continua", "latitude": -14.93921, "longitude": 13.48821},
+        {"name": "Agostinho Neto", "latitude": -14.92543, "longitude": 13.48353},
+        {"name": "Arimba", "latitude": -14.94821, "longitude": 13.59518},
+        {"name": "Bairro A", "latitude": -14.91289, "longitude": 13.58906},
+        {"name": "Bairro B", "latitude": -14.91881, "longitude": 13.60351},
+        {"name": "Base de Vida", "latitude": -14.95057, "longitude": 13.54239},
+        {"name": "Boca da Humpata", "latitude": -14.94073, "longitude": 13.48425},
+        {"name": "Bula Matadi", "latitude": -14.90035, "longitude": 13.50777},
+        {"name": "Casa do Arquitecto José Frederico Ludovice", "latitude": -14.90656, "longitude": 13.51056},
+        {"name": "Casas de Passagem", "latitude": -14.92255, "longitude": 13.47696},
+        {"name": "Casas Económicas", "latitude": -14.86879, "longitude": 13.49625},
+        {"name": "Centralidade da Quilemba", "latitude": -14.83393, "longitude": 13.56116},
+        {"name": "Centro Cívico", "latitude": -14.91926, "longitude": 13.48959},
+        {"name": "Centro Histórico", "latitude": -14.91611, "longitude": 13.49794},
+        {"name": "Centro Urbano", "latitude": -14.91824, "longitude": 13.49355},
+        {"name": "Chimucua", "latitude": -14.86707, "longitude": 13.52535},
+        {"name": "Comandante Cowboy", "latitude": -14.9241, "longitude": 13.46675},
+        {"name": "Comandante Nzaji", "latitude": -14.93649, "longitude": 13.47628},
+        {"name": "Comandante Valódia", "latitude": -14.9302, "longitude": 13.52658},
+        {"name": "Comercial", "latitude": -14.91475, "longitude": 13.50117},
+        {"name": "Construção Desordenada", "latitude": -14.92613, "longitude": 13.48541},
+        {"name": "Dack-Doy", "latitude": -14.92515, "longitude": 13.51007},
+        {"name": "Dona Nene e filhos", "latitude": -14.9275, "longitude": 13.51982},
+        {"name": "Eywa", "latitude": -14.91177, "longitude": 13.5951},
+        {"name": "Ferrovia", "latitude": -14.93353, "longitude": 13.50351},
+        {"name": "Helder Neto", "latitude": -14.91411, "longitude": 13.49208},
+        {"name": "Hinhinhiqui", "latitude": -14.85216, "longitude": 13.63507},
+        {"name": "Indígena", "latitude": -14.88528, "longitude": 13.5221},
+        {"name": "Kwawa", "latitude": -14.8515, "longitude": 13.53166},
+        {"name": "Lage", "latitude": -14.92822, "longitude": 13.48463},
+        {"name": "Lalula", "latitude": -14.9093, "longitude": 13.5239},
+        {"name": "Lucrécia Paim", "latitude": -14.92492, "longitude": 13.49658},
+        {"name": "Mapunda", "latitude": -14.89814, "longitude": 13.4728},
+        {"name": "Mitcha", "latitude": -14.89867, "longitude": 13.49565},
+        {"name": "Mutundo", "latitude": -14.87466, "longitude": 13.5851},
+        {"name": "Nambambe", "latitude": -14.87738, "longitude": 13.54434},
+        {"name": "Nangombe", "latitude": -14.84228, "longitude": 13.5087},
+        {"name": "O Nosso Zimbo", "latitude": -14.9111, "longitude": 13.60142},
+        {"name": "Patrice Lumumba", "latitude": -14.92204, "longitude": 13.51956},
+        {"name": "Pedreira", "latitude": -14.91412, "longitude": 13.44896},
+        {"name": "Poiares", "latitude": -14.91379, "longitude": 13.64669},
+        {"name": "Ponte Nova", "latitude": -14.88295, "longitude": 13.58842},
+        {"name": "Projecto Habitacional da Comuna da Huíla", "latitude": -15.04781, "longitude": 13.55443},
+        {"name": "Quewa", "latitude": -14.79212, "longitude": 13.56506},
+        {"name": "Quilemba", "latitude": -14.77849, "longitude": 13.49709},
+        {"name": "Quilómetro 16", "latitude": -15.01651, "longitude": 13.59059},
+        {"name": "Senhora do Monte", "latitude": -14.93499, "longitude": 13.46989},
+        {"name": "Tchavola", "latitude": -14.85879, "longitude": 13.49617},
+        {"name": "Tchicafa", "latitude": -14.91726, "longitude": 13.47766},
+        {"name": "Tchioco", "latitude": -14.92415, "longitude": 13.54419},
+        {"name": "Tchituno", "latitude": -14.85803, "longitude": 13.57753},
+        {"name": "Zona de inundação", "latitude": -14.94077, "longitude": 13.48351}
+      ]},
+      {"name": "Matala", "latitude": -14.73836, "longitude": 15.02893, "bairros": [
+        {"name": "Convento", "latitude": -14.73581, "longitude": 15.0321},
+        {"name": "Cuvelai", "latitude": -14.55423, "longitude": 14.77775},
+        {"name": "Tchico", "latitude": -14.75054, "longitude": 15.06821},
+        {"name": "Tchinhanha", "latitude": -14.68621, "longitude": 15.00177}
+      ]},
+      {"name": "Palanca", "latitude": -14.99913, "longitude": 13.4376, "bairros": [
+        {"name": "Centro Evangélico de Medicina de Lubango (CEML)", "latitude": -14.96215, "longitude": 13.4831},
+        {"name": "Dormitórios do Centro Evangélico de Medicina de Lubango (CEML)", "latitude": -14.96451, "longitude": 13.48345}
+      ]},
+      {"name": "Quilengues", "latitude": -14.07628, "longitude": 14.07336, "bairros": [
+        {"name": "Dinde", "latitude": -14.27049, "longitude": 13.69354},
+        {"name": "Impulo", "latitude": -13.90132, "longitude": 13.67571}
+      ]},
+      {"name": "Quipungo", "latitude": -14.82563, "longitude": 14.54879, "bairros": []},
+      {"name": "Viti Vivali", "latitude": null, "longitude": null, "bairros": []}
+    ]},
+    {"name": "Icolo e Bengo", "capital": "Catete", "latitude": -9.59873, "longitude": 13.76857, "municipalities": [
+      {"name": "Bom Jesus", "latitude": -9.13127, "longitude": 13.56506, "bairros": [
+        {"name": "Ilha", "latitude": -9.0363, "longitude": 13.57548},
+        {"name": "Mazozo", "latitude": -9.10712, "longitude": 13.61906},
+        {"name": "Vila Maquis", "latitude": -9.04204, "longitude": 13.58514}
+      ]},
+      {"name": "Cabiri", "latitude": -8.92087, "longitude": 13.66523, "bairros": [
+        {"name": "Aldeia Solar de Cabiri", "latitude": -9.00578, "longitude": 13.65958},
+        {"name": "Banza Quitel", "latitude": -8.96873, "longitude": 13.63017},
+        {"name": "Kiminha", "latitude": -8.96578, "longitude": 13.79554}
+      ]},
+      {"name": "Cabo Ledo", "latitude": -9.65567, "longitude": 13.23889, "bairros": [
+        {"name": "Longa", "latitude": -10.19333, "longitude": 13.51724},
+        {"name": "Sangano", "latitude": -9.55702, "longitude": 13.20994}
+      ]},
+      {"name": "Calumbo", "latitude": -9.15002, "longitude": 13.41312, "bairros": [
+        {"name": "Centralidade do Zango V", "latitude": -9.085, "longitude": 13.45992},
+        {"name": "Zango I", "latitude": -9.00986, "longitude": 13.40521},
+        {"name": "Zango II", "latitude": -9.0195, "longitude": 13.40746},
+        {"name": "Zango III", "latitude": -9.0481, "longitude": 13.41188},
+        {"name": "Zango IV", "latitude": -9.06243, "longitude": 13.41564},
+        {"name": "Zango V", "latitude": -9.0925, "longitude": 13.42169}
+      ]},
+      {"name": "Catete", "latitude": -9.10999, "longitude": 13.68955, "bairros": [
+        {"name": "Aldeia do 107", "latitude": -9.19406, "longitude": 13.68615},
+        {"name": "Anduri", "latitude": -9.21097, "longitude": 14.03124},
+        {"name": "Banza", "latitude": -9.29458, "longitude": 14.07057},
+        {"name": "Barraca", "latitude": -9.18491, "longitude": 13.96275},
+        {"name": "Botomona", "latitude": -9.1386, "longitude": 13.79484},
+        {"name": "Cabala", "latitude": -9.27937, "longitude": 13.7488},
+        {"name": "Cacefo", "latitude": -9.28221, "longitude": 13.77717},
+        {"name": "Calomboloca", "latitude": -9.15965, "longitude": 13.82853},
+        {"name": "Cassoneca", "latitude": -9.24353, "longitude": 13.85293},
+        {"name": "Ceia", "latitude": -9.26507, "longitude": 13.85825},
+        {"name": "Fronteira Luanda - Bengo", "latitude": -9.25178, "longitude": 14.12356},
+        {"name": "Gonsala", "latitude": -9.38626, "longitude": 13.9141},
+        {"name": "Humbe", "latitude": -9.15942, "longitude": 13.68442},
+        {"name": "Inacio", "latitude": -9.11825, "longitude": 13.71577},
+        {"name": "Kaxikane", "latitude": -9.20245, "longitude": 13.68436},
+        {"name": "Kibaca", "latitude": -9.21445, "longitude": 14.04346},
+        {"name": "Luis Miguel", "latitude": -9.24047, "longitude": 13.73369},
+        {"name": "Macesso", "latitude": -9.26949, "longitude": 13.78584},
+        {"name": "Maria Teresa", "latitude": -9.25246, "longitude": 14.10422},
+        {"name": "Salao", "latitude": -9.2811, "longitude": 13.86165},
+        {"name": "Tari", "latitude": -9.11433, "longitude": 13.69488}
+      ]},
+      {"name": "Quiçama", "latitude": -9.80143, "longitude": 14.00439, "bairros": [
+        {"name": "Cassanga", "latitude": -9.50178, "longitude": 13.99064},
+        {"name": "Chio", "latitude": -9.85271, "longitude": 14.03924},
+        {"name": "Muxima", "latitude": -9.51793, "longitude": 13.95725},
+        {"name": "Vila da Muxima", "latitude": -9.5427, "longitude": 13.91138}
+      ]},
+      {"name": "Sequele", "latitude": -8.83254, "longitude": 13.42346, "bairros": [
+        {"name": "Bairro 30", "latitude": -8.97659, "longitude": 13.47622},
+        {"name": "Centralidade de Cacuaco", "latitude": -8.88852, "longitude": 13.48841},
+        {"name": "Fina", "latitude": -8.83462, "longitude": 13.46365},
+        {"name": "Funda", "latitude": -8.84481, "longitude": 13.54864},
+        {"name": "Kifangondo", "latitude": -8.76338, "longitude": 13.42399},
+        {"name": "Mundimba", "latitude": -8.98836, "longitude": 13.39336},
+        {"name": "Ponto", "latitude": -8.81788, "longitude": 13.46005},
+        {"name": "Vila Pacifica", "latitude": -8.97785, "longitude": 13.40155},
+        {"name": "Zango 0", "latitude": -8.98348, "longitude": 13.40099}
+      ]}
+    ]},
+    {"name": "Luanda", "capital": "Ingombota", "latitude": -9.01109, "longitude": 13.11181, "municipalities": [
+      {"name": "Belas", "latitude": -9.1505, "longitude": 13.10067, "bairros": [
+        {"name": "Bandeira", "latitude": -9.00407, "longitude": 13.13519},
+        {"name": "Barra do Cuanza", "latitude": -9.31973, "longitude": 13.15585},
+        {"name": "Império Residêncial", "latitude": -8.97781, "longitude": 13.20572},
+        {"name": "Mande", "latitude": -8.98556, "longitude": 13.15064},
+        {"name": "Matadouro", "latitude": -8.9791, "longitude": 13.11395},
+        {"name": "Morro dos Veados", "latitude": -8.95597, "longitude": 13.1263},
+        {"name": "Mundial", "latitude": -8.99625, "longitude": 13.128},
+        {"name": "Palmeirinhas", "latitude": -9.11752, "longitude": 13.02098},
+        {"name": "Ramiros", "latitude": -9.00656, "longitude": 13.08666},
+        {"name": "Salinas", "latitude": -8.97375, "longitude": 13.14461},
+        {"name": "Sossego", "latitude": -9.00115, "longitude": 13.21849},
+        {"name": "Tendas", "latitude": -8.97949, "longitude": 13.14691},
+        {"name": "Vila Canaa", "latitude": -8.98796, "longitude": 13.19182},
+        {"name": "Vitrona", "latitude": -9.10628, "longitude": 13.1488},
+        {"name": "Xuxa Dela", "latitude": -8.98442, "longitude": 13.14202},
+        {"name": "Zona Verde", "latitude": -8.98573, "longitude": 13.17901},
+        {"name": "Zona Verde II", "latitude": -9.00625, "longitude": 13.18809}
+      ]},
+      {"name": "Cacuaco", "latitude": -8.77711, "longitude": 13.37017, "bairros": [
+        {"name": "Kikolo", "latitude": -8.78965, "longitude": 13.33266}
+      ]},
+      {"name": "Camama", "latitude": -8.94024, "longitude": 13.26473, "bairros": [
+        {"name": "Bem Morar", "latitude": -8.95174, "longitude": 13.22615},
+        {"name": "Chimbicato", "latitude": -8.93113, "longitude": 13.24839},
+        {"name": "Fubu", "latitude": -8.93134, "longitude": 13.23046},
+        {"name": "Iraque", "latitude": -8.92113, "longitude": 13.24841},
+        {"name": "Onjo-Yeto", "latitude": -8.91159, "longitude": 13.30295},
+        {"name": "Parque das Acácias", "latitude": -8.96969, "longitude": 13.23858},
+        {"name": "Projecto Crédito Jovem", "latitude": -8.93735, "longitude": 13.25479},
+        {"name": "Sapu", "latitude": -8.9339, "longitude": 13.30802}
+      ]},
+      {"name": "Cazenga", "latitude": -8.83623, "longitude": 13.29431, "bairros": [
+        {"name": "Asa Branca", "latitude": -8.83346, "longitude": 13.29634},
+        {"name": "Cariango", "latitude": -8.83569, "longitude": 13.28137},
+        {"name": "Cazenga Popular", "latitude": -8.83353, "longitude": 13.28775},
+        {"name": "Patricio", "latitude": -8.82104, "longitude": 13.28682},
+        {"name": "Tala-Hady", "latitude": -8.83836, "longitude": 13.27953}
+      ]},
+      {"name": "Hoji ya Henda", "latitude": -8.80818, "longitude": 13.29072, "bairros": [
+        {"name": "Mabor", "latitude": -8.79411, "longitude": 13.30674},
+        {"name": "Petrangol", "latitude": -8.78591, "longitude": 13.29007},
+        {"name": "São Pedro da Barra", "latitude": -8.78873, "longitude": 13.29384}
+      ]},
+      {"name": "Ingombota", "latitude": -8.79989, "longitude": 13.25544, "bairros": [
+        {"name": "Boavista", "latitude": -8.80168, "longitude": 13.2634}
+      ]},
+      {"name": "Kilamba", "latitude": -8.99853, "longitude": 13.26638, "bairros": [
+        {"name": "Cidade do Kilamba", "latitude": -8.99953, "longitude": 13.2654},
+        {"name": "KK 5000", "latitude": -9.01525, "longitude": 13.28457},
+        {"name": "Nova Cidade de Kilamba", "latitude": -9.01546, "longitude": 13.25074},
+        {"name": "Nzinga Mbandi", "latitude": -9.10091, "longitude": 13.24524},
+        {"name": "Vila Flor", "latitude": -8.98984, "longitude": 13.30433}
+      ]},
+      {"name": "Kilamba Kiaxi", "latitude": -8.88277, "longitude": 13.26284, "bairros": [
+        {"name": "Cambamba", "latitude": -8.91731, "longitude": 13.21748},
+        {"name": "Golf", "latitude": -8.86205, "longitude": 13.25679},
+        {"name": "Golf II", "latitude": -8.87937, "longitude": 13.2529},
+        {"name": "Golfe", "latitude": -8.86322, "longitude": 13.26247},
+        {"name": "Nova Vida", "latitude": -8.90715, "longitude": 13.23054},
+        {"name": "Palanca", "latitude": -8.8607, "longitude": 13.26607},
+        {"name": "Vila Estoril", "latitude": -8.88551, "longitude": 13.25018}
+      ]},
+      {"name": "Maianga", "latitude": -8.82678, "longitude": 13.23039, "bairros": [
+        {"name": "Alvalade", "latitude": -8.83077, "longitude": 13.23576},
+        {"name": "Azul", "latitude": -8.82589, "longitude": 13.22189},
+        {"name": "Calemba", "latitude": -8.83864, "longitude": 13.24973},
+        {"name": "Cassenda", "latitude": -8.8453, "longitude": 13.22953},
+        {"name": "Cassequel", "latitude": -8.84913, "longitude": 13.24817},
+        {"name": "Cassequel do Buraco", "latitude": -8.84219, "longitude": 13.24837},
+        {"name": "Chicala", "latitude": -8.81326, "longitude": 13.2184},
+        {"name": "Coqueiros", "latitude": -8.81354, "longitude": 13.2269},
+        {"name": "Coreia", "latitude": -8.82756, "longitude": 13.21833},
+        {"name": "Kinanga", "latitude": -8.81857, "longitude": 13.22393},
+        {"name": "Maculusso", "latitude": -8.82278, "longitude": 13.24204},
+        {"name": "Martires de Kifangondo", "latitude": -8.84118, "longitude": 13.23675},
+        {"name": "Mutamba", "latitude": -8.81506, "longitude": 13.23237},
+        {"name": "Praia do Bispo", "latitude": -8.81949, "longitude": 13.22056},
+        {"name": "Prenda", "latitude": -8.83681, "longitude": 13.22263},
+        {"name": "Vila Alice", "latitude": -8.82676, "longitude": 13.24765},
+        {"name": "Vila Clotilde", "latitude": -8.82044, "longitude": 13.24458}
+      ]},
+      {"name": "Mulenvos", "latitude": -8.85227, "longitude": 13.318, "bairros": [
+        {"name": "Grafanil", "latitude": -8.86485, "longitude": 13.31081},
+        {"name": "Grafanil Bar", "latitude": -8.86485, "longitude": 13.31081},
+        {"name": "Kalawenda", "latitude": -8.85555, "longitude": 13.31636}
+      ]},
+      {"name": "Mussulo", "latitude": -8.98709, "longitude": 13.03489, "bairros": []},
+      {"name": "Rangel", "latitude": -8.82184, "longitude": 13.26996, "bairros": [
+        {"name": "Comissão do Rangel", "latitude": -8.83138, "longitude": 13.27238},
+        {"name": "Cuca", "latitude": -8.81523, "longitude": 13.27731},
+        {"name": "Indigena", "latitude": -8.82715, "longitude": 13.25814},
+        {"name": "Marcal", "latitude": -8.82028, "longitude": 13.25829},
+        {"name": "Nelito Soares", "latitude": -8.8309, "longitude": 13.25913},
+        {"name": "Neves Bendinha (Ex Bairro Popular)", "latitude": -8.84374, "longitude": 13.26087},
+        {"name": "Precol", "latitude": -8.82184, "longitude": 13.26996},
+        {"name": "Saiotes", "latitude": -8.83476, "longitude": 13.26152},
+        {"name": "Terra Nova", "latitude": -8.83676, "longitude": 13.2681},
+        {"name": "Triangulo", "latitude": -8.83147, "longitude": 13.26767},
+        {"name": "Zangado", "latitude": -8.82203, "longitude": 13.26206}
+      ]},
+      {"name": "Samba", "latitude": -8.83879, "longitude": 13.21213, "bairros": [
+        {"name": "Antiga Vila Ecocampo", "latitude": -8.8975, "longitude": 13.21269},
+        {"name": "Areia Branca", "latitude": -8.82638, "longitude": 13.2085},
+        {"name": "Corimba", "latitude": -8.8652, "longitude": 13.19975},
+        {"name": "Futungo de Belas", "latitude": -8.89352, "longitude": 13.17828},
+        {"name": "Gamek", "latitude": -8.88948, "longitude": 13.20804},
+        {"name": "Gamek a Direita", "latitude": -8.88405, "longitude": 13.20243},
+        {"name": "Mabunda", "latitude": -8.84831, "longitude": 13.20766},
+        {"name": "Morro Bento", "latitude": -8.89639, "longitude": 13.20105},
+        {"name": "Morro Bento I", "latitude": -8.89918, "longitude": 13.18883},
+        {"name": "Morro Bento II", "latitude": -8.89194, "longitude": 13.2106},
+        {"name": "Morro da Luz", "latitude": -8.86513, "longitude": 13.20638},
+        {"name": "Rocha Pinto", "latitude": -8.85792, "longitude": 13.21319},
+        {"name": "Vila do Espa", "latitude": -8.89934, "longitude": 13.20596}
+      ]},
+      {"name": "Sambizanga", "latitude": -8.80436, "longitude": 13.27151, "bairros": [
+        {"name": "Combatentes", "latitude": -8.81779, "longitude": 13.25387},
+        {"name": "Cruzeiro", "latitude": -8.81072, "longitude": 13.25044},
+        {"name": "Miramar", "latitude": -8.80933, "longitude": 13.24904},
+        {"name": "Operario", "latitude": -8.8138, "longitude": 13.24785},
+        {"name": "São Paulo", "latitude": -8.81352, "longitude": 13.25592},
+        {"name": "Valódia", "latitude": -8.82061, "longitude": 13.25064}
+      ]},
+      {"name": "Talatona", "latitude": -8.92056, "longitude": 13.19112, "bairros": [
+        {"name": "Benfica", "latitude": -8.94433, "longitude": 13.16399},
+        {"name": "Cabolombo", "latitude": -8.92946, "longitude": 13.16802},
+        {"name": "Chinguar", "latitude": -8.9613, "longitude": 13.15563},
+        {"name": "Classicos do Sul", "latitude": -8.94188, "longitude": 13.16455},
+        {"name": "Conchas de Talatona", "latitude": -8.92231, "longitude": 13.19804},
+        {"name": "Dangereux", "latitude": -8.93312, "longitude": 13.20828},
+        {"name": "Futungo I", "latitude": -8.91243, "longitude": 13.16838},
+        {"name": "Futungo II", "latitude": -8.89928, "longitude": 13.17121},
+        {"name": "Galenha/Mirantes", "latitude": -8.9167, "longitude": 13.17422},
+        {"name": "Jardins de Talatona", "latitude": -8.90836, "longitude": 13.19914},
+        {"name": "Kifica", "latitude": -8.95538, "longitude": 13.18015},
+        {"name": "Lar do Patriota", "latitude": -8.95199, "longitude": 13.19806},
+        {"name": "Militar", "latitude": -8.91006, "longitude": 13.21165},
+        {"name": "Monte Belo", "latitude": -8.92957, "longitude": 13.18528},
+        {"name": "Oceanus", "latitude": -8.94883, "longitude": 13.16539},
+        {"name": "Patriota", "latitude": -8.95053, "longitude": 13.20141},
+        {"name": "Vila Mar", "latitude": -8.93327, "longitude": 13.17808}
+      ]},
+      {"name": "Viana", "latitude": -8.90535, "longitude": 13.37109, "bairros": [
+        {"name": "500 casas", "latitude": -8.93679, "longitude": 13.37072},
+        {"name": "Estalagem", "latitude": -8.88118, "longitude": 13.3355},
+        {"name": "Jacinto Chipa", "latitude": -8.92357, "longitude": 13.33276},
+        {"name": "Kapalanga", "latitude": -8.91164, "longitude": 13.39152},
+        {"name": "Kapalanga II", "latitude": -8.9035, "longitude": 13.39135},
+        {"name": "Kikuxi", "latitude": -8.97886, "longitude": 13.36691},
+        {"name": "Kutolola", "latitude": -8.9508, "longitude": 13.36301},
+        {"name": "Lar dos Antigos Combatentes", "latitude": -8.90203, "longitude": 13.39996},
+        {"name": "Sapu km 12", "latitude": -8.89754, "longitude": 13.3315},
+        {"name": "Vila Chinesa", "latitude": -8.94271, "longitude": 13.3766}
+      ]}
+    ]},
+    {"name": "Lunda Norte", "capital": "Dundo", "latitude": -8.51085, "longitude": 19.60969, "municipalities": [
+      {"name": "Cafunfo", "latitude": -8.76766, "longitude": 18.00142, "bairros": []},
+      {"name": "Camaxilo", "latitude": -8.33857, "longitude": 18.91578, "bairros": [
+        {"name": "Salucala", "latitude": -8.05361, "longitude": 18.71365},
+        {"name": "Tchivunga", "latitude": -8.56649, "longitude": 18.88176}
+      ]},
+      {"name": "Cambulo", "latitude": -7.74326, "longitude": 21.2554, "bairros": [
+        {"name": "Cacabamba", "latitude": -7.7427, "longitude": 21.41109},
+        {"name": "Cassanguide", "latitude": -7.48367, "longitude": 21.30339},
+        {"name": "Cautoto", "latitude": -7.9008, "longitude": 21.43204},
+        {"name": "Luia", "latitude": -8.16938, "longitude": 21.55287},
+        {"name": "Lumboma", "latitude": -8.0371, "longitude": 21.50673},
+        {"name": "Luxilo", "latitude": -7.59032, "longitude": 21.34846},
+        {"name": "Nzagi", "latitude": -7.69627, "longitude": 21.36707},
+        {"name": "Samulenga", "latitude": -7.91378, "longitude": 21.44022}
+      ]},
+      {"name": "Canzar", "latitude": -7.62345, "longitude": 21.56274, "bairros": []},
+      {"name": "Capenda Camulemba", "latitude": -9.41945, "longitude": 18.43313, "bairros": [
+        {"name": "Cangola", "latitude": -9.29884, "longitude": 18.27962},
+        {"name": "Changuaguenzua", "latitude": -9.31434, "longitude": 18.35372},
+        {"name": "Muchinda", "latitude": -9.27991, "longitude": 18.24105},
+        {"name": "Terra Nova", "latitude": -9.29318, "longitude": 18.26705}
+      ]},
+      {"name": "Cassanje Calucala", "latitude": -8.91059, "longitude": 17.64254, "bairros": [
+        {"name": "Cassele", "latitude": -8.82448, "longitude": 17.60923},
+        {"name": "Cavuba", "latitude": -8.76203, "longitude": 17.60449},
+        {"name": "Quinzunzo", "latitude": -8.93135, "longitude": 17.6829}
+      ]},
+      {"name": "Caungula", "latitude": -8.43227, "longitude": 18.63258, "bairros": [
+        {"name": "Casseque Capasso", "latitude": -8.63787, "longitude": 18.81946},
+        {"name": "Xonguela", "latitude": -8.05553, "longitude": 18.64818}
+      ]},
+      {"name": "Chitato", "latitude": -7.34469, "longitude": 20.82008, "bairros": [
+        {"name": "Chissanda", "latitude": -7.28677, "longitude": 20.8695},
+        {"name": "Lumua", "latitude": -7.43179, "longitude": 20.52038}
+      ]},
+      {"name": "Cuango", "latitude": -9.14728, "longitude": 18.0431, "bairros": [
+        {"name": "Calandala", "latitude": -9.16523, "longitude": 17.99663},
+        {"name": "Cambôlo", "latitude": -9.2302, "longitude": 18.16164},
+        {"name": "Cambolo Cambamba", "latitude": -9.30581, "longitude": 18.21445},
+        {"name": "Candala", "latitude": -9.25237, "longitude": 18.2063},
+        {"name": "Iongo", "latitude": -9.20649, "longitude": 17.74774},
+        {"name": "Muanha Cassangi", "latitude": -9.3321, "longitude": 18.18944},
+        {"name": "Ouissueia", "latitude": -9.1601, "longitude": 18.07847}
+      ]},
+      {"name": "Cuilo", "latitude": -8.23691, "longitude": 19.52461, "bairros": [
+        {"name": "Caluango", "latitude": -8.26788, "longitude": 19.69994},
+        {"name": "Muacamana", "latitude": -8.07775, "longitude": 19.72272},
+        {"name": "Muatchimbundo", "latitude": -8.41379, "longitude": 19.61056}
+      ]},
+      {"name": "Dundo", "latitude": -7.38109, "longitude": 20.8338, "bairros": [
+        {"name": "Fucauma", "latitude": -7.37981, "longitude": 21.19734},
+        {"name": "Novo Dundo", "latitude": -7.4111, "longitude": 20.79332}
+      ]},
+      {"name": "Lóvua", "latitude": -7.34472, "longitude": 20.17481, "bairros": [
+        {"name": "Cahata", "latitude": -7.79618, "longitude": 19.8585},
+        {"name": "Calimbula", "latitude": -7.13975, "longitude": 19.88829},
+        {"name": "Camussalumuqe", "latitude": -7.42813, "longitude": 20.46898},
+        {"name": "Carimbula", "latitude": -7.22092, "longitude": 19.82197},
+        {"name": "Mundazala", "latitude": -7.35412, "longitude": 20.23297},
+        {"name": "Salucunda", "latitude": -7.75198, "longitude": 19.88229},
+        {"name": "Samunguindo", "latitude": -7.38402, "longitude": 20.29874},
+        {"name": "Tchilongo", "latitude": -7.38795, "longitude": 19.85333},
+        {"name": "Xá-Tambué", "latitude": -7.43073, "longitude": 20.49253}
+      ]},
+      {"name": "Luangue", "latitude": -9.50157, "longitude": 19.6183, "bairros": [
+        {"name": "Chissenga", "latitude": -9.8361, "longitude": 19.15187},
+        {"name": "Luange", "latitude": -9.5399, "longitude": 19.60936},
+        {"name": "Muhongo", "latitude": -9.82703, "longitude": 19.21037},
+        {"name": "Sachinhigue", "latitude": -9.90815, "longitude": 19.21397},
+        {"name": "Xinge", "latitude": -9.77646, "longitude": 19.13635}
+      ]},
+      {"name": "Lubalo", "latitude": -9.15313, "longitude": 19.28256, "bairros": [
+        {"name": "Sapimbe", "latitude": -9.68163, "longitude": 18.9908}
+      ]},
+      {"name": "Lucapa", "latitude": -8.41952, "longitude": 20.74109, "bairros": [
+        {"name": "Calonda", "latitude": -8.46845, "longitude": 20.5508},
+        {"name": "Camissombo", "latitude": -8.1533, "longitude": 20.6575},
+        {"name": "Capaia", "latitude": -8.33606, "longitude": 20.21676}
+      ]},
+      {"name": "Luremo", "latitude": -8.51721, "longitude": 17.83038, "bairros": [
+        {"name": "Catchinga", "latitude": -8.55809, "longitude": 17.77174},
+        {"name": "Demena", "latitude": -8.56838, "longitude": 17.6105},
+        {"name": "Nguriacama", "latitude": -8.39066, "longitude": 17.69419}
+      ]},
+      {"name": "Mussungue", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Xá Cassau", "latitude": -8.93328, "longitude": 20.29069, "bairros": [
+        {"name": "Camuagi", "latitude": -8.95688, "longitude": 20.57229},
+        {"name": "Caquele", "latitude": -8.93973, "longitude": 20.58515},
+        {"name": "Naissua", "latitude": -8.95214, "longitude": 20.49785},
+        {"name": "Nandongo", "latitude": -8.9655, "longitude": 20.47696},
+        {"name": "Pato", "latitude": -8.96441, "longitude": 20.46816},
+        {"name": "Paulo", "latitude": -9.0182, "longitude": 20.44539},
+        {"name": "Pensamento", "latitude": -8.98957, "longitude": 20.44247},
+        {"name": "Sambinza", "latitude": -8.95296, "longitude": 20.41676},
+        {"name": "Tchipinda", "latitude": -9.04908, "longitude": 20.44343}
+      ]},
+      {"name": "Xá Muteba", "latitude": -9.51696, "longitude": 17.81125, "bairros": [
+        {"name": "Caquemba", "latitude": -9.44271, "longitude": 17.90891}
+      ]}
+    ]},
+    {"name": "Lunda Sul", "capital": "Saurimo", "latitude": -9.91422, "longitude": 20.38899, "municipalities": [
+      {"name": "Alto Chicapa", "latitude": -10.93348, "longitude": 19.14705, "bairros": []},
+      {"name": "Cacolo", "latitude": -10.14369, "longitude": 19.26601, "bairros": [
+        {"name": "Cucumbi", "latitude": -10.28092, "longitude": 19.04912},
+        {"name": "Pêso Velho", "latitude": -10.02722, "longitude": 19.81063},
+        {"name": "Sacahia", "latitude": -10.02946, "longitude": 19.54887},
+        {"name": "Saibuanda", "latitude": -10.08515, "longitude": 19.46007},
+        {"name": "Samaquina", "latitude": -10.06126, "longitude": 19.30371},
+        {"name": "Sambundo", "latitude": -10.11492, "longitude": 19.36822}
+      ]},
+      {"name": "Cassai-Sul", "latitude": -10.58825, "longitude": 21.96948, "bairros": [
+        {"name": "Choge", "latitude": -10.54318, "longitude": 22.18428}
+      ]},
+      {"name": "Cassengo", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Cazage", "latitude": -11.06768, "longitude": 20.70244, "bairros": [
+        {"name": "Cavuma", "latitude": -11.02654, "longitude": 20.63914},
+        {"name": "Ngua", "latitude": -11.09361, "longitude": 20.49898},
+        {"name": "Sagimbo", "latitude": -11.07147, "longitude": 20.63152},
+        {"name": "Tchissombo", "latitude": -11.44043, "longitude": 20.75211}
+      ]},
+      {"name": "Chiluage", "latitude": -9.51883, "longitude": 21.7967, "bairros": []},
+      {"name": "Dala", "latitude": -11.03333, "longitude": 20.2, "bairros": [
+        {"name": "Biula", "latitude": -11.17902, "longitude": 20.21937},
+        {"name": "Cazôa", "latitude": -10.84383, "longitude": 19.87187},
+        {"name": "Luachimo", "latitude": -10.65314, "longitude": 20.20978},
+        {"name": "Macuamuilo", "latitude": -10.7116, "longitude": 19.84303},
+        {"name": "Mombo", "latitude": -10.88323, "longitude": 20.20547},
+        {"name": "Mulombe", "latitude": -10.93655, "longitude": 20.20022},
+        {"name": "Muxié", "latitude": -10.49394, "longitude": 20.16655},
+        {"name": "Nacatoco", "latitude": -11.01848, "longitude": 20.21045},
+        {"name": "Samahína", "latitude": -11.08172, "longitude": 20.32423},
+        {"name": "Toca", "latitude": -11.00784, "longitude": 20.12554}
+      ]},
+      {"name": "Luma Cassai", "latitude": -11.23298, "longitude": 19.7795, "bairros": []},
+      {"name": "Muangueji", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Muconda", "latitude": -10.59236, "longitude": 21.31805, "bairros": [
+        {"name": "Munichoco", "latitude": -10.72982, "longitude": 21.10643},
+        {"name": "Sacaluila", "latitude": -10.56873, "longitude": 21.5331}
+      ]},
+      {"name": "Muriege", "latitude": -9.90479, "longitude": 21.2144, "bairros": []},
+      {"name": "Saurimo", "latitude": -9.65893, "longitude": 20.39811, "bairros": [
+        {"name": "Agostinho Neto", "latitude": -9.65445, "longitude": 20.38499},
+        {"name": "Caiaza", "latitude": -10.24608, "longitude": 20.24884},
+        {"name": "Camundambala", "latitude": -9.74763, "longitude": 20.40344},
+        {"name": "Mona Quimbundo", "latitude": -9.91539, "longitude": 20.01099},
+        {"name": "Nanguanza", "latitude": -9.88877, "longitude": 20.36656},
+        {"name": "neighborhood", "latitude": -9.64306, "longitude": 20.41044},
+        {"name": "Sacambunge", "latitude": -10.26066, "longitude": 20.44906},
+        {"name": "Saiendo", "latitude": -10.26812, "longitude": 20.57804},
+        {"name": "Sangungo", "latitude": -10.17578, "longitude": 20.2632}
+      ]},
+      {"name": "Sombo", "latitude": -8.7443, "longitude": 20.98409, "bairros": []},
+      {"name": "Xassengue", "latitude": -10.45809, "longitude": 18.53122, "bairros": []}
+    ]},
+    {"name": "Malanje", "capital": "Malanje", "latitude": -9.5439, "longitude": 16.96184, "municipalities": [
+      {"name": "Caculama", "latitude": -9.48477, "longitude": 16.85252, "bairros": [
+        {"name": "Bumbatumba de Cima", "latitude": -9.53521, "longitude": 17.012},
+        {"name": "Cainguila", "latitude": -9.46286, "longitude": 17.01231},
+        {"name": "Caxinga", "latitude": -9.54341, "longitude": 17.01931},
+        {"name": "Muala", "latitude": -9.44972, "longitude": 17.02002},
+        {"name": "Mucari", "latitude": -9.48158, "longitude": 16.86402},
+        {"name": "Quibuco", "latitude": -9.50838, "longitude": 16.99991},
+        {"name": "Xissa Mucari", "latitude": -9.47305, "longitude": 16.91396}
+      ]},
+      {"name": "Cacuso", "latitude": -9.42203, "longitude": 15.74067, "bairros": [
+        {"name": "Aldeia Formosa", "latitude": -9.48291, "longitude": 15.98823},
+        {"name": "Biocom", "latitude": -9.43117, "longitude": 15.74933},
+        {"name": "Cahala", "latitude": -9.2296, "longitude": 15.74556},
+        {"name": "Cahombo de Baixo", "latitude": -9.16194, "longitude": 15.67923},
+        {"name": "Caiombo", "latitude": -9.24142, "longitude": 15.83989},
+        {"name": "Caiombo II", "latitude": -9.23585, "longitude": 15.84877},
+        {"name": "Cambunze", "latitude": -9.41756, "longitude": 15.61866},
+        {"name": "Camissoche", "latitude": -9.24325, "longitude": 15.64827},
+        {"name": "Camueia", "latitude": -9.19406, "longitude": 15.73624},
+        {"name": "Conduminio da Administração", "latitude": -9.43141, "longitude": 15.74742},
+        {"name": "Gazella", "latitude": -9.40265, "longitude": 15.5966},
+        {"name": "Kirimba Dambe", "latitude": -9.29308, "longitude": 15.76614},
+        {"name": "Matete", "latitude": -9.46872, "longitude": 15.89233},
+        {"name": "Quimbala", "latitude": -9.31414, "longitude": 15.79863},
+        {"name": "Quitemesse", "latitude": -9.18744, "longitude": 15.72374},
+        {"name": "Quizenga", "latitude": -9.36232, "longitude": 15.46792},
+        {"name": "Quizola", "latitude": -9.24129, "longitude": 15.76972},
+        {"name": "Soqueco", "latitude": -9.26806, "longitude": 15.80986},
+        {"name": "Zanga", "latitude": -9.47879, "longitude": 15.98952}
+      ]},
+      {"name": "Cahombo", "latitude": -8.69539, "longitude": 16.51957, "bairros": []},
+      {"name": "Calandula", "latitude": -9.08947, "longitude": 15.95709, "bairros": [
+        {"name": "Bairro", "latitude": -9.1701, "longitude": 15.93498},
+        {"name": "Cota", "latitude": -9.2682, "longitude": 16.09699},
+        {"name": "Kiriqui", "latitude": -9.17691, "longitude": 15.92716},
+        {"name": "Mufuma Sellela", "latitude": -9.19695, "longitude": 15.90174}
+      ]},
+      {"name": "Cambo Suinginge", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Cambundi Catembo", "latitude": -10.08248, "longitude": 17.55681, "bairros": [
+        {"name": "Balanga à Malengue", "latitude": -10.14438, "longitude": 17.33759},
+        {"name": "Caboloca", "latitude": -10.22404, "longitude": 16.99104},
+        {"name": "Caibola", "latitude": -10.35152, "longitude": 17.5096},
+        {"name": "Candumbo", "latitude": -9.98313, "longitude": 17.31001},
+        {"name": "Cosso", "latitude": -10.08512, "longitude": 17.78846},
+        {"name": "Cubango", "latitude": -9.87437, "longitude": 17.29739},
+        {"name": "Cunga", "latitude": -10.10304, "longitude": 17.57302},
+        {"name": "Dumba Cambango", "latitude": -10.34862, "longitude": 17.42534},
+        {"name": "Dumba Muhondo", "latitude": -10.0654, "longitude": 17.45891},
+        {"name": "Moma", "latitude": -10.35399, "longitude": 17.49652},
+        {"name": "Muanda Canda", "latitude": -10.19338, "longitude": 17.12301},
+        {"name": "Muáti", "latitude": -10.08054, "longitude": 17.67234},
+        {"name": "Muhungo", "latitude": -9.84334, "longitude": 17.29619},
+        {"name": "Mutuanguengo", "latitude": -10.02772, "longitude": 17.39534},
+        {"name": "Ngana Ngonga", "latitude": -10.07119, "longitude": 17.54377},
+        {"name": "Ngando", "latitude": -10.16668, "longitude": 17.4094},
+        {"name": "Ngimbo", "latitude": -10.05235, "longitude": 17.56894},
+        {"name": "Quiemba", "latitude": -9.93931, "longitude": 17.30279},
+        {"name": "Quipingue", "latitude": -9.93353, "longitude": 17.16607},
+        {"name": "Sanza", "latitude": -10.34152, "longitude": 17.54361},
+        {"name": "Simbango", "latitude": -10.15568, "longitude": 17.41054},
+        {"name": "Sôngua", "latitude": -9.69425, "longitude": 17.46367},
+        {"name": "Tchambambe", "latitude": -10.34968, "longitude": 17.5704},
+        {"name": "Tchamujiba", "latitude": -10.34583, "longitude": 17.56064}
+      ]},
+      {"name": "Cangandala", "latitude": -9.78964, "longitude": 16.42881, "bairros": [
+        {"name": "Aldeia do Kwanza", "latitude": -9.87989, "longitude": 16.29208},
+        {"name": "Aldeia dos Rapidos do Kwanza", "latitude": -9.88564, "longitude": 16.30108},
+        {"name": "Bumba-Lussechi", "latitude": -10.15098, "longitude": 16.8508},
+        {"name": "Mbunda", "latitude": -10.04034, "longitude": 16.77838},
+        {"name": "Mbundi", "latitude": -10.05832, "longitude": 16.8217},
+        {"name": "Mucunda", "latitude": -10.24597, "longitude": 16.87934},
+        {"name": "Ngongo", "latitude": -10.01475, "longitude": 16.70741},
+        {"name": "Quengolola", "latitude": -10.00755, "longitude": 16.68564}
+      ]},
+      {"name": "Capunda", "latitude": -10.67727, "longitude": 17.36804, "bairros": [
+        {"name": "Bembo", "latitude": -10.23861, "longitude": 16.91393},
+        {"name": "Cabonde", "latitude": -10.81992, "longitude": 17.47857},
+        {"name": "Canári", "latitude": -10.49359, "longitude": 17.42149},
+        {"name": "Canonde", "latitude": -10.7468, "longitude": 17.42219},
+        {"name": "Cáxi", "latitude": -10.31044, "longitude": 17.13872},
+        {"name": "Dumbo", "latitude": -10.24007, "longitude": 16.95156},
+        {"name": "Macumba", "latitude": -10.4998, "longitude": 17.44258},
+        {"name": "Queve", "latitude": -10.38677, "longitude": 17.20597},
+        {"name": "Quimbolo", "latitude": -10.23335, "longitude": 16.96889},
+        {"name": "Rimba", "latitude": -10.57903, "longitude": 17.5586},
+        {"name": "Tendo", "latitude": -10.24615, "longitude": 16.89265},
+        {"name": "Toxe", "latitude": -10.2437, "longitude": 16.88973}
+      ]},
+      {"name": "Cateco Cangola", "latitude": -8.46841, "longitude": 15.82291, "bairros": [
+        {"name": "Cahinha", "latitude": -8.41515, "longitude": 15.85229},
+        {"name": "Diuila", "latitude": -8.41057, "longitude": 15.85493},
+        {"name": "Fumbuca", "latitude": -8.35774, "longitude": 15.87266},
+        {"name": "Luamba", "latitude": -8.48333, "longitude": 15.75},
+        {"name": "Macala", "latitude": -8.38306, "longitude": 15.85616},
+        {"name": "Mbondo", "latitude": -8.41337, "longitude": 15.85645},
+        {"name": "Muinza", "latitude": -8.53325, "longitude": 15.68384},
+        {"name": "Mulenga", "latitude": -8.38333, "longitude": 15.85},
+        {"name": "Quina", "latitude": -8.48119, "longitude": 15.76101},
+        {"name": "Quingica", "latitude": -8.3814, "longitude": 15.85435},
+        {"name": "Tunda Calelamo", "latitude": -8.33083, "longitude": 15.88076},
+        {"name": "Xita", "latitude": -8.48398, "longitude": 15.75673}
+      ]},
+      {"name": "Cuale", "latitude": -8.36758, "longitude": 16.14124, "bairros": [
+        {"name": "Augusto Ngangula", "latitude": -8.35416, "longitude": 16.09512}
+      ]},
+      {"name": "Kiwaba Nzoji", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Kunda dya Baze", "latitude": -8.90752, "longitude": 17.05605, "bairros": []},
+      {"name": "Luquembo", "latitude": -10.73487, "longitude": 17.71841, "bairros": [
+        {"name": "Bissanzo", "latitude": -10.6863, "longitude": 17.66435},
+        {"name": "Calembe", "latitude": -10.79491, "longitude": 17.59584},
+        {"name": "Camitungo", "latitude": -10.85553, "longitude": 17.52342},
+        {"name": "Candjungo", "latitude": -10.61776, "longitude": 17.62899},
+        {"name": "Chibaca", "latitude": -10.70797, "longitude": 17.54848},
+        {"name": "Hanga", "latitude": -10.75559, "longitude": 17.59228},
+        {"name": "Huihua", "latitude": -10.76813, "longitude": 17.59327},
+        {"name": "Ngonga", "latitude": -10.84689, "longitude": 17.62259},
+        {"name": "Quimbango", "latitude": -10.96384, "longitude": 17.57469},
+        {"name": "Saca", "latitude": -10.79791, "longitude": 17.86863},
+        {"name": "Sangulo", "latitude": -10.81036, "longitude": 17.62042}
+      ]},
+      {"name": "Malanje", "latitude": -9.5484, "longitude": 16.34753, "bairros": [
+        {"name": "Cafundanga", "latitude": -9.49616, "longitude": 16.14731},
+        {"name": "Cambondo", "latitude": -9.4897, "longitude": 16.54026},
+        {"name": "Cangando", "latitude": -9.58916, "longitude": 16.22071},
+        {"name": "Lombe", "latitude": -9.48718, "longitude": 16.15256},
+        {"name": "Quissol", "latitude": -9.58811, "longitude": 16.46054}
+      ]},
+      {"name": "Marimba", "latitude": -8.3611, "longitude": 17.02388, "bairros": []},
+      {"name": "Massango", "latitude": -7.4357, "longitude": 17.05945, "bairros": [
+        {"name": "Cambamba", "latitude": -7.63878, "longitude": 16.95817},
+        {"name": "Mambande", "latitude": -7.60111, "longitude": 17.22165},
+        {"name": "Quicuto", "latitude": -7.4188, "longitude": 17.08607},
+        {"name": "Tembo Aluma", "latitude": -7.71838, "longitude": 17.27178}
+      ]},
+      {"name": "Mbanji ya Ngola", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Milando", "latitude": -8.81294, "longitude": 17.55892, "bairros": [
+        {"name": "Cáfu", "latitude": -8.6156, "longitude": 17.53444},
+        {"name": "Kibau/Milando", "latitude": -8.89499, "longitude": 17.4081},
+        {"name": "Sabataca", "latitude": -8.63333, "longitude": 17.39826},
+        {"name": "Zage/Milando", "latitude": -8.81507, "longitude": 17.5486}
+      ]},
+      {"name": "Muquixe", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Ngola Luiji", "latitude": -9.22519, "longitude": 16.3479, "bairros": [
+        {"name": "Mufuma", "latitude": -9.20275, "longitude": 16.48534}
+      ]},
+      {"name": "Pungu a Ndongo", "latitude": -9.66943, "longitude": 15.58918, "bairros": [
+        {"name": "Capanda", "latitude": -9.77444, "longitude": 15.44494},
+        {"name": "Carima", "latitude": -9.59931, "longitude": 15.68484},
+        {"name": "M'Banza N'Dongo", "latitude": -9.62333, "longitude": 15.59625}
+      ]},
+      {"name": "Quela", "latitude": -9.2657, "longitude": 17.07287, "bairros": [
+        {"name": "Quindua", "latitude": -9.30106, "longitude": 17.01574}
+      ]},
+      {"name": "Quêssua", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Quihuhu", "latitude": -7.7496, "longitude": 16.59239, "bairros": [
+        {"name": "Canjungo", "latitude": -7.81374, "longitude": 16.91396},
+        {"name": "Matamba", "latitude": -8.02946, "longitude": 16.34681},
+        {"name": "Quimecanza", "latitude": -7.78299, "longitude": 16.60225}
+      ]},
+      {"name": "Quirima", "latitude": -10.89392, "longitude": 18.08712, "bairros": [
+        {"name": "Cambeu", "latitude": -10.81763, "longitude": 17.93641},
+        {"name": "Mulundo", "latitude": -10.84782, "longitude": 17.99976},
+        {"name": "Sangolungo", "latitude": -10.82664, "longitude": 17.95237},
+        {"name": "Sautar", "latitude": -11.1836, "longitude": 18.44195}
+      ]},
+      {"name": "Quitapa", "latitude": -10.30105, "longitude": 18.19902, "bairros": [
+        {"name": "Mecumba", "latitude": -10.03396, "longitude": 18.3633},
+        {"name": "Ngana Muchibi", "latitude": -10.22211, "longitude": 17.9945},
+        {"name": "Tchamussanza", "latitude": -10.28916, "longitude": 18.06901}
+      ]},
+      {"name": "Xandel", "latitude": -9.38627, "longitude": 17.18954, "bairros": [
+        {"name": "Bungo", "latitude": -9.77474, "longitude": 17.27151},
+        {"name": "Cambo", "latitude": -9.6422, "longitude": 17.19076},
+        {"name": "Cassangi", "latitude": -9.74736, "longitude": 17.24842},
+        {"name": "Catuto", "latitude": -9.46047, "longitude": 17.2023},
+        {"name": "Cungue", "latitude": -9.72255, "longitude": 17.23},
+        {"name": "Hopa", "latitude": -9.6485, "longitude": 17.22355},
+        {"name": "Malengue", "latitude": -9.63299, "longitude": 17.18122},
+        {"name": "Mbango", "latitude": -9.48122, "longitude": 17.23039},
+        {"name": "Ngando Calomba", "latitude": -9.6192, "longitude": 17.16773},
+        {"name": "Ngando Mbande e Mahone", "latitude": -9.68483, "longitude": 17.21622},
+        {"name": "Nzagi", "latitude": -9.42917, "longitude": 17.18301},
+        {"name": "Quicunga Nuno", "latitude": -9.5935, "longitude": 17.12985},
+        {"name": "Zungue", "latitude": -9.60518, "longitude": 17.15231}
+      ]}
+    ]},
+    {"name": "Moxico", "capital": "Luena", "latitude": -13.69106, "longitude": 19.96593, "municipalities": [
+      {"name": "Alto Cuito", "latitude": -13.43348, "longitude": 18.86967, "bairros": [
+        {"name": "Tempué", "latitude": -13.43774, "longitude": 18.88148}
+      ]},
+      {"name": "Camanongue", "latitude": -11.43431, "longitude": 20.1675, "bairros": [
+        {"name": "Aldeia de Caweji", "latitude": -11.36468, "longitude": 19.84433},
+        {"name": "Camuleque", "latitude": -11.25793, "longitude": 20.18621},
+        {"name": "Kambila", "latitude": -11.43009, "longitude": 19.86765},
+        {"name": "Katawala", "latitude": -11.42241, "longitude": 19.93644},
+        {"name": "Luxiha", "latitude": -11.37012, "longitude": 20.17492},
+        {"name": "Luxiha-Ponte", "latitude": -11.34499, "longitude": 20.16878},
+        {"name": "Ndongue", "latitude": -11.54825, "longitude": 20.02238},
+        {"name": "Sacambundji", "latitude": -11.43679, "longitude": 19.87408},
+        {"name": "Sachico", "latitude": -11.53045, "longitude": 19.93319},
+        {"name": "Sautata", "latitude": -11.29022, "longitude": 20.39976}
+      ]},
+      {"name": "Cangamba", "latitude": -13.69486, "longitude": 19.85959, "bairros": [
+        {"name": "Cangombe", "latitude": -14.4351, "longitude": 20.03555},
+        {"name": "Luchazes", "latitude": -13.70249, "longitude": 19.86244}
+      ]},
+      {"name": "Cangumbe", "latitude": -11.95594, "longitude": 19.20367, "bairros": [
+        {"name": "Cangonga", "latitude": -12.13438, "longitude": 18.79833}
+      ]},
+      {"name": "Chiúme", "latitude": -15.13404, "longitude": 21.17636, "bairros": []},
+      {"name": "Léua", "latitude": -11.65425, "longitude": 20.44425, "bairros": [
+        {"name": "Luatamba", "latitude": -12.11017, "longitude": 20.29411},
+        {"name": "Samussamba Velho", "latitude": -11.61493, "longitude": 20.75871},
+        {"name": "Sandando", "latitude": -11.65994, "longitude": 20.69409},
+        {"name": "Tchilundo", "latitude": -11.76197, "longitude": 20.39516},
+        {"name": "Tchimbongue", "latitude": -11.57313, "longitude": 20.73422},
+        {"name": "Tchinganga-Samateu", "latitude": -11.66978, "longitude": 20.37138}
+      ]},
+      {"name": "Lucusse", "latitude": -12.52529, "longitude": 20.81923, "bairros": [
+        {"name": "Chianda", "latitude": -12.97388, "longitude": 20.80575},
+        {"name": "Lungue", "latitude": -12.75558, "longitude": 20.72967},
+        {"name": "Nhamupenda", "latitude": -12.15972, "longitude": 20.64022}
+      ]},
+      {"name": "Luena", "latitude": -11.77904, "longitude": 19.91227, "bairros": [
+        {"name": "Aldeia de Chiembele", "latitude": -11.52093, "longitude": 19.88196},
+        {"name": "Aldeia de Pinto Chaji", "latitude": -11.40756, "longitude": 19.73078},
+        {"name": "Aldeia de Sucali", "latitude": -11.44702, "longitude": 19.73681},
+        {"name": "Kambatchokwe", "latitude": -11.64155, "longitude": 19.77222},
+        {"name": "Kanhengue", "latitude": -11.74602, "longitude": 19.85333},
+        {"name": "Luxia Sector", "latitude": -11.56634, "longitude": 19.74276},
+        {"name": "Muxiringingi", "latitude": -11.589, "longitude": 19.96589},
+        {"name": "Ndala", "latitude": -11.96441, "longitude": 20.03976},
+        {"name": "Sacassende", "latitude": -11.90998, "longitude": 19.94459},
+        {"name": "Samufundji", "latitude": -11.54352, "longitude": 19.84193},
+        {"name": "Samuhala", "latitude": -11.53548, "longitude": 19.91536},
+        {"name": "Samussua", "latitude": -11.5744, "longitude": 19.75348},
+        {"name": "Samutambi", "latitude": -11.59795, "longitude": 19.74045},
+        {"name": "Santo Caloto", "latitude": -11.91093, "longitude": 19.96937}
+      ]},
+      {"name": "Lumbala Nguimbo", "latitude": -14.10178, "longitude": 21.43344, "bairros": [
+        {"name": "Bundas", "latitude": -14.11187, "longitude": 21.43544},
+        {"name": "Chemboca", "latitude": -13.81305, "longitude": 21.46676}
+      ]},
+      {"name": "Lutembo", "latitude": -13.48679, "longitude": 21.37437, "bairros": [
+        {"name": "Cacondo", "latitude": -13.5363, "longitude": 21.38167},
+        {"name": "Lumai", "latitude": -13.277, "longitude": 21.20132},
+        {"name": "Luvei", "latitude": -13.077, "longitude": 21.16192}
+      ]},
+      {"name": "Lutuai", "latitude": -12.65985, "longitude": 20.12901, "bairros": [
+        {"name": "Cassamba", "latitude": -13.13535, "longitude": 20.29948}
+      ]},
+      {"name": "Ninda", "latitude": -14.80399, "longitude": 21.38603, "bairros": []}
+    ]},
+    {"name": "Moxico Leste", "capital": "Cazombo", "latitude": -12.01088, "longitude": 22.30407, "municipalities": [
+      {"name": "Caianda", "latitude": -11.00625, "longitude": 23.53118, "bairros": [
+        {"name": "Camafuafua", "latitude": -11.10022, "longitude": 23.21092},
+        {"name": "Cambinda", "latitude": -11.00086, "longitude": 23.5198},
+        {"name": "Sabia", "latitude": -10.98148, "longitude": 23.42683},
+        {"name": "Tambo", "latitude": -11.02566, "longitude": 23.53205},
+        {"name": "Tchilengo", "latitude": -11.00909, "longitude": 23.3356}
+      ]},
+      {"name": "Cameia", "latitude": -11.60295, "longitude": 20.73511, "bairros": [
+        {"name": "Lumeje", "latitude": -11.55991, "longitude": 20.77797},
+        {"name": "Niatchihungo", "latitude": -11.71267, "longitude": 20.90626}
+      ]},
+      {"name": "Cazombo", "latitude": -11.89819, "longitude": 22.9061, "bairros": [
+        {"name": "Calala", "latitude": -12.05547, "longitude": 23.24466},
+        {"name": "Daniel", "latitude": -11.91258, "longitude": 22.83247},
+        {"name": "Lumbala Caquengue", "latitude": -12.64129, "longitude": 22.58721},
+        {"name": "Ndjamba", "latitude": -11.90052, "longitude": 22.82743}
+      ]},
+      {"name": "Lago Dilolo", "latitude": -11.5032, "longitude": 22.01569, "bairros": []},
+      {"name": "Lóvua do Zambeze", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Luacano", "latitude": -11.21108, "longitude": 21.65361, "bairros": [
+        {"name": "Cassamba", "latitude": -11.19311, "longitude": 21.67477},
+        {"name": "Elvira", "latitude": -11.02897, "longitude": 21.9278}
+      ]},
+      {"name": "Luau", "latitude": -10.70255, "longitude": 22.22754, "bairros": [
+        {"name": "Cafungo", "latitude": -10.9062, "longitude": 22.09645}
+      ]},
+      {"name": "Macondo", "latitude": -12.58302, "longitude": 23.75759, "bairros": [
+        {"name": "Calunda", "latitude": -12.12213, "longitude": 23.47877}
+      ]},
+      {"name": "Nana Candundo", "latitude": -11.51866, "longitude": 23.02119, "bairros": [
+        {"name": "Chilumbo", "latitude": -11.30469, "longitude": 23.12431},
+        {"name": "Lóvua", "latitude": -11.55557, "longitude": 23.5498},
+        {"name": "Malari", "latitude": -11.48861, "longitude": 22.84304}
+      ]}
+    ]},
+    {"name": "Namibe", "capital": "Moçâmedes", "latitude": -15.40026, "longitude": 12.56547, "municipalities": [
+      {"name": "Bibala", "latitude": -14.76031, "longitude": 13.35413, "bairros": [
+        {"name": "Cambongue", "latitude": -15.01666, "longitude": 12.91664},
+        {"name": "Garganta", "latitude": -14.83359, "longitude": 13.20024},
+        {"name": "Humbia", "latitude": -14.7333, "longitude": 13.44998},
+        {"name": "Kapangombe", "latitude": -15.0975, "longitude": 13.13824},
+        {"name": "Munhino", "latitude": -14.95627, "longitude": 12.97651},
+        {"name": "Pambala", "latitude": -14.73339, "longitude": 13.49995},
+        {"name": "Tolundo", "latitude": -14.69992, "longitude": 13.50004}
+      ]},
+      {"name": "Cacimbas", "latitude": -14.13345, "longitude": 13.49994, "bairros": [
+        {"name": "Lola", "latitude": -14.30427, "longitude": 13.60466}
+      ]},
+      {"name": "Camucuio", "latitude": -14.11452, "longitude": 13.24234, "bairros": [
+        {"name": "Chingo", "latitude": -14.22046, "longitude": 12.89616},
+        {"name": "Mamué", "latitude": -13.79962, "longitude": 13.11829}
+      ]},
+      {"name": "Iona", "latitude": -16.88318, "longitude": 12.57034, "bairros": []},
+      {"name": "Lucira", "latitude": -13.8655, "longitude": 12.52481, "bairros": [
+        {"name": "Bentiaba", "latitude": -14.25935, "longitude": 12.39245}
+      ]},
+      {"name": "Moçâmedes", "latitude": -15.19506, "longitude": 12.14581, "bairros": [
+        {"name": "Aeroporto", "latitude": -15.21194, "longitude": 12.15004},
+        {"name": "Aida", "latitude": -15.17403, "longitude": 12.19674},
+        {"name": "Área Residêncial de Professores", "latitude": -15.19505, "longitude": 12.12732},
+        {"name": "Bela Vista", "latitude": -15.22321, "longitude": 12.18976},
+        {"name": "Cangeque", "latitude": -15.19919, "longitude": 12.1136},
+        {"name": "Centro", "latitude": -15.19534, "longitude": 12.15095},
+        {"name": "Eucaliptos", "latitude": -15.18334, "longitude": 12.16117},
+        {"name": "Forte de Santa Rita", "latitude": -15.19062, "longitude": 12.16839},
+        {"name": "Lar estudantil da Universidade do Namibe", "latitude": -15.20522, "longitude": 12.14483},
+        {"name": "Moradia JL", "latitude": -15.21638, "longitude": 12.12081},
+        {"name": "Moradia MSL", "latitude": -15.22781, "longitude": 12.12549},
+        {"name": "O Nosso Zimbo", "latitude": -15.2161, "longitude": 12.10822},
+        {"name": "Platô", "latitude": -15.20522, "longitude": 12.14359},
+        {"name": "Praia Amélia", "latitude": -15.22192, "longitude": 12.08691},
+        {"name": "Urbanização 5 de Abril", "latitude": -15.22863, "longitude": 12.15538}
+      ]},
+      {"name": "Sacomar", "latitude": -15.12151, "longitude": 12.1496, "bairros": [
+        {"name": "4 de Março", "latitude": -15.0981, "longitude": 12.18276},
+        {"name": "Antiga Área Residêncial da Pescaria do Mucuio", "latitude": -14.89601, "longitude": 12.217},
+        {"name": "Caraculo", "latitude": -15.0216, "longitude": 12.65749},
+        {"name": "Indígena", "latitude": -15.01683, "longitude": 12.65785},
+        {"name": "Juventude", "latitude": -15.13392, "longitude": 12.16313},
+        {"name": "Pipas", "latitude": -14.95108, "longitude": 12.19244}
+      ]},
+      {"name": "Tômbwa", "latitude": -15.80206, "longitude": 11.85401, "bairros": [
+        {"name": "Baía dos Tigres", "latitude": -16.60094, "longitude": 11.7227}
+      ]},
+      {"name": "Virei", "latitude": -15.72482, "longitude": 12.94886, "bairros": [
+        {"name": "Cainde", "latitude": -15.49825, "longitude": 13.36855},
+        {"name": "Chicundi", "latitude": -15.30015, "longitude": 13.26668},
+        {"name": "Fernandes", "latitude": -15.43341, "longitude": 13.06657},
+        {"name": "Saiona", "latitude": -15.4336, "longitude": 12.96671},
+        {"name": "Vau", "latitude": -15.54997, "longitude": 13.06659}
+      ]}
+    ]},
+    {"name": "Uíge", "capital": "Uíge", "latitude": -7.1384, "longitude": 15.44464, "municipalities": [
+      {"name": "Alto Zaza", "latitude": -6.6209, "longitude": 16.45308, "bairros": [
+        {"name": "Quissaca", "latitude": -6.92549, "longitude": 16.34332}
+      ]},
+      {"name": "Ambuíla", "latitude": -7.44285, "longitude": 14.64651, "bairros": [
+        {"name": "Vale do Logo", "latitude": -7.30453, "longitude": 14.42833}
+      ]},
+      {"name": "Bembe", "latitude": -7.02924, "longitude": 14.30627, "bairros": []},
+      {"name": "Bungo", "latitude": -7.44, "longitude": 15.38667, "bairros": [
+        {"name": "Calanda", "latitude": -7.55426, "longitude": 15.41899},
+        {"name": "Quimelunga", "latitude": -7.55209, "longitude": 15.34704}
+      ]},
+      {"name": "Cangola", "latitude": -7.97597, "longitude": 15.8524, "bairros": [
+        {"name": "Baca", "latitude": -8.02233, "longitude": 15.73427},
+        {"name": "Bassa", "latitude": -7.97582, "longitude": 16.02652},
+        {"name": "Bungulo", "latitude": -8.06018, "longitude": 16.00294},
+        {"name": "Cahuca", "latitude": -8.03255, "longitude": 15.74371},
+        {"name": "Cauessa", "latitude": -8.07531, "longitude": 16.00605},
+        {"name": "Comessa", "latitude": -8.18121, "longitude": 15.88784},
+        {"name": "Dinha", "latitude": -8.09549, "longitude": 15.98364},
+        {"name": "Dumbe iá Ngulo", "latitude": -8.12898, "longitude": 15.9735},
+        {"name": "Luco", "latitude": -8.10903, "longitude": 15.96932},
+        {"name": "Manessa", "latitude": -8.05327, "longitude": 15.81307},
+        {"name": "Nguidi", "latitude": -7.98717, "longitude": 16.02501},
+        {"name": "Penza", "latitude": -8.01097, "longitude": 15.7216},
+        {"name": "Quianga", "latitude": -8.0222, "longitude": 15.81801},
+        {"name": "Uemita", "latitude": -8.00123, "longitude": 15.85089}
+      ]},
+      {"name": "Damba", "latitude": -6.68294, "longitude": 15.13618, "bairros": [
+        {"name": "Bemba", "latitude": -6.41292, "longitude": 15.5014},
+        {"name": "Cainza", "latitude": -6.91883, "longitude": 15.30857},
+        {"name": "Conzo", "latitude": -6.92399, "longitude": 15.38357},
+        {"name": "Cuto", "latitude": -6.37477, "longitude": 15.45858},
+        {"name": "Gingolosaco", "latitude": -6.91138, "longitude": 15.33504},
+        {"name": "Macanda", "latitude": -6.46942, "longitude": 14.92092},
+        {"name": "Martelo", "latitude": -6.88417, "longitude": 15.22843},
+        {"name": "Pumbo", "latitude": -6.43734, "longitude": 15.52716},
+        {"name": "Pumbo Quimalungo", "latitude": -6.3933, "longitude": 15.47549},
+        {"name": "Quicongo", "latitude": -6.93442, "longitude": 15.37179},
+        {"name": "Quimaiala", "latitude": -6.3632, "longitude": 15.45062},
+        {"name": "Quimuanza Molo", "latitude": -6.90657, "longitude": 15.2268},
+        {"name": "Quimucanza", "latitude": -6.93226, "longitude": 15.41816},
+        {"name": "Quimulombe", "latitude": -6.90497, "longitude": 15.3318},
+        {"name": "Quindrovite", "latitude": -6.9452, "longitude": 15.30607},
+        {"name": "Quinzala", "latitude": -6.89821, "longitude": 15.31789}
+      ]},
+      {"name": "Dange Quitexe", "latitude": -7.94163, "longitude": 15.04158, "bairros": [
+        {"name": "Cazundo", "latitude": -7.86993, "longitude": 15.15179},
+        {"name": "Quitexe", "latitude": -7.94163, "longitude": 15.04158},
+        {"name": "Quitoque", "latitude": -7.84297, "longitude": 15.02963},
+        {"name": "Quixica", "latitude": -7.92706, "longitude": 15.18889}
+      ]},
+      {"name": "Lucunga", "latitude": -6.8224, "longitude": 14.6024, "bairros": [
+        {"name": "Macoco", "latitude": -6.9536, "longitude": 14.63258}
+      ]},
+      {"name": "Maquela do Zombo", "latitude": -6.06081, "longitude": 15.1075, "bairros": [
+        {"name": "Béu", "latitude": -6.23115, "longitude": 15.4656},
+        {"name": "Binge", "latitude": -6.01823, "longitude": 15.30371},
+        {"name": "Bongue", "latitude": -6.34604, "longitude": 15.44661},
+        {"name": "Cambonzo-Mbemba", "latitude": -5.98274, "longitude": 15.18913},
+        {"name": "Hielama", "latitude": -5.97976, "longitude": 14.916},
+        {"name": "Lango", "latitude": -6.12486, "longitude": 15.39653},
+        {"name": "Lounda Quidia", "latitude": -6.07888, "longitude": 15.35417},
+        {"name": "Lucalo", "latitude": -6.15533, "longitude": 15.40618},
+        {"name": "Masseque", "latitude": -5.96814, "longitude": 14.96177},
+        {"name": "Mbanza Béu", "latitude": -6.21593, "longitude": 15.44448},
+        {"name": "Mbanza Uau", "latitude": -6.29887, "longitude": 15.47317},
+        {"name": "Ntaya", "latitude": -5.98476, "longitude": 15.06332},
+        {"name": "Nzola", "latitude": -5.92164, "longitude": 15.3057},
+        {"name": "Quibocolo", "latitude": -6.27628, "longitude": 15.06854},
+        {"name": "Quibunga", "latitude": -5.97615, "longitude": 15.3181},
+        {"name": "Quicunga", "latitude": -6.32718, "longitude": 15.44755},
+        {"name": "Quimadiço", "latitude": -6.26938, "longitude": 15.46422},
+        {"name": "Quimatunga", "latitude": -5.88134, "longitude": 15.24108},
+        {"name": "Quimavanga", "latitude": -6.06927, "longitude": 15.341},
+        {"name": "Quimazongo", "latitude": -6.28915, "longitude": 15.47672},
+        {"name": "Quimbata", "latitude": -5.88503, "longitude": 15.0017},
+        {"name": "Quimbozo", "latitude": -6.35595, "longitude": 15.45038},
+        {"name": "Quincumba", "latitude": -6.07306, "longitude": 15.33418},
+        {"name": "Quingoma", "latitude": -6.04471, "longitude": 15.71086},
+        {"name": "Quiquila", "latitude": -5.98538, "longitude": 15.31164},
+        {"name": "Quissenga", "latitude": -6.25859, "longitude": 15.4573},
+        {"name": "Quissoni", "latitude": -6.28639, "longitude": 15.48059},
+        {"name": "Quisucca", "latitude": -5.97025, "longitude": 15.31912},
+        {"name": "Quiteca", "latitude": -6.20193, "longitude": 15.42315},
+        {"name": "Quiteque", "latitude": -6.33385, "longitude": 15.44622},
+        {"name": "Quivanga", "latitude": -5.95722, "longitude": 15.32233},
+        {"name": "Quivelo", "latitude": -6.18939, "longitude": 15.42468},
+        {"name": "Sacama", "latitude": -6.27894, "longitude": 15.48084},
+        {"name": "Samba", "latitude": -6.11971, "longitude": 15.39356},
+        {"name": "Uau", "latitude": -6.3049, "longitude": 15.46537},
+        {"name": "Ximba", "latitude": -5.94454, "longitude": 15.31944}
+      ]},
+      {"name": "Massau", "latitude": -7.23015, "longitude": 16.92099, "bairros": [
+        {"name": "Quilonda", "latitude": -7.38139, "longitude": 17.06068}
+      ]},
+      {"name": "Milunga", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Mucaba", "latitude": -7.26186, "longitude": 15.0776, "bairros": [
+        {"name": "Banza Vinde", "latitude": -6.98805, "longitude": 15.21953},
+        {"name": "Coquilo", "latitude": -7.01806, "longitude": 15.30968},
+        {"name": "Uando", "latitude": -7.04685, "longitude": 14.99824}
+      ]},
+      {"name": "Negage", "latitude": -7.76613, "longitude": 15.26855, "bairros": [
+        {"name": "Bamba Matamba", "latitude": -7.89618, "longitude": 15.28232},
+        {"name": "Bengo", "latitude": -7.79825, "longitude": 15.27759},
+        {"name": "Cahiri", "latitude": -7.78919, "longitude": 15.20044},
+        {"name": "Cangulo", "latitude": -7.68734, "longitude": 15.28706},
+        {"name": "Cangundo", "latitude": -7.77448, "longitude": 15.22628},
+        {"name": "Catumbo", "latitude": -7.93355, "longitude": 15.23439},
+        {"name": "Cauenda", "latitude": -7.67256, "longitude": 15.33592},
+        {"name": "Cazanga", "latitude": -7.84509, "longitude": 15.28288},
+        {"name": "Culo", "latitude": -7.6952, "longitude": 15.21917},
+        {"name": "Dambi", "latitude": -7.76765, "longitude": 15.17306},
+        {"name": "Ndala", "latitude": -7.80545, "longitude": 15.37879},
+        {"name": "Nvungi", "latitude": -7.82824, "longitude": 15.44558},
+        {"name": "Piqui", "latitude": -7.77805, "longitude": 15.1849},
+        {"name": "Pumba", "latitude": -7.95841, "longitude": 15.23853},
+        {"name": "Quiceque", "latitude": -7.87834, "longitude": 15.21869},
+        {"name": "Quindando", "latitude": -7.92656, "longitude": 15.32076},
+        {"name": "Quindinga", "latitude": -7.69669, "longitude": 15.43936},
+        {"name": "Quituia", "latitude": -7.8343, "longitude": 15.23659},
+        {"name": "Senga", "latitude": -7.66408, "longitude": 15.19462}
+      ]},
+      {"name": "Nova Esperança", "latitude": -6.73441, "longitude": 15.88826, "bairros": [
+        {"name": "Buengas", "latitude": -6.74637, "longitude": 15.8798},
+        {"name": "Canda", "latitude": -6.44178, "longitude": 15.5879},
+        {"name": "Canvuavo", "latitude": -6.76986, "longitude": 15.87658},
+        {"name": "Condo", "latitude": -6.4612, "longitude": 15.54302},
+        {"name": "Cuilo Futa", "latitude": -6.42585, "longitude": 15.72935},
+        {"name": "Diumba", "latitude": -6.4229, "longitude": 15.72194},
+        {"name": "Lema", "latitude": -6.99526, "longitude": 15.87436},
+        {"name": "Mbanza Cumi", "latitude": -6.9056, "longitude": 15.7626},
+        {"name": "Quarto de Fevereiro", "latitude": -6.4454, "longitude": 15.61278},
+        {"name": "Quidimuonga", "latitude": -6.6527, "longitude": 15.79781},
+        {"name": "Quilongo", "latitude": -6.43586, "longitude": 15.68913},
+        {"name": "Quimacaba", "latitude": -6.42622, "longitude": 15.70997},
+        {"name": "Quimalunga Metiama", "latitude": -6.44516, "longitude": 15.6404},
+        {"name": "Quimalungo", "latitude": -6.43041, "longitude": 15.7698},
+        {"name": "Quimbangariaco", "latitude": -6.46215, "longitude": 15.5488},
+        {"name": "Quimbenga Teca", "latitude": -6.91654, "longitude": 16.11981},
+        {"name": "Quimbianda Primeiro", "latitude": -6.75311, "longitude": 15.87576},
+        {"name": "Quimbianda Segundo", "latitude": -6.78247, "longitude": 15.87599},
+        {"name": "Quimbuangateca", "latitude": -6.43925, "longitude": 15.65621},
+        {"name": "Quimbuaque", "latitude": -6.45387, "longitude": 15.56473},
+        {"name": "Quimuanza", "latitude": -6.44336, "longitude": 15.6198},
+        {"name": "Quindunda", "latitude": -6.4443, "longitude": 15.57357},
+        {"name": "Quinguele", "latitude": -6.24903, "longitude": 15.7186},
+        {"name": "Quinioca", "latitude": -6.66244, "longitude": 15.79965},
+        {"name": "Quinsuca Paxi", "latitude": -6.43178, "longitude": 15.69814},
+        {"name": "Quisacco", "latitude": -6.42979, "longitude": 15.78955},
+        {"name": "Quissembo", "latitude": -6.59301, "longitude": 15.77241},
+        {"name": "Quitala", "latitude": -6.64678, "longitude": 15.58285},
+        {"name": "Quiteca-Ginga", "latitude": -6.46162, "longitude": 15.8238},
+        {"name": "Quitotila", "latitude": -6.65639, "longitude": 15.79595},
+        {"name": "Secula", "latitude": -6.65056, "longitude": 15.79381},
+        {"name": "Teca Mbanga", "latitude": -6.732, "longitude": 15.9014},
+        {"name": "Tiama Metiama", "latitude": -6.44301, "longitude": 15.60623}
+      ]},
+      {"name": "Nsosso", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Puri", "latitude": -7.69277, "longitude": 15.65271, "bairros": [
+        {"name": "Quibaba", "latitude": -7.62096, "longitude": 15.70765},
+        {"name": "Quimussandi", "latitude": -7.71365, "longitude": 15.50405},
+        {"name": "Tema", "latitude": -7.64642, "longitude": 15.45337}
+      ]},
+      {"name": "Quimbele", "latitude": -6.52441, "longitude": 16.21472, "bairros": [
+        {"name": "Cassanda", "latitude": -6.48075, "longitude": 16.17584},
+        {"name": "Cundi", "latitude": -6.4504, "longitude": 16.27116},
+        {"name": "Malungo", "latitude": -6.03918, "longitude": 15.84993},
+        {"name": "Massanga", "latitude": -6.51557, "longitude": 16.18917},
+        {"name": "Mbanza Lucala", "latitude": -6.0375, "longitude": 15.88413},
+        {"name": "Pemba", "latitude": -6.03712, "longitude": 15.86088},
+        {"name": "Pulolo", "latitude": -6.33315, "longitude": 16.18589},
+        {"name": "Quimacodi", "latitude": -6.03967, "longitude": 15.88573},
+        {"name": "Quimbanji", "latitude": -6.36067, "longitude": 16.1502},
+        {"name": "Quimbaringa", "latitude": -6.40493, "longitude": 16.17529},
+        {"name": "Quimbunga", "latitude": -6.54521, "longitude": 16.13776},
+        {"name": "Quimidembequesse", "latitude": -6.43912, "longitude": 16.17607},
+        {"name": "Quimubabu", "latitude": -6.38373, "longitude": 16.22439},
+        {"name": "Quingala", "latitude": -5.95972, "longitude": 16.13087},
+        {"name": "Quitongui", "latitude": -6.44719, "longitude": 16.23747},
+        {"name": "Quitubo", "latitude": -6.44351, "longitude": 16.31482},
+        {"name": "Quitudi", "latitude": -5.98948, "longitude": 15.99337}
+      ]},
+      {"name": "Quipedro", "latitude": -7.88756, "longitude": 14.51116, "bairros": []},
+      {"name": "Sacandica", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Sanza Pombo", "latitude": -7.30964, "longitude": 15.9978, "bairros": [
+        {"name": "Quibula Caxaca", "latitude": -7.33366, "longitude": 15.97067},
+        {"name": "Quicuni", "latitude": -7.2896, "longitude": 15.94299},
+        {"name": "Quilumbo", "latitude": -7.3811, "longitude": 15.94114},
+        {"name": "Quimaqueta", "latitude": -7.32544, "longitude": 15.98574},
+        {"name": "Quimatumbi", "latitude": -7.3497, "longitude": 15.94895},
+        {"name": "Quipanzo", "latitude": -7.44973, "longitude": 15.89146},
+        {"name": "Quipaulo", "latitude": -7.30546, "longitude": 15.97018},
+        {"name": "Quissala", "latitude": -7.26897, "longitude": 15.93123},
+        {"name": "Tacabunga", "latitude": -7.28057, "longitude": 15.93433},
+        {"name": "Uamba", "latitude": -7.31992, "longitude": 16.1671}
+      ]},
+      {"name": "Songo", "latitude": -7.35301, "longitude": 14.84736, "bairros": [
+        {"name": "Quiangala", "latitude": -7.45024, "longitude": 14.89492},
+        {"name": "Quimalalo", "latitude": -7.48714, "longitude": 14.91887},
+        {"name": "Quivuenga", "latitude": -7.09064, "longitude": 14.85262}
+      ]},
+      {"name": "Uíge", "latitude": -7.61173, "longitude": 15.05635, "bairros": [
+        {"name": "Cassechi", "latitude": -7.5772, "longitude": 14.96319},
+        {"name": "Centralidade do Quilomoso", "latitude": -7.6307, "longitude": 15.01852},
+        {"name": "Quinguangua Mateus", "latitude": -7.57256, "longitude": 15.12092}
+      ]},
+      {"name": "Vista Alegre", "latitude": -8.29031, "longitude": 14.80152, "bairros": [
+        {"name": "Aldeia Vicosa", "latitude": -8.28127, "longitude": 14.80473}
+      ]}
+    ]},
+    {"name": "Zaire", "capital": "Mbanza Kongo", "latitude": -6.85604, "longitude": 13.5201, "municipalities": [
+      {"name": "Cuimba", "latitude": -6.12196, "longitude": 14.62179, "bairros": [
+        {"name": "Buela", "latitude": -5.91806, "longitude": 14.55039},
+        {"name": "Diádiá", "latitude": -6.04106, "longitude": 14.68042},
+        {"name": "Iale", "latitude": -6.29946, "longitude": 14.78698},
+        {"name": "Ide", "latitude": -6.36229, "longitude": 14.8107},
+        {"name": "Luvaca", "latitude": -5.98727, "longitude": 14.76838},
+        {"name": "Matampi", "latitude": -6.09035, "longitude": 14.63514}
+      ]},
+      {"name": "Lufico", "latitude": -6.3641, "longitude": 13.51088, "bairros": [
+        {"name": "Hoji-iá-Henda", "latitude": -6.3641, "longitude": 13.51088},
+        {"name": "Lufunde", "latitude": -6.13042, "longitude": 13.72346},
+        {"name": "Mpala", "latitude": -6.14091, "longitude": 13.74274}
+      ]},
+      {"name": "Luvo", "latitude": -5.85376, "longitude": 14.0852, "bairros": [
+        {"name": "N'koko", "latitude": -5.98214, "longitude": 14.07063},
+        {"name": "Quienga", "latitude": -5.94872, "longitude": 14.07826}
+      ]},
+      {"name": "Mbanza Kongo", "latitude": -6.26782, "longitude": 14.2418, "bairros": [
+        {"name": "Mbanza Magina", "latitude": -6.26719, "longitude": 14.28903},
+        {"name": "Quiende Segunda", "latitude": -6.45008, "longitude": 14.00416},
+        {"name": "Quiendi", "latitude": -6.40876, "longitude": 14.06443}
+      ]},
+      {"name": "Nóqui", "latitude": -5.8744, "longitude": 13.43239, "bairros": [
+        {"name": "Ntongui", "latitude": -5.89747, "longitude": 13.46494},
+        {"name": "Pedra de Feitiço", "latitude": -5.92341, "longitude": 12.96327},
+        {"name": "Umpuelo", "latitude": -5.90891, "longitude": 13.03962}
+      ]},
+      {"name": "Nzeto", "latitude": -7.2316, "longitude": 12.86851, "bairros": [
+        {"name": "Kinzau", "latitude": -6.86825, "longitude": 12.75665},
+        {"name": "Moculla", "latitude": -6.97103, "longitude": 12.83625},
+        {"name": "Musserra", "latitude": -7.61542, "longitude": 13.03547}
+      ]},
+      {"name": "Quêlo", "latitude": -6.45011, "longitude": 12.72925, "bairros": []},
+      {"name": "Quindeje", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Serra de Canda", "latitude": null, "longitude": null, "bairros": []},
+      {"name": "Soyo", "latitude": -6.1388, "longitude": 12.36901, "bairros": [
+        {"name": "ALNG PRH", "latitude": -6.23338, "longitude": 12.33668},
+        {"name": "Cajueiro Soyo", "latitude": -6.15331, "longitude": 12.38725},
+        {"name": "Camp", "latitude": -6.15441, "longitude": 12.31553},
+        {"name": "Conde", "latitude": -6.20137, "longitude": 12.38142},
+        {"name": "Figueira", "latitude": -6.12857, "longitude": 12.35259},
+        {"name": "Figueira Dois", "latitude": -6.12988, "longitude": 12.3513},
+        {"name": "Quindombele", "latitude": -6.16301, "longitude": 12.3683},
+        {"name": "Quintambe", "latitude": -6.1741, "longitude": 12.36438}
+      ]},
+      {"name": "Tomboco", "latitude": -6.80333, "longitude": 13.32944, "bairros": [
+        {"name": "Ienga", "latitude": -6.77358, "longitude": 13.55068},
+        {"name": "Quiximba", "latitude": -6.746, "longitude": 13.59418}
+      ]}
+    ]}
+  ]
+}
