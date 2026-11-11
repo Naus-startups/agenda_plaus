@@ -23,3 +23,4 @@ export function getStorageClient(): SupabaseClient {
 }
 
 export const GALLERY_BUCKET = env.SUPABASE_STORAGE_BUCKET;
+export const PROOFS_BUCKET = env.SUPABASE_PROOFS_BUCKET;

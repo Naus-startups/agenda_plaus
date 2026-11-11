@@ -230,6 +230,10 @@ export const paymentSchema = registry.register(
     method: paymentMethodSchema,
     status: paymentStatusSchema,
     paidAt: z.string().datetime().nullable(),
+    proof: z
+      .object({ fileName: z.string(), mimeType: z.string(), size: z.number().int(), uploadedAt: z.string().datetime() })
+      .nullable()
+      .describe("Comprovativo anexado (transferência / Multicaixa Express); o ficheiro lê-se em GET /payments/{id}/proof."),
     createdAt: z.string().datetime(),
     updatedAt: z.string().datetime(),
   }),

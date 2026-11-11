@@ -46,6 +46,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
           status: payment.status,
           paidAt: payment.paidAt ?? payment.createdAt,
           receivedById: null,
+          proof: payment.proof,
         },
         appointment: {
           id: appointment.id,

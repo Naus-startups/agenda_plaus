@@ -8,6 +8,7 @@ import {
   CreditCard,
   Eye,
   Loader2,
+  Paperclip,
   RefreshCw,
   Search,
   Smartphone,
@@ -48,6 +49,7 @@ interface Payment {
   paidAt: string | null;
   appointmentId: string;
   receiptUrl: string | null;
+  proof?: { fileName: string } | null;
 
   appointment?: {
     id: string;
@@ -606,6 +608,18 @@ export default function PagamentosPage({
 
                           {getMethodLabel(
                             payment.method,
+                          )}
+
+                          {payment.proof && (
+                            <Paperclip
+                              className="h-4 w-4 text-primary"
+                              aria-label="Com comprovativo"
+                            >
+                              <title>
+                                Comprovativo:{" "}
+                                {payment.proof.fileName}
+                              </title>
+                            </Paperclip>
                           )}
                         </div>
                       </td>

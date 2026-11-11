@@ -17,6 +17,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { BrandIcon } from "@/components/brand/BrandLogo";
+import { ProofDropzone } from "@/components/payments/ProofDropzone";
+import { ProofViewer } from "@/components/payments/ProofViewer";
+import { METHODS_REQUIRING_PROOF, proofUrl, type PaymentProof } from "@/lib/payment-proof";
 import { formatCurrency, formatDate, formatDateTime, methodMeta } from "./finance-utils";
 
 export type ReceiptData = {
@@ -27,7 +30,7 @@ export type ReceiptData = {
     address: string | null;
     phone: string | null;
   } | null;
-  payment: { id: string; amount: number; method: string; status: string; paidAt: string };
+  payment: { id: string; amount: number; method: string; status: string; paidAt: string; proof?: PaymentProof | null };
   appointment: { id: string; date: string; status: string; notes: string | null };
   client: { name: string; email: string | null; phone: string | null; avatarUrl?: string | null };
   professional: { name: string; specialty: string | null };
@@ -361,6 +364,26 @@ export function ReceiptDrawer({ appointmentId, preview, onClose }: Props) {
               </div>
             </article>
           )}
+
+          {/* COMPROVATIVO — fora do recibo, que é o que se imprime */}
+          {!loading && receipt && (
+            <div className="mt-4 print:hidden">
+              {receipt.payment.proof ? (
+                <ProofViewer appointmentId={appointmentId} proof={receipt.payment.proof} />
+              ) : (
+                METHODS_REQUIRING_PROOF.has(receipt.payment.method) && (
+                  <AttachProof
+                    appointmentId={appointmentId}
+                    onAttached={(proof) =>
+                      setResult((value) =>
+                        value?.receipt ? { ...value, receipt: { ...value.receipt, payment: { ...value.receipt.payment, proof } } } : value,
+                      )
+                    }
+                  />
+                )
+              )}
+            </div>
+          )}
         </div>
 
         {/* AÇÕES */}
@@ -415,5 +438,55 @@ export function ReceiptDrawer({ appointmentId, preview, onClose }: Props) {
         }
       `}</style>
     </div>
+  );
+}
+
+// Um pagamento por transferência / Express registado sem comprovativo (de antes de ser
+// obrigatório) pode recebê-lo aqui. Depois de guardado, não se substitui.
+function AttachProof({ appointmentId, onAttached }: { appointmentId: string; onAttached: (proof: PaymentProof) => void }) {
+  const [file, setFile] = useState<File | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    if (!file) return;
+    setSaving(true);
+    try {
+      const body = new FormData();
+      body.append("proof", file, file.name);
+      const response = await fetch(proofUrl(appointmentId), { method: "POST", body });
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.proof) throw new Error(data?.error || "Não foi possível guardar o comprovativo.");
+
+      toast.success("Comprovativo guardado.");
+      onAttached(data.proof);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível guardar o comprovativo.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <section className="rounded-2xl border border-amber-500/30 bg-[var(--surface)] p-4">
+      <p className="flex items-center gap-1.5 text-sm font-semibold text-[var(--foreground)]">
+        <AlertCircle size={16} className="text-amber-600 dark:text-amber-400" />
+        Sem comprovativo
+      </p>
+      <p className="mb-3 mt-0.5 text-xs text-[var(--muted)]">Este pagamento foi registado sem comprovativo. Anexe-o aqui.</p>
+
+      <ProofDropzone file={file} onChange={setFile} disabled={saving} />
+
+      {file && (
+        <button
+          type="button"
+          onClick={save}
+          disabled={saving}
+          className="mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:opacity-50"
+        >
+          {saving && <Loader2 size={16} className="animate-spin" />}
+          {saving ? "A guardar..." : "Guardar comprovativo"}
+        </button>
+      )}
+    </section>
   );
 }
