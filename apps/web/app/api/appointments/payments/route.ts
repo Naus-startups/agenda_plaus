@@ -6,7 +6,6 @@ import {
   errorJson,
   errorResponse,
   fromApiMethod,
-  jsonBody,
   loadLookups,
   localTime,
   toApiMethod,
@@ -34,7 +33,14 @@ export async function GET() {
       professional: lookups.professionals.get(appointment.professionalId),
     });
 
+    // A cancelled or missed appointment was never paid for: only money that actually moved
+    // (paid, or paid and refunded) stays in the history.
     const payments = [...lookups.payments.values()]
+      .filter((payment) => {
+        const status = byId.get(payment.appointmentId)?.status;
+        const closed = status === "CANCELLED" || status === "NO_SHOW";
+        return !closed || payment.status === "PAID" || payment.status === "REFUNDED";
+      })
       .sort((a, b) => (b.paidAt ?? b.createdAt).localeCompare(a.paidAt ?? a.createdAt))
       .map((payment) => {
         const appointment = byId.get(payment.appointmentId);
@@ -49,6 +55,7 @@ export async function GET() {
           paidAt: payment.paidAt,
           appointmentId: payment.appointmentId,
           receiptUrl: receiptUrl(payment.appointmentId),
+          proof: payment.proof,
           appointment:
             appointment && related
               ? {
@@ -94,7 +101,8 @@ export async function GET() {
 }
 
 // Staff recording a payment received in person. The amount, the "confirmed, same day,
-// from 15 minutes before" window and completing the appointment are all the API's job.
+// from the scheduled time" window, completing the appointment and requiring the proof of a
+// transfer / Multicaixa Express payment are all the API's job; the proof is passed on as is.
 export async function POST(request: Request) {
   try {
     await requireStaff();
@@ -105,10 +113,17 @@ export async function POST(request: Request) {
     const appointmentId = String(formData.get("appointmentId") ?? "").trim();
     const method = toApiMethod(String(formData.get("method") ?? ""));
 
+    const proof = formData.get("proof");
+
     if (!appointmentId) return errorJson("Selecione o agendamento.", 400);
     if (!method) return errorJson("Método de pagamento inválido.", 400);
 
-    const payment = await apiCall<PaymentDTO>("/payments/receive", jsonBody("POST", { appointmentId, method }));
+    const upload = new FormData();
+    upload.append("appointmentId", appointmentId);
+    upload.append("method", method);
+    if (proof instanceof File && proof.size > 0) upload.append("proof", proof, proof.name);
+
+    const payment = await apiCall<PaymentDTO>("/payments/receive", { method: "POST", body: upload });
 
     return Response.json(
       {
@@ -121,6 +136,7 @@ export async function POST(request: Request) {
           status: payment.status,
           reference: null,
           receiptUrl: receiptUrl(payment.appointmentId),
+          proof: payment.proof,
           paidAt: payment.paidAt,
           appointmentId: payment.appointmentId,
         },

@@ -51,6 +51,8 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
   SUPABASE_STORAGE_BUCKET: z.string().default("slotix-gallery"),
+  // Private bucket (created on first use) for payment proofs — never served publicly.
+  SUPABASE_PROOFS_BUCKET: z.string().default("payment-proofs"),
   // Geocoding (OpenStreetMap). The public Nominatim server needs no key, but its usage
   // policy requires the application to identify itself — see modules/geo.
   NOMINATIM_URL: z.string().default("https://nominatim.openstreetmap.org"),

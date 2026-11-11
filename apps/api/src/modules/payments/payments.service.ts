@@ -9,6 +9,7 @@ import { announceAppointmentChange, getAppointmentOrThrow } from "../appointment
 import { getBusinessOrThrow } from "../businesses";
 import { professionalsRepository } from "../professionals";
 import { paymentsRepository } from "./payments.repository";
+import { assertValidProof, cleanProofFileName, discardProof, readProof, storeProof, type ProofFile } from "./payments.storage";
 import { onAppointmentPaid, onPaymentRefunded } from "../loyalty";
 
 // Points, rewards and promotional uses follow the payment. A failure here never undoes the
@@ -19,6 +20,10 @@ async function settleLoyalty(task: Promise<void>) {
 }
 
 const PAYMENT_METHODS: PaymentMethod[] = ["CASH", "CARD", "MULTICAIXA", "BANK_TRANSFER", "OTHER"];
+
+// With no gateway, the only evidence that a transfer or a Multicaixa Express payment
+// happened is the proof the client shows the staff — so those can't be received without it.
+const METHODS_REQUIRING_PROOF = new Set<PaymentMethod>(["MULTICAIXA", "BANK_TRANSFER"]);
 
 type RequesterRole = "CUSTOMER" | "OWNER" | "EMPLOYEE" | "ADMIN";
 
@@ -54,6 +59,7 @@ function toPaymentDTO(payment: {
   method: PaymentDTO["method"];
   status: PaymentDTO["status"];
   paidAt: Date | null;
+  proof: { fileName: string; mimeType: string; size: number; createdAt: Date } | null;
   createdAt: Date;
   updatedAt: Date;
 }): PaymentDTO {
@@ -68,6 +74,9 @@ function toPaymentDTO(payment: {
     method: payment.method,
     status: payment.status,
     paidAt: payment.paidAt?.toISOString() ?? null,
+    proof: payment.proof
+      ? { fileName: payment.proof.fileName, mimeType: payment.proof.mimeType, size: payment.proof.size, uploadedAt: payment.proof.createdAt.toISOString() }
+      : null,
     createdAt: payment.createdAt.toISOString(),
     updatedAt: payment.updatedAt.toISOString(),
   };
@@ -121,6 +130,9 @@ export const paymentsService = {
     if (appointment.status === "CANCELLED") {
       throw new ValidationError("Não é possível pagar um agendamento cancelado.", "PAYMENT_APPOINTMENT_CANCELLED");
     }
+    if (appointment.status === "NO_SHOW") {
+      throw new ValidationError(APPOINTMENT_STATUS_MESSAGES.NO_SHOW, "PAYMENT_APPOINTMENT_NO_SHOW");
+    }
     assertPaymentTimeReached(appointment.scheduledAt);
 
     const existing = await paymentsRepository.findByAppointmentId(input.appointmentId);
@@ -149,8 +161,10 @@ export const paymentsService = {
   // Staff recording a payment received in person (cash/card/etc), on behalf of the
   // business — as opposed to `create`, which is the customer paying for their own
   // appointment through the app. Skips the PENDING state: the payment is PAID and the
-  // appointment COMPLETED atomically, the instant it's recorded.
-  async receivePayment(requesterId: string, input: CreatePaymentInput): Promise<PaymentDTO> {
+  // appointment COMPLETED atomically, the instant it's recorded. A transfer or Multicaixa
+  // Express payment comes with the proof the client sent, stored before the payment is
+  // written (and removed again if it never is).
+  async receivePayment(requesterId: string, input: CreatePaymentInput, proofFile?: ProofFile): Promise<PaymentDTO> {
     const appointment = await getAppointmentOrThrow(input.appointmentId);
     await assertStaffOfBusiness(appointment.businessId, requesterId);
 
@@ -170,16 +184,38 @@ export const paymentsService = {
     }
     assertPaymentTimeReached(appointment.scheduledAt, now);
 
-    const payment = await paymentsRepository.receivePayment({
-      appointmentId: appointment.id,
-      userId: appointment.clientId ?? undefined,
-      walkInClientId: appointment.walkInClientId ?? undefined,
-      businessId: appointment.businessId,
-      amount: appointment.price,
-      currency: DEFAULT_CURRENCY,
-      method: input.method,
-    });
+    if (!proofFile && METHODS_REQUIRING_PROOF.has(input.method)) {
+      throw new ValidationError("Anexe o comprovativo do pagamento (imagem ou PDF).", "PAYMENT_PROOF_REQUIRED");
+    }
+    if (proofFile) assertValidProof(proofFile);
+
+    const stored = proofFile ? await storeProof(appointment.businessId, proofFile) : null;
+    const payment = await paymentsRepository
+      .receivePayment({
+        appointmentId: appointment.id,
+        userId: appointment.clientId ?? undefined,
+        walkInClientId: appointment.walkInClientId ?? undefined,
+        businessId: appointment.businessId,
+        amount: appointment.price,
+        currency: DEFAULT_CURRENCY,
+        method: input.method,
+        proof:
+          proofFile && stored
+            ? {
+                fileName: cleanProofFileName(proofFile.originalname, proofFile.mimetype),
+                mimeType: proofFile.mimetype,
+                size: proofFile.size,
+                ...stored,
+                uploadedById: requesterId,
+              }
+            : undefined,
+      })
+      .catch(async (error: unknown) => {
+        if (stored) await discardProof(stored);
+        throw error;
+      });
     if (!payment) {
+      if (stored) await discardProof(stored);
       throw new ConflictError("Este agendamento já não pode receber pagamento.", "PAYMENT_APPOINTMENT_NOT_CONFIRMED");
     }
 
@@ -187,6 +223,49 @@ export const paymentsService = {
     await settleLoyalty(onAppointmentPaid(appointment.id));
     await announceAppointmentChange(appointment.id, "completed");
     return toPaymentDTO(payment);
+  },
+
+  // The proof file itself, for whoever may see the payment (see assertCanAccess).
+  async getProofFile(id: string, requesterId: string, requesterRole: RequesterRole): Promise<{ buffer: Buffer; fileName: string; mimeType: string }> {
+    const payment = await getPaymentOrThrow(id);
+    await assertCanAccess(payment, requesterId, requesterRole);
+
+    const proof = await paymentsRepository.findProofFile(id);
+    if (!proof) throw new NotFoundError("Este pagamento não tem comprovativo.", "PAYMENT_PROOF_NOT_FOUND");
+
+    return { buffer: await readProof(proof), fileName: proof.fileName, mimeType: proof.mimeType };
+  },
+
+  // Staff attaching the proof later, to a paid payment that has none yet (e.g. one received
+  // before proofs existed). An existing proof is never replaced.
+  async attachProof(id: string, requesterId: string, proofFile: ProofFile): Promise<PaymentDTO> {
+    const payment = await getPaymentOrThrow(id);
+    await assertStaffOfBusiness(payment.businessId, requesterId);
+
+    if (payment.status !== "PAID") {
+      throw new ConflictError("Só é possível anexar o comprovativo a um pagamento pago.", "PAYMENT_INVALID_STATUS");
+    }
+    if (payment.proof) throw new ConflictError("Este pagamento já tem comprovativo.", "PAYMENT_PROOF_EXISTS");
+    assertValidProof(proofFile);
+
+    const stored = await storeProof(payment.businessId, proofFile);
+    const updated = await paymentsRepository
+      .attachProof(id, {
+        fileName: cleanProofFileName(proofFile.originalname, proofFile.mimetype),
+        mimeType: proofFile.mimetype,
+        size: proofFile.size,
+        ...stored,
+        uploadedById: requesterId,
+      })
+      .catch(async (error: unknown) => {
+        await discardProof(stored);
+        throw error;
+      });
+    if (!updated) {
+      await discardProof(stored);
+      throw new ConflictError("Este pagamento já tem comprovativo.", "PAYMENT_PROOF_EXISTS");
+    }
+    return toPaymentDTO(updated);
   },
 
   async getById(id: string, requesterId: string, requesterRole: RequesterRole): Promise<PaymentDTO> {
@@ -232,7 +311,7 @@ export const paymentsService = {
     // paidAt is always server-generated — never accepted from the client.
     const result = await paymentsRepository.markPaidIfAppointmentActive(id, payment.appointmentId);
     if (result.outcome === "appointment_cancelled") {
-      throw new ConflictError("O agendamento deste pagamento foi cancelado.", "PAYMENT_APPOINTMENT_CANCELLED");
+      throw new ConflictError("O agendamento deste pagamento foi cancelado ou marcado como falta.", "PAYMENT_APPOINTMENT_CANCELLED");
     }
     if (result.outcome === "not_pending") {
       throw new ConflictError("Só é possível marcar como pago um pagamento pendente.", "PAYMENT_INVALID_STATUS");

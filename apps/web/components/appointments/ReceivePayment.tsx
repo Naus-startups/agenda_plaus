@@ -11,6 +11,9 @@ import {
 
 import { toast } from "sonner";
 
+import { ProofDropzone } from "@/components/payments/ProofDropzone";
+import { METHODS_REQUIRING_PROOF } from "@/lib/payment-proof";
+
 import {
   AlertCircle,
   Banknote,
@@ -212,6 +215,10 @@ export function ReceivePayment({
   const [amountGiven, setAmountGiven] =
     useState("");
 
+  /* Comprovativo (só para transferência e Multicaixa Express). */
+  const [proofFile, setProofFile] =
+    useState<File | null>(null);
+
   const [isLoading, setIsLoading] =
     useState(false);
 
@@ -292,6 +299,7 @@ export function ReceivePayment({
     setIsSuccess(false);
     setSearch("");
     setAmountGiven("");
+    setProofFile(null);
     setSelectedAppointmentId("");
     setPaymentMethod("CASH");
   }
@@ -401,12 +409,16 @@ export function ReceivePayment({
     givenValue > 0 &&
     change < 0;
 
+  const needsProof =
+    METHODS_REQUIRING_PROOF.has(paymentMethod);
+
   const canSubmit =
     !isSubmitting &&
     !!selectedAppointment &&
     !isBeforeTime(selectedAppointment.date, now) &&
     selectedPrice > 0 &&
-    !isCashShort;
+    !isCashShort &&
+    (!needsProof || !!proofFile);
 
   /* ALTERAÇÕES */
 
@@ -459,6 +471,13 @@ export function ReceivePayment({
       return;
     }
 
+    if (needsProof && !proofFile) {
+      setError(
+        "Anexe o comprovativo enviado pelo cliente.",
+      );
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
@@ -470,6 +489,14 @@ export function ReceivePayment({
       );
 
       formData.append("method", paymentMethod);
+
+      if (needsProof && proofFile) {
+        formData.append(
+          "proof",
+          proofFile,
+          proofFile.name,
+        );
+      }
 
       const response = await fetch(
         "/api/appointments/payments",
@@ -591,6 +618,7 @@ export function ReceivePayment({
                     ? formatPrice(change)
                     : null
                 }
+                withProof={needsProof}
               />
             ) : (
               <form
@@ -767,6 +795,36 @@ export function ReceivePayment({
                       )}
                     </div>
                   </section>
+
+                  {/* COMPROVATIVO (TRANSFERÊNCIA / EXPRESS) */}
+
+                  {needsProof && (
+                    <section className="animate-[fadeUp_0.25s_ease-out]">
+                      <SectionTitle
+                        title="Comprovativo"
+                        aside="Obrigatório"
+                      />
+
+                      <p className="-mt-1 mb-3 text-xs text-[var(--muted)]">
+                        Peça ao cliente o comprovativo
+                        da{" "}
+                        {paymentMethod === "TRANSFER"
+                          ? "transferência"
+                          : "operação Multicaixa Express"}{" "}
+                        e anexe-o aqui (imagem ou
+                        PDF).
+                      </p>
+
+                      <ProofDropzone
+                        file={proofFile}
+                        onChange={(file) => {
+                          setProofFile(file);
+                          setError("");
+                        }}
+                        disabled={isSubmitting}
+                      />
+                    </section>
+                  )}
 
                   {/* TROCO (DINHEIRO) */}
 
@@ -1144,10 +1202,12 @@ function SuccessView({
   amount,
   method,
   change,
+  withProof,
 }: {
   amount: string;
   method: string;
   change: string | null;
+  withProof: boolean;
 }) {
   return (
     <div className="flex flex-col items-center px-6 py-12 text-center">
@@ -1162,6 +1222,12 @@ function SuccessView({
       <p className="mt-1 text-sm text-[var(--muted)]">
         {amount} · {method}
       </p>
+
+      {withProof && (
+        <p className="mt-4 rounded-full bg-[var(--surface-secondary)] px-4 py-1.5 text-sm">
+          Comprovativo guardado
+        </p>
+      )}
 
       {change && (
         <p className="mt-4 rounded-full bg-[var(--surface-secondary)] px-4 py-1.5 text-sm">

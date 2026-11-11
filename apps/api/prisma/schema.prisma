@@ -357,12 +357,33 @@ model Payment {
   method         PaymentMethod
   status         PaymentStatus @default(PENDING)
   paidAt         DateTime?     @db.Timestamptz(3)
+  proof          PaymentProof?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
   @@index([userId])
   @@index([businessId])
   @@map("payments")
+}
+
+// The proof of a transfer / Multicaixa Express payment (a photo or PDF the client sent the
+// staff), attached when the payment is received. Its own table so listing payments never
+// loads the file. The file lives in the private proofs bucket (`path`); without Supabase
+// configured it is kept in `data` instead and `path` is null. Never served by a public URL:
+// it carries bank details, so it is read back only through GET /payments/:id/proof.
+model PaymentProof {
+  id           String   @id @default(uuid())
+  paymentId    String   @unique
+  payment      Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  fileName     String
+  mimeType     String
+  size         Int
+  path         String?
+  data         Bytes?
+  uploadedById String
+  createdAt    DateTime @default(now())
+
+  @@map("payment_proofs")
 }
 
 model Notification {

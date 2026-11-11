@@ -12,6 +12,23 @@ async function lockAppointmentStatus(tx: Prisma.TransactionClient, appointmentId
   return rows[0]?.status ?? null;
 }
 
+// Appointments that will never be paid for: cancelled, or the client didn't show up.
+const CLOSED_STATUSES = new Set(["CANCELLED", "NO_SHOW"]);
+
+// Every payment read back for a DTO carries its proof's metadata — never the file's bytes.
+const withProof = {
+  proof: { select: { fileName: true, mimeType: true, size: true, createdAt: true } },
+} satisfies Prisma.PaymentInclude;
+
+export type NewPaymentProof = {
+  fileName: string;
+  mimeType: string;
+  size: number;
+  path: string | null;
+  data: Uint8Array<ArrayBuffer> | null;
+  uploadedById: string;
+};
+
 export const paymentsRepository = {
   // Staff receiving a payment in person: the payment is created already PAID and the
   // appointment moves straight to COMPLETED, atomically — there's no PENDING step for
@@ -24,15 +41,20 @@ export const paymentsRepository = {
     amount: Prisma.Decimal | number;
     currency: string;
     method: PaymentMethod;
+    proof?: NewPaymentProof;
   }) {
+    const { proof, ...payment } = data;
     // The appointment is completed first, and only if it is still CONFIRMED: that row lock
     // makes a concurrent cancel, or a second payment, wait and then find nothing to update.
     // null = the appointment had moved on; the transaction is rolled back with nothing written.
     return prisma
       .$transaction(async (tx) => {
-        const { count } = await tx.appointment.updateMany({ where: { id: data.appointmentId, status: "CONFIRMED" }, data: { status: "COMPLETED" } });
+        const { count } = await tx.appointment.updateMany({ where: { id: payment.appointmentId, status: "CONFIRMED" }, data: { status: "COMPLETED" } });
         if (count !== 1) throw new StaleAppointmentError();
-        return tx.payment.create({ data: { ...data, status: "PAID", paidAt: new Date() } });
+        return tx.payment.create({
+          data: { ...payment, status: "PAID", paidAt: new Date(), proof: proof ? { create: proof } : undefined },
+          include: withProof,
+        });
       })
       .catch((error: unknown) => {
         if (error instanceof StaleAppointmentError) return null;
@@ -41,7 +63,7 @@ export const paymentsRepository = {
   },
 
   findById(id: string) {
-    return prisma.payment.findUnique({ where: { id } });
+    return prisma.payment.findUnique({ where: { id }, include: withProof });
   },
 
   // The customer paying through the app: only while the appointment isn't cancelled, judged
@@ -57,8 +79,8 @@ export const paymentsRepository = {
     return prisma
       .$transaction(async (tx) => {
         const status = await lockAppointmentStatus(tx, data.appointmentId);
-        if (!status || status === "CANCELLED") throw new StaleAppointmentError();
-        return tx.payment.create({ data });
+        if (!status || CLOSED_STATUSES.has(status)) throw new StaleAppointmentError();
+        return tx.payment.create({ data, include: withProof });
       })
       .catch((error: unknown) => {
         if (error instanceof StaleAppointmentError) return null;
@@ -71,23 +93,23 @@ export const paymentsRepository = {
   markPaidIfAppointmentActive(paymentId: string, appointmentId: string) {
     return prisma.$transaction(async (tx) => {
       const status = await lockAppointmentStatus(tx, appointmentId);
-      if (!status || status === "CANCELLED") return { outcome: "appointment_cancelled" as const };
+      if (!status || CLOSED_STATUSES.has(status)) return { outcome: "appointment_cancelled" as const };
       const { count } = await tx.payment.updateMany({ where: { id: paymentId, status: "PENDING" }, data: { status: "PAID", paidAt: new Date() } });
       if (count !== 1) return { outcome: "not_pending" as const };
-      return { outcome: "paid" as const, payment: await tx.payment.findUniqueOrThrow({ where: { id: paymentId } }) };
+      return { outcome: "paid" as const, payment: await tx.payment.findUniqueOrThrow({ where: { id: paymentId }, include: withProof }) };
     });
   },
 
   findByAppointmentId(appointmentId: string) {
-    return prisma.payment.findUnique({ where: { appointmentId } });
+    return prisma.payment.findUnique({ where: { appointmentId }, include: withProof });
   },
 
   findByUser(userId: string) {
-    return prisma.payment.findMany({ where: { userId: requireId(userId, "userId") }, orderBy: { createdAt: "desc" } });
+    return prisma.payment.findMany({ where: { userId: requireId(userId, "userId") }, include: withProof, orderBy: { createdAt: "desc" } });
   },
 
   findByBusiness(businessId: string) {
-    return prisma.payment.findMany({ where: { businessId }, orderBy: { createdAt: "desc" } });
+    return prisma.payment.findMany({ where: { businessId }, include: withProof, orderBy: { createdAt: "desc" } });
   },
 
   // Revenue is recognized by paidAt (when the money actually moved), not createdAt —
@@ -111,10 +133,29 @@ export const paymentsRepository = {
     });
   },
 
+  // An appointment that was cancelled or missed: a payment the client started in the app and
+  // that never went through no longer stands. Runs in the caller's transaction, next to the
+  // status change.
+  failPendingForAppointment(appointmentId: string, db: Prisma.TransactionClient) {
+    return db.payment.updateMany({ where: { appointmentId, status: "PENDING" }, data: { status: "FAILED" } });
+  },
+
   // Same idea as appointmentsRepository.updateIfStatus: null when the payment was no longer
   // in `from` at the moment of writing.
   async updateStatusIfCurrent(id: string, from: PaymentStatus, data: { status: PaymentStatus; paidAt?: Date | null }) {
     const { count } = await prisma.payment.updateMany({ where: { id, status: from }, data });
-    return count === 1 ? prisma.payment.findUniqueOrThrow({ where: { id } }) : null;
+    return count === 1 ? prisma.payment.findUniqueOrThrow({ where: { id }, include: withProof }) : null;
+  },
+
+  // The proof with its bytes (or where they are), only for serving the file itself.
+  findProofFile(paymentId: string) {
+    return prisma.paymentProof.findUnique({ where: { paymentId } });
+  },
+
+  // Attaching a proof to a payment received without one. null = it already had one: a
+  // proof is never replaced, so what was checked when the money came in stays on record.
+  async attachProof(paymentId: string, proof: NewPaymentProof) {
+    const created = await prisma.paymentProof.createMany({ data: [{ paymentId, ...proof }], skipDuplicates: true });
+    return created.count === 1 ? prisma.payment.findUniqueOrThrow({ where: { id: paymentId }, include: withProof }) : null;
   },
 };

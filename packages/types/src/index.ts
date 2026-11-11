@@ -408,9 +408,19 @@ export interface GalleryImageDTO {
   position: number;
   caption: string | null;
   createdAt: string;
+  // The transfer / Multicaixa Express proof attached when the payment was received; the
+  // file itself is read through GET /payments/:id/proof.
+  proof: PaymentProofDTO | null;
 }
 
 export type SearchSortBy = "recommended" | "nearest" | "bestPrice" | "topRated";
+
+export interface PaymentProofDTO {
+  fileName: string;
+  mimeType: string;
+  size: number;
+  uploadedAt: string;
+}
 
 export interface MatchedServiceDTO {
   id: string;

@@ -8,3 +8,11 @@ export const imageUpload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 5, fieldSize: 8 * 1024, parts: 6 },
 });
+
+// A payment proof (photo or PDF of a transfer). 4 MB: the dashboard forwards it through
+// a serverless function whose request body is capped at 4.5 MB. Contents are checked in
+// payments.storage.ts.
+export const proofUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 4 * 1024 * 1024, files: 1, fields: 5, fieldSize: 8 * 1024, parts: 6 },
+});
