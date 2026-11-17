@@ -9,7 +9,7 @@ import { notificationsService } from "./notifications.service";
  *   - na véspera:        "Falta um dia…"
  *   - no próprio dia:    "Hoje é o dia…", com a hora marcada
  * e, 24 horas depois da hora marcada sem o atendimento ter sido concluído nem pago, o
- * agendamento é cancelado por o cliente não ter comparecido — ver markMissedAppointments.
+ * agendamento passa a "Não compareceu" (não é um cancelamento) — ver markMissedAppointments.
  *
  * Não há eventos para isto (nada acontece no sistema quando o relógio avança), por isso um
  * ciclo verifica de minuto a minuto. Cada aviso só é criado uma vez: antes de gravar,
@@ -81,8 +81,8 @@ export function noShowText(
   timeZone: string,
 ): { title: string; message: string } {
   return {
-    title: "Agendamento cancelado",
-    message: `O seu agendamento em ${appointment.business.name} (${appointment.service.name}) de ${dayAndTime(appointment.scheduledAt, timeZone)} foi cancelado porque não compareceu.`,
+    title: "Não compareceu",
+    message: `Não compareceu ao seu agendamento em ${appointment.business.name} (${appointment.service.name}) de ${dayAndTime(appointment.scheduledAt, timeZone)}.`,
   };
 }
 
@@ -93,7 +93,7 @@ export function noShowBusinessText(
   const client = appointment.client?.name ?? appointment.walkInClient?.name ?? "Cliente";
   return {
     title: "Cliente não compareceu",
-    message: `Agendamento cancelado porque o cliente não compareceu: ${client} — ${appointment.service.name}, ${dayAndTime(appointment.scheduledAt, timeZone)}.`,
+    message: `O cliente não compareceu: ${client} — ${appointment.service.name}, ${dayAndTime(appointment.scheduledAt, timeZone)}.`,
   };
 }
 

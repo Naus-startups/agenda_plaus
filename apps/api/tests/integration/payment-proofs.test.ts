@@ -77,6 +77,19 @@ describe("Comprovativo de transferência / Multicaixa Express", () => {
     expect(await prisma.paymentProof.count()).toBe(0);
   });
 
+  it("o mesmo comprovativo não serve para dois pagamentos", async () => {
+    const first = await payable();
+    const second = await payable();
+
+    expect((await receive(a.owner.token, first.id, "BANK_TRANSFER", { buffer: PDF, name: "talão.pdf", type: "application/pdf" })).status).toBe(201);
+
+    const reused = await receive(a.owner.token, second.id, "MULTICAIXA", { buffer: PDF, name: "outro nome.pdf", type: "application/pdf" });
+    expect(reused.status).toBe(409);
+    expect(reused.body.error.code).toBe("PAYMENT_PROOF_ALREADY_USED");
+    expect(await prisma.payment.count()).toBe(1);
+    expect((await prisma.appointment.findUnique({ where: { id: second.id } }))!.status).toBe("CONFIRMED");
+  });
+
   it("dinheiro continua sem comprovativo, também em JSON", async () => {
     const appointment = await payable();
 

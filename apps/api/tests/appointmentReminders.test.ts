@@ -51,10 +51,10 @@ describe("reminderText", () => {
     );
     expect(reminderText("APPOINTMENT_REMINDER_TOMORROW", details, TZ).message).toContain("amanhã, 10/10, às 09:00");
     expect(noShowText(details, TZ).message).toBe(
-      "O seu agendamento em Barbearia Luz (Corte) de 10/10 às 09:00 foi cancelado porque não compareceu.",
+      "Não compareceu ao seu agendamento em Barbearia Luz (Corte) de 10/10 às 09:00.",
     );
     expect(noShowBusinessText({ ...details, client: null, walkInClient: { name: "Ana" } }, TZ).message).toBe(
-      "Agendamento cancelado porque o cliente não compareceu: Ana — Corte, 10/10 às 09:00.",
+      "O cliente não compareceu: Ana — Corte, 10/10 às 09:00.",
     );
   });
 });

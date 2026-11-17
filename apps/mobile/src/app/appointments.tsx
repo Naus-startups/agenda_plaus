@@ -41,18 +41,20 @@ import { useT, translate, dateLocale } from "@/i18n";
 // "Concluído" sozinho, quando o espaço confirma ou regista o pagamento.
 const REFRESH_INTERVAL_MS = 15000;
 
-type Tab = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+type Tab = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
 
 const TABS: { value: Tab; label: string }[] = [
   { value: "PENDING", label: "Pendentes" },
   { value: "CONFIRMED", label: "Confirmados" },
   { value: "COMPLETED", label: "Concluídos" },
   { value: "CANCELLED", label: "Cancelados" },
+  { value: "NO_SHOW", label: "Faltas" },
 ];
 
-// "Não compareceu" fica junto dos cancelados: são as marcações que não se realizaram.
+// Cancelado (pelo cliente ou pelo espaço) e "Não compareceu" (ninguém cancelou, mas o
+// cliente não apareceu) são coisas diferentes: cada um no seu separador.
 function tabOf(status: AppointmentStatus): Tab {
-  return status === "NO_SHOW" ? "CANCELLED" : status;
+  return status;
 }
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -62,6 +64,7 @@ const TAB_ICON: Record<Tab, IconName> = {
   CONFIRMED: "checkmark-circle-outline",
   COMPLETED: "checkmark-done-circle-outline",
   CANCELLED: "close-circle-outline",
+  NO_SHOW: "alert-circle-outline",
 };
 
 function statusStyle(status: AppointmentStatus, colors: ReturnType<typeof useIOSColors>) {
@@ -84,7 +87,7 @@ const STATUS_HINT: Record<AppointmentStatus, string> = {
   CONFIRMED: "O espaço confirmou. Esperamos por si à hora marcada.",
   COMPLETED: "Serviço realizado e pagamento registado pelo espaço.",
   CANCELLED: "Esta marcação foi cancelada.",
-  NO_SHOW: "Não compareceu no dia marcado, por isso o agendamento foi cancelado.",
+  NO_SHOW: "Não compareceu no dia e hora marcados.",
 };
 
 interface AppointmentView {
@@ -523,7 +526,7 @@ export default function AppointmentsScreen() {
   );
 
   const counts = useMemo(() => {
-    const result: Record<Tab, number> = { PENDING: 0, CONFIRMED: 0, COMPLETED: 0, CANCELLED: 0 };
+    const result: Record<Tab, number> = { PENDING: 0, CONFIRMED: 0, COMPLETED: 0, CANCELLED: 0, NO_SHOW: 0 };
     for (const view of views) result[tabOf(view.appointment.status)]++;
     return result;
   }, [views]);
@@ -579,7 +582,7 @@ export default function AppointmentsScreen() {
   };
 
   // Concluídas, canceladas e faltas: o que "Apagar histórico" tira da lista.
-  const historyCount = counts.COMPLETED + counts.CANCELLED;
+  const historyCount = counts.COMPLETED + counts.CANCELLED + counts.NO_SHOW;
   const [clearingHistory, setClearingHistory] = useState(false);
 
   const confirmClearHistory = () => {
@@ -622,6 +625,7 @@ export default function AppointmentsScreen() {
     CONFIRMED: "As marcações confirmadas pelo espaço aparecem aqui.",
     COMPLETED: "As marcações já realizadas e pagas aparecem aqui.",
     CANCELLED: "Não tem marcações canceladas.",
+    NO_SHOW: "Não tem marcações a que tenha faltado.",
   };
 
   // "Como chegar" abre o caminho dentro da app, como na página do espaço.
@@ -659,7 +663,7 @@ export default function AppointmentsScreen() {
     return result;
   }, [visible, tab]);
 
-  const showClearHistory = (tab === "COMPLETED" || tab === "CANCELLED") && historyCount > 0;
+  const showClearHistory = (tab === "COMPLETED" || tab === "CANCELLED" || tab === "NO_SHOW") && historyCount > 0;
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>

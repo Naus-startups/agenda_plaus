@@ -58,6 +58,9 @@ const envSchema = z.object({
   NOMINATIM_URL: z.string().default("https://nominatim.openstreetmap.org"),
   NOMINATIM_USER_AGENT: z.string().default("AgendaPlus/1.0"),
   NOMINATIM_EMAIL: z.string().optional(),
+  // Reads the transfer / Multicaixa Express receipts (Claude, vision) to check them before
+  // the payment is recorded. Without it the receipt is only stored, unchecked.
+  ANTHROPIC_API_KEY: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -118,3 +121,6 @@ export function productionWarnings(config: Env): string[] {
 }
 
 for (const warning of productionWarnings(env)) console.warn(`[segurança] ${warning}`);
+if (env.NODE_ENV === "production" && !env.ANTHROPIC_API_KEY) {
+  console.warn("[pagamentos] ANTHROPIC_API_KEY não definida: os comprovativos de transferência/Express são guardados sem verificação.");
+}
