@@ -40,7 +40,7 @@ const STATUS_LABELS: Record<string, string> = {
   CONFIRMED: "Confirmada",
   COMPLETED: "Concluída",
   CANCELLED: "Cancelada",
-  NO_SHOW: "Faltou",
+  NO_SHOW: "Não compareceu",
 };
 
 type SettingRowProps = {

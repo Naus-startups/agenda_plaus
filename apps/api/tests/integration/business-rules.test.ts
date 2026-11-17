@@ -312,9 +312,9 @@ describe("agendamentos a que o cliente não compareceu", () => {
 
     // O cliente com conta e o dono do espaço são avisados do motivo.
     const client = await prisma.notification.findFirst({ where: { userId: a.customer.user.id, type: "APPOINTMENT_CANCELLED_NO_SHOW" } });
-    expect(client?.message).toContain("foi cancelado porque não compareceu");
+    expect(client?.message).toContain("Não compareceu ao seu agendamento");
     const owner = await prisma.notification.findFirst({ where: { userId: a.owner.user.id, type: "APPOINTMENT_CANCELLED_NO_SHOW" } });
-    expect(owner?.message).toContain("o cliente não compareceu");
+    expect(owner?.message).toContain("O cliente não compareceu");
   });
 });
 

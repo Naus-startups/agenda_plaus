@@ -50,7 +50,7 @@ const APPOINTMENT_STATUS: Record<string, string> = {
   CONFIRMED: "Confirmado",
   COMPLETED: "Concluído",
   CANCELLED: "Cancelado",
-  NO_SHOW: "Falta",
+  NO_SHOW: "Não compareceu",
 };
 
 type Props = {
