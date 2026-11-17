@@ -27,6 +27,10 @@ export type NewPaymentProof = {
   path: string | null;
   data: Uint8Array<ArrayBuffer> | null;
   uploadedById: string;
+  sha256: string;
+  reference: string | null;
+  receiptAt: Date | null;
+  verifiedAt: Date | null;
 };
 
 export const paymentsRepository = {
@@ -145,6 +149,15 @@ export const paymentsRepository = {
   async updateStatusIfCurrent(id: string, from: PaymentStatus, data: { status: PaymentStatus; paidAt?: Date | null }) {
     const { count } = await prisma.payment.updateMany({ where: { id, status: from }, data });
     return count === 1 ? prisma.payment.findUniqueOrThrow({ where: { id }, include: withProof }) : null;
+  },
+
+  // A receipt already on another payment: the same file, or the same bank reference.
+  async isProofAlreadyUsed(sha256: string, reference: string | null): Promise<boolean> {
+    const found = await prisma.paymentProof.findFirst({
+      where: { OR: [{ sha256 }, ...(reference ? [{ reference }] : [])] },
+      select: { id: true },
+    });
+    return !!found;
   },
 
   // The proof with its bytes (or where they are), only for serving the file itself.

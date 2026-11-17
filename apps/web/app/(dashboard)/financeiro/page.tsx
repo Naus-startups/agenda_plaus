@@ -164,17 +164,7 @@ export default function FinanceiroPage({
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-6">
       {/* CABEÇALHO */}
-      <header className="finance-fade-up flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p className="text-xs font-medium text-primary">Finanças</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--foreground)] md:text-3xl">
-            Visão financeira
-          </h1>
-          <p className="mt-1.5 max-w-xl text-sm leading-6 text-[var(--muted)]">
-            Receitas, métodos de pagamento e recibos de {monthLabel(month)}.
-          </p>
-        </div>
-
+      <header className="finance-fade-up flex items-center justify-end">
         <div className="flex items-center gap-2">
           <div className="flex items-center rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-sm">
             <button

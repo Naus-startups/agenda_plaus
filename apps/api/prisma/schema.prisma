@@ -381,8 +381,17 @@ model PaymentProof {
   path         String?
   data         Bytes?
   uploadedById String
+  // From the receipt check (payments.verification.ts): the file's hash and the bank's
+  // reference catch a receipt reused for a second payment; receiptAt is the operation's
+  // time as printed. verifiedAt is null when the receipt was stored without being read.
+  sha256       String?
+  reference    String?
+  receiptAt    DateTime?
+  verifiedAt   DateTime?
   createdAt    DateTime @default(now())
 
+  @@index([sha256])
+  @@index([reference])
   @@map("payment_proofs")
 }
 

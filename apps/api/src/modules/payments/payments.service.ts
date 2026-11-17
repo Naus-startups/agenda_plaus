@@ -10,6 +10,13 @@ import { getBusinessOrThrow } from "../businesses";
 import { professionalsRepository } from "../professionals";
 import { paymentsRepository } from "./payments.repository";
 import { assertValidProof, cleanProofFileName, discardProof, readProof, storeProof, type ProofFile } from "./payments.storage";
+import {
+  assertReceiptMatches,
+  isReceiptVerificationConfigured,
+  proofSha256,
+  readReceipt,
+  receiptAlreadyUsedError,
+} from "./payments.verification";
 import { onAppointmentPaid, onPaymentRefunded } from "../loyalty";
 
 // Points, rewards and promotional uses follow the payment. A failure here never undoes the
@@ -24,6 +31,19 @@ const PAYMENT_METHODS: PaymentMethod[] = ["CASH", "CARD", "MULTICAIXA", "BANK_TR
 // With no gateway, the only evidence that a transfer or a Multicaixa Express payment
 // happened is the proof the client shows the staff — so those can't be received without it.
 const METHODS_REQUIRING_PROOF = new Set<PaymentMethod>(["MULTICAIXA", "BANK_TRANSFER"]);
+
+// Before a proof is stored: it must not be a receipt already used, and — when the check is
+// configured — what it says has to match the payment (amount, completed, time). Without
+// ANTHROPIC_API_KEY it is only checked for reuse of the very same file.
+async function checkProof(file: ProofFile, expected: { amount: number; scheduledAt: Date; handedInAt: Date }) {
+  const sha256 = proofSha256(file);
+  if (await paymentsRepository.isProofAlreadyUsed(sha256, null)) throw receiptAlreadyUsedError();
+  if (!isReceiptVerificationConfigured()) return { sha256, reference: null, receiptAt: null, verifiedAt: null };
+
+  const { receiptAt, reference } = assertReceiptMatches(await readReceipt(file), expected);
+  if (reference && (await paymentsRepository.isProofAlreadyUsed(sha256, reference))) throw receiptAlreadyUsedError();
+  return { sha256, reference, receiptAt, verifiedAt: new Date() };
+}
 
 type RequesterRole = "CUSTOMER" | "OWNER" | "EMPLOYEE" | "ADMIN";
 
@@ -188,6 +208,9 @@ export const paymentsService = {
       throw new ValidationError("Anexe o comprovativo do pagamento (imagem ou PDF).", "PAYMENT_PROOF_REQUIRED");
     }
     if (proofFile) assertValidProof(proofFile);
+    const checked = proofFile
+      ? await checkProof(proofFile, { amount: appointment.price.toNumber(), scheduledAt: appointment.scheduledAt, handedInAt: now })
+      : null;
 
     const stored = proofFile ? await storeProof(appointment.businessId, proofFile) : null;
     const payment = await paymentsRepository
@@ -200,12 +223,13 @@ export const paymentsService = {
         currency: DEFAULT_CURRENCY,
         method: input.method,
         proof:
-          proofFile && stored
+          proofFile && stored && checked
             ? {
                 fileName: cleanProofFileName(proofFile.originalname, proofFile.mimetype),
                 mimeType: proofFile.mimetype,
                 size: proofFile.size,
                 ...stored,
+                ...checked,
                 uploadedById: requesterId,
               }
             : undefined,
@@ -247,6 +271,13 @@ export const paymentsService = {
     }
     if (payment.proof) throw new ConflictError("Este pagamento já tem comprovativo.", "PAYMENT_PROOF_EXISTS");
     assertValidProof(proofFile);
+    // Attached later: the receipt has to be from around the appointment, up to when it was paid.
+    const appointment = await getAppointmentOrThrow(payment.appointmentId);
+    const checked = await checkProof(proofFile, {
+      amount: payment.amount.toNumber(),
+      scheduledAt: appointment.scheduledAt,
+      handedInAt: payment.paidAt ?? new Date(),
+    });
 
     const stored = await storeProof(payment.businessId, proofFile);
     const updated = await paymentsRepository
@@ -255,6 +286,7 @@ export const paymentsService = {
         mimeType: proofFile.mimetype,
         size: proofFile.size,
         ...stored,
+        ...checked,
         uploadedById: requesterId,
       })
       .catch(async (error: unknown) => {
