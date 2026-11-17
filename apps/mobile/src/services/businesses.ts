@@ -15,6 +15,17 @@ export async function listBusinesses(query: BusinessListQuery = {}): Promise<{ d
   return apiFetchList<BusinessDTO>(`/businesses${buildQuery(query)}`);
 }
 
+// Todos os espaços que respondem ao pedido, de todas as páginas (o mapa e as contagens por
+// município precisam de todos, não só dos primeiros 100).
+export async function listAllBusinesses(query: Omit<BusinessListQuery, "page" | "limit"> = {}): Promise<BusinessDTO[]> {
+  const all: BusinessDTO[] = [];
+  for (let page = 1; ; page++) {
+    const result = await listBusinesses({ ...query, page, limit: 100 });
+    all.push(...result.data);
+    if (result.data.length === 0 || all.length >= result.meta.total) return all;
+  }
+}
+
 // Com a posição de quem vê, o espaço vem com a distância até lá (distanceKm).
 export async function getBusiness(id: string, viewer?: { latitude: number; longitude: number } | null): Promise<BusinessDTO> {
   return apiFetch<BusinessDTO>(`/businesses/${id}${buildQuery(viewer ? { latitude: viewer.latitude, longitude: viewer.longitude } : {})}`);

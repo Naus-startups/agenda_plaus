@@ -2,9 +2,9 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 import { Platform } from "react-native";
 import * as Location from "expo-location";
 import * as SecureStore from "expo-secure-store";
-import { distanceBetweenKm, formatLocation, sameLocality, type BusinessDTO } from "@slotix/types";
+import { distanceBetweenKm, formatLocation } from "@slotix/types";
 
-import { reversePlace, spaceInZone } from "@/services/localities";
+import { reversePlace } from "@/services/localities";
 import { getCoordinatesIfAllowed, type Coordinates } from "@/services/location";
 import { saveMyLocation } from "@/services/users";
 import { useAuth } from "./AuthContext";
@@ -17,11 +17,25 @@ export const NEAR_ME_RADIUS_KM = 5;
 
 const STORAGE_KEY = "slotix.location";
 
+// Uma área escolhida: a província e, dentro dela, o município e o bairro (cada nível é
+// opcional — "Luanda", "Talatona, Luanda" ou "Benfica, Talatona"). `center` é o ponto do
+// nível mais fino escolhido, quando o mapa o tem.
+export interface Area {
+  provincia: string | null;
+  municipio?: string | null;
+  bairro?: string | null;
+  center?: Coordinates | null;
+}
+
 interface LocationContextValue {
   // null = todas as províncias.
   provincia: string | null;
-  // A zona escolhida dentro da província: o nome de um município ou de um bairro.
+  // O município escolhido dentro da província.
+  municipio: string | null;
+  // O bairro escolhido dentro do município.
   bairro: string | null;
+  // O ponto do município ou bairro escolhido (para enquadrar o mapa e achar os espaços perto).
+  center: Coordinates | null;
   nearMe: boolean;
   coordinates: Coordinates | null;
   // Onde a pessoa está agora, por extenso ("Cacuaco, Luanda"); null enquanto não se sabe.
@@ -30,21 +44,15 @@ interface LocationContextValue {
   chosen: boolean;
   // Verdadeiro depois de a escolha guardada no telemóvel ter sido lida.
   loaded: boolean;
-  // "Perto de si", "Talatona, Luanda", só "Luanda" ou "Todas as localidades".
+  // "Perto de si", "Benfica, Talatona", "Talatona, Luanda", só "Luanda" ou "Todas as localidades".
   label: string;
   setProvincia: (provincia: string | null) => void;
-  // Escolhe uma zona; com a província quando a zona é de outra província, e com o centro
-  // da zona no mapa quando é conhecido (permite achar os espaços que ficam perto dela).
-  setBairro: (bairro: string | null, options?: { provincia?: string; center?: Coordinates | null }) => void;
+  // Escolhe uma área (província, município e bairro de uma vez).
+  setArea: (area: Area) => void;
   // Liga "Perto de si" (pede a localização). Devolve false se não foi possível obtê-la.
   chooseNearMe: () => Promise<boolean>;
   // Pede a localização ao telemóvel (com o pedido de autorização). null se não der.
   requestPosition: () => Promise<Coordinates | null>;
-  // Mantém só os espaços da localização escolhida: os que ficam perto em "Perto de si";
-  // senão os da província escolhida e, havendo zona, só os desse município ou bairro.
-  // A região de cada espaço é a que o OpenStreetMap deu ao ponto marcado pelo dono; um
-  // espaço sem ponto só aparece em "Todas as localidades".
-  filterByBairro: (spaces: BusinessDTO[]) => BusinessDTO[];
 }
 
 const LocationContext = createContext<LocationContextValue | undefined>(undefined);
@@ -59,7 +67,9 @@ async function readStored(): Promise<string | null> {
   }
 }
 
-function writeStored(value: { provincia: string | null; bairro: string | null; center: Coordinates | null }): void {
+type StoredArea = { provincia: string | null; municipio: string | null; bairro: string | null; center: Coordinates | null };
+
+function writeStored(value: StoredArea): void {
   const text = JSON.stringify(value);
   try {
     if (Platform.OS === "web") globalThis.localStorage?.setItem(STORAGE_KEY, text);
@@ -69,14 +79,28 @@ function writeStored(value: { provincia: string | null; bairro: string | null; c
   }
 }
 
-// A localização escolhida é partilhada pela Home, pelo Explorar e pela Pesquisa, e fica
-// guardada no telemóvel: é a província e a zona que a pessoa indicou ao criar a conta
-// (e pode mudar a qualquer momento ao tocar na localização).
+// Sem província não há município nem bairro; o ponto só vale com um município ou bairro.
+function cleanArea(area: Area): StoredArea {
+  const provincia = area.provincia ?? null;
+  const municipio = provincia ? (area.municipio ?? null) : null;
+  const bairro = provincia ? (area.bairro ?? null) : null;
+  return { provincia, municipio, bairro, center: municipio || bairro ? (area.center ?? null) : null };
+}
+
+// A área em duas partes, da mais fina para a de cima: "Benfica, Talatona", "Talatona,
+// Luanda", "Luanda". null para "Todas as localidades".
+export function areaLabel(area: Area): string | null {
+  if (!area.provincia) return null;
+  return [area.bairro, area.municipio, area.provincia].filter(Boolean).slice(0, 2).join(", ");
+}
+
+// A localização escolhida é partilhada pelos ecrãs e fica guardada no telemóvel: é a
+// província, o município e o bairro que a pessoa indicou ao criar a conta (e pode mudar a
+// qualquer momento, por exemplo no mapa).
 export function LocationProvider({ children }: { children: React.ReactNode }) {
   const t = useT();
-  const [provincia, setProvinciaState] = useState<string | null>(null);
-  const [bairro, setBairroState] = useState<string | null>(null);
-  const [bairroCenter, setBairroCenter] = useState<Coordinates | null>(null);
+  const [area, setAreaState] = useState<StoredArea>({ provincia: null, municipio: null, bairro: null, center: null });
+  const { provincia, municipio, bairro, center } = area;
   const { user } = useAuth();
   const userId = user?.id;
   // Com a localização desligada no Perfil, a app não lê o GPS nem guarda a posição.
@@ -92,13 +116,11 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     void readStored().then((stored) => {
       try {
-        const saved = stored
-          ? (JSON.parse(stored) as { provincia?: string | null; bairro?: string | null; center?: Coordinates | null })
-          : null;
+        // Guardado por versões anteriores: sem município, e `bairro` era uma "zona" (um
+        // município ou um bairro) — continua a valer como bairro.
+        const saved = stored ? (JSON.parse(stored) as Partial<StoredArea>) : null;
         if (saved) {
-          setProvinciaState(saved.provincia ?? null);
-          setBairroState(saved.provincia ? (saved.bairro ?? null) : null);
-          setBairroCenter(saved.provincia && saved.bairro ? (saved.center ?? null) : null);
+          setAreaState(cleanArea({ provincia: saved.provincia ?? null, municipio: saved.municipio, bairro: saved.bairro, center: saved.center }));
           setChosen(true);
         }
       } catch {
@@ -199,13 +221,12 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
     });
   }, [userId, coordinates]);
 
-  const save = useCallback((nextProvincia: string | null, nextBairro: string | null, nextCenter: Coordinates | null = null) => {
-    setProvinciaState(nextProvincia);
-    setBairroState(nextBairro);
-    setBairroCenter(nextBairro ? nextCenter : null);
+  const setArea = useCallback((next: Area) => {
+    const cleaned = cleanArea(next);
+    setAreaState(cleaned);
     setNearMe(false);
     setChosen(true);
-    writeStored({ provincia: nextProvincia, bairro: nextBairro, center: nextBairro ? nextCenter : null });
+    writeStored(cleaned);
   }, []);
 
   const readPosition = useCallback(async (): Promise<Coordinates | null> => {
@@ -228,63 +249,31 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
     const current = coordinates ?? (await readPosition());
     if (!current) return false;
 
-    setBairroState(null);
+    setAreaState((current) => ({ ...current, municipio: null, bairro: null, center: null }));
     setNearMe(true);
     return true;
   }, [coordinates, readPosition]);
 
-  const setProvincia = useCallback((next: string | null) => save(next, null), [save]);
-
-  const setBairro = useCallback(
-    (next: string | null, options?: { provincia?: string; center?: Coordinates | null }) =>
-      save(options?.provincia ?? provincia, next, options?.center ?? null),
-    [save, provincia],
-  );
-
-  const filterByBairro = useCallback(
-    (spaces: BusinessDTO[]) => {
-      if (nearMe) return spaces.filter((space) => space.distanceKm !== null && space.distanceKm <= NEAR_ME_RADIUS_KM);
-
-      if (!provincia) return spaces;
-
-      return spaces.filter((space) => {
-        if (!sameLocality(space.provincia, provincia)) return false;
-        return bairro ? spaceInZone(space, bairro, bairroCenter) : true;
-      });
-    },
-    [provincia, bairro, bairroCenter, nearMe],
-  );
+  const setProvincia = useCallback((next: string | null) => setArea({ provincia: next }), [setArea]);
 
   const value = useMemo(
     () => ({
       provincia,
+      municipio,
       bairro,
+      center,
       nearMe,
       coordinates,
       place,
       chosen,
       loaded,
-      label: nearMe ? t("Perto de si") : !provincia ? t("Todas as localidades") : bairro ? `${bairro}, ${provincia}` : provincia,
+      label: nearMe ? t("Perto de si") : areaLabel(area) ?? t("Todas as localidades"),
       setProvincia,
-      setBairro,
+      setArea,
       chooseNearMe,
       requestPosition: readPosition,
-      filterByBairro,
     }),
-    [
-      provincia,
-      bairro,
-      nearMe,
-      coordinates,
-      place,
-      chosen,
-      loaded,
-      setProvincia,
-      setBairro,
-      chooseNearMe,
-      readPosition,
-      filterByBairro,
-    ],
+    [area, provincia, municipio, bairro, center, nearMe, coordinates, place, chosen, loaded, setProvincia, setArea, chooseNearMe, readPosition, t],
   );
 
   return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;

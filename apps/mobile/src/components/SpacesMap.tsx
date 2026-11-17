@@ -13,8 +13,8 @@ export interface SpacesMapProps extends SpacesMapData {
  * Mapa do OpenStreetMap com um marcador por espaço, numa WebView como o SpaceMap: não
  * exige um módulo de mapas nativo, e trocar por um é substituir só este ficheiro.
  */
-export function SpacesMap({ spaces, position, radiusKm, dark, tint, onSelect }: SpacesMapProps) {
-  const html = useMemo(() => spacesMapHtml({ spaces, position, radiusKm, dark, tint }), [spaces, position, radiusKm, dark, tint]);
+export function SpacesMap({ spaces, position, radiusKm, focus, dark, tint, onSelect }: SpacesMapProps) {
+  const html = useMemo(() => spacesMapHtml({ spaces, position, radiusKm, focus, dark, tint }), [spaces, position, radiusKm, focus, dark, tint]);
 
   return (
     <WebView

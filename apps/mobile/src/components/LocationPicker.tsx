@@ -18,40 +18,56 @@ import { formatDistance, normalizeText, sameLocality, type LocalityDTO, type Pro
 
 import { Typography } from '@/constants/theme';
 import { NEAR_ME_RADIUS_KM, useSelectedLocation } from '@/contexts/LocationContext';
+import { useProvinceAreas } from '@/hooks/use-province-areas';
 import { listBusinesses } from '@/services/businesses';
-import { useZoneOptions } from '@/hooks/use-zone-options';
-import { countLabel, loadLocationOptions, provinciasOf, type ZoneOption } from '@/services/localities';
+import { countLabel, loadLocationOptions, provinciasOf, type AreaOption, type MunicipalityOption } from '@/services/localities';
 import { useT } from "@/i18n";
 
-type NearbyBairro = { bairro: string; provincia: string; count: number; distanceKm: number };
+type Level = 'provincias' | 'municipios' | 'bairros';
+type NearbyArea = { provincia: string; municipio: string | null; bairro: string | null; count: number; distanceKm: number };
+
+// Uma linha da lista: o que se escolhe, com o subtítulo (o município de um bairro, nas
+// pesquisas) e o número de espaços.
+type Row = { key: string; label: string; subtitle?: string; count?: number; selected: boolean; chevron: boolean; onPress: () => void };
 
 /*
- * Folha de escolha de localização, como as folhas do iOS (Definições → Região):
- * "Perto de si", as zonas onde há espaços registados perto da pessoa, a província
- * e as zonas dessa província com pesquisa e um visto na escolhida. Aparecem todas as
- * províncias de Angola e, em cada uma, as suas cidades e bairros (do OpenStreetMap),
- * com o número de espaços que ficam em cada um.
+ * Folha de escolha de localização, como as do iOS (Definições → Região), em três níveis:
+ * a província, os seus municípios e os bairros de cada município — os oficiais, cada um
+ * com o número de espaços que lá ficam. No topo, "Perto de si" e os sítios com espaços à
+ * volta da pessoa. A pesquisa dos municípios procura também os bairros da província.
  */
 export function LocationPicker({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const t = useT();
   const colors = useIOSColors();
-  const { provincia, bairro, nearMe, coordinates, setProvincia, setBairro, chooseNearMe } = useSelectedLocation();
+  const { provincia, municipio, bairro, nearMe, coordinates, setProvincia, setArea, chooseNearMe } = useSelectedLocation();
 
-  const [mode, setMode] = useState<'bairros' | 'provincias'>('bairros');
+  const [level, setLevel] = useState<Level>(provincia ? 'municipios' : 'provincias');
+  // O município aberto no nível dos bairros.
+  const [openMunicipio, setOpenMunicipio] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   const [locating, setLocating] = useState(false);
   const [locationFailed, setLocationFailed] = useState(false);
-  const [nearbyBairros, setNearbyBairros] = useState<NearbyBairro[]>([]);
+  const [nearby, setNearby] = useState<NearbyArea[]>([]);
   const [loadingNearby, setLoadingNearby] = useState(false);
   const [localities, setLocalities] = useState<LocalityDTO[]>([]);
   const [provinces, setProvinces] = useState<ProvinceDTO[]>([]);
-  const [loadingLocalities, setLoadingLocalities] = useState(false);
+  const [loadingProvinces, setLoadingProvinces] = useState(false);
+
+  // Ao abrir, começa onde a pessoa está: nos municípios da província escolhida.
+  const [wasVisible, setWasVisible] = useState(visible);
+  if (visible !== wasVisible) {
+    setWasVisible(visible);
+    if (visible) {
+      setLevel(provincia ? 'municipios' : 'provincias');
+      setOpenMunicipio(null);
+    }
+  }
 
   useEffect(() => {
     if (!visible) return;
 
     let cancelled = false;
-    setLoadingLocalities(true);
+    setLoadingProvinces(true);
     loadLocationOptions()
       .then((data) => {
         if (cancelled) return;
@@ -59,7 +75,7 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
         setProvinces(data.provinces);
       })
       .finally(() => {
-        if (!cancelled) setLoadingLocalities(false);
+        if (!cancelled) setLoadingProvinces(false);
       });
 
     return () => {
@@ -67,7 +83,7 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
     };
   }, [visible]);
 
-  // As zonas com espaços perto da pessoa vêm dos espaços registados à volta dela.
+  // Os sítios com espaços perto da pessoa vêm dos espaços registados à volta dela.
   useEffect(() => {
     if (!visible || !coordinates) return;
 
@@ -83,23 +99,24 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
     })
       .then(({ data }) => {
         if (cancelled) return;
-        const byBairro = new Map<string, NearbyBairro>();
+        const byArea = new Map<string, NearbyArea>();
         for (const space of data) {
-          const zona = space.bairro ?? space.municipio;
-          if (!zona || !space.provincia) continue;
-          const found = { bairro: zona, provincia: space.provincia };
-          const current = byBairro.get(found.bairro);
+          if (!space.provincia || !(space.bairro || space.municipio)) continue;
+          const key = normalizeText(`${space.provincia}|${space.municipio ?? ''}|${space.bairro ?? ''}`);
+          const current = byArea.get(key);
           const distance = space.distanceKm ?? Number.POSITIVE_INFINITY;
-          byBairro.set(found.bairro, {
-            ...found,
+          byArea.set(key, {
+            provincia: space.provincia,
+            municipio: space.municipio,
+            bairro: space.bairro,
             count: (current?.count ?? 0) + 1,
             distanceKm: Math.min(current?.distanceKm ?? Number.POSITIVE_INFINITY, distance),
           });
         }
-        setNearbyBairros([...byBairro.values()].sort((a, b) => a.distanceKm - b.distanceKm));
+        setNearby([...byArea.values()].sort((a, b) => a.distanceKm - b.distanceKm).slice(0, 6));
       })
       .catch(() => {
-        if (!cancelled) setNearbyBairros([]);
+        if (!cancelled) setNearby([]);
       })
       .finally(() => {
         if (!cancelled) setLoadingNearby(false);
@@ -110,19 +127,10 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
     };
   }, [visible, coordinates]);
 
-  const { options: zonas, loading: loadingZonas } = useZoneOptions(visible ? provincia : null, localities);
-  const items = useMemo<ZoneOption[]>(
-    () => (mode === 'bairros' ? zonas : provinciasOf(localities, provinces).map((item) => ({ ...item, center: null }))),
-    [mode, zonas, localities, provinces],
-  );
-  const loadingItems = mode === 'bairros' ? loadingZonas : loadingLocalities;
-  const filtered = useMemo(() => {
-    const target = normalizeText(query);
-    return target ? items.filter((item) => normalizeText(item.name).includes(target)) : items;
-  }, [items, query]);
+  const { municipalities, loading: loadingAreas, failed } = useProvinceAreas(visible ? provincia : null);
+  const opened = municipalities.find((item) => item.name === openMunicipio) ?? null;
 
   const close = () => {
-    setMode('bairros');
     setQuery('');
     setLocationFailed(false);
     onClose();
@@ -141,20 +149,151 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
     close();
   };
 
-  const choose = (item: string | null, center: ZoneOption['center'] = null) => {
-    if (mode === 'provincias') {
-      setProvincia(item);
-      setQuery('');
-      // "Todas as províncias" não tem zonas para escolher a seguir.
-      if (item) setMode('bairros');
-      else close();
-      return;
-    }
-    setBairro(item, { center });
+  const goTo = (next: Level) => {
+    setQuery('');
+    setLevel(next);
+  };
+
+  const pickProvincia = (name: string | null) => {
+    setProvincia(name);
+    if (name) goTo('municipios');
+    else close();
+  };
+
+  const pickMunicipio = (item: MunicipalityOption) => {
+    setArea({ provincia, municipio: item.name, center: item.center });
     close();
   };
 
-  const showTop = mode === 'bairros' && !query;
+  const pickBairro = (owner: MunicipalityOption, item: AreaOption) => {
+    setArea({ provincia, municipio: owner.name, bairro: item.name, center: item.center });
+    close();
+  };
+
+  const openBairros = (item: MunicipalityOption) => {
+    if (item.bairros.length === 0) {
+      pickMunicipio(item);
+      return;
+    }
+    setOpenMunicipio(item.name);
+    goTo('bairros');
+  };
+
+  const rows = useMemo<Row[]>(() => {
+    const target = normalizeText(query);
+    const matches = (name: string) => !target || normalizeText(name).includes(target);
+
+    if (level === 'provincias') {
+      return provinciasOf(localities, provinces)
+        .filter((item) => matches(item.name))
+        .map((item) => ({
+          key: item.name,
+          label: item.name,
+          count: item.count,
+          selected: !nearMe && sameLocality(provincia, item.name),
+          chevron: true,
+          onPress: () => pickProvincia(item.name),
+        }));
+    }
+
+    if (level === 'bairros') {
+      if (!opened) return [];
+      return opened.bairros
+        .filter((item) => matches(item.name))
+        .map((item) => ({
+          key: item.name,
+          label: item.name,
+          count: item.count,
+          selected: !nearMe && sameLocality(municipio, opened.name) && sameLocality(bairro, item.name),
+          chevron: false,
+          onPress: () => pickBairro(opened, item),
+        }));
+    }
+
+    const municipioRows: Row[] = municipalities
+      .filter((item) => matches(item.name))
+      .map((item) => ({
+        key: item.name,
+        label: item.name,
+        count: item.count,
+        selected: !nearMe && !bairro && sameLocality(municipio, item.name),
+        chevron: item.bairros.length > 0,
+        onPress: () => openBairros(item),
+      }));
+    if (!target) return municipioRows;
+
+    // A pesquisar, também os bairros da província: quem procura "Alvalade" não tem de
+    // saber que fica na Maianga.
+    const bairroRows: Row[] = municipalities.flatMap((owner) =>
+      owner.bairros
+        .filter((item) => matches(item.name))
+        .map((item) => ({
+          key: `${owner.name}/${item.name}`,
+          label: item.name,
+          subtitle: t('Bairro · {0}', [owner.name]),
+          count: item.count,
+          selected: !nearMe && sameLocality(municipio, owner.name) && sameLocality(bairro, item.name),
+          chevron: false,
+          onPress: () => pickBairro(owner, item),
+        })),
+    );
+    return [...municipioRows, ...bairroRows].slice(0, 80);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [level, query, localities, provinces, municipalities, opened, provincia, municipio, bairro, nearMe]);
+
+  const loadingRows = level === 'provincias' ? loadingProvinces : loadingAreas;
+  const showTop = level === 'municipios' && !query;
+
+  const title = level === 'provincias' ? t("Província") : level === 'bairros' ? (opened?.name ?? '') : t("Localização");
+  const back: { label: string; to: Level } | null =
+    level === 'bairros' ? { label: provincia ?? t("Voltar"), to: 'municipios' } : level === 'provincias' && provincia ? { label: t("Voltar"), to: 'municipios' } : null;
+
+  const header =
+    level === 'provincias'
+      ? t("PROVÍNCIAS")
+      : level === 'bairros'
+        ? t("BAIRROS DE {0}", [(opened?.name ?? '').toUpperCase()])
+        : provincia
+          ? query
+            ? t("RESULTADOS EM {0}", [provincia.toUpperCase()])
+            : t("MUNICÍPIOS DE {0}", [provincia.toUpperCase()])
+          : t("MUNICÍPIOS");
+
+  // A primeira linha de cada lista: escolher o nível de cima inteiro.
+  const wholeRow: Row | null = query
+    ? null
+    : level === 'provincias'
+      ? { key: '*', label: t("Todas as províncias"), selected: !nearMe && provincia === null, chevron: false, onPress: () => pickProvincia(null) }
+      : level === 'bairros' && opened
+        ? {
+            key: '*',
+            label: t("Todo o município de {0}", [opened.name]),
+            count: opened.count,
+            selected: !nearMe && !bairro && sameLocality(municipio, opened.name),
+            chevron: false,
+            onPress: () => pickMunicipio(opened),
+          }
+        : provincia
+          ? {
+              key: '*',
+              label: t("Toda a província de {0}", [provincia]),
+              selected: !nearMe && !municipio && !bairro,
+              chevron: false,
+              onPress: () => {
+                setArea({ provincia });
+                close();
+              },
+            }
+          : null;
+
+  const allRows = wholeRow ? [wholeRow, ...rows] : rows;
+  const emptyMessage = query
+    ? t("Sem resultados para “{0}”", [query])
+    : level === 'municipios' && !provincia
+      ? t("Escolha uma província para ver os seus municípios.")
+      : failed
+        ? t("Não foi possível carregar os municípios de {0}. Verifique a ligação.", [provincia])
+        : null;
 
   return (
     <Modal
@@ -169,16 +308,20 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
         </View>
 
         <View style={styles.navBar}>
-          {mode === 'provincias' ? (
-            <Pressable onPress={() => setMode('bairros')} hitSlop={10} style={styles.navSide}>
+          {back ? (
+            <Pressable onPress={() => goTo(back.to)} hitSlop={10} style={styles.navSide} accessibilityRole="button">
               <Ionicons name="chevron-back" size={24} color={colors.primary} />
-              <Text style={[styles.navButton, { color: colors.primary }]}>{t("Voltar")}</Text>
+              <Text style={[styles.navButton, { color: colors.primary }]} numberOfLines={1}>
+                {back.label}
+              </Text>
             </Pressable>
           ) : (
             <View style={styles.navSide} />
           )}
-          <Text style={[styles.navTitle, { color: colors.text }]}>{mode === 'bairros' ? t("Localização") : t("Província")}</Text>
-          <Pressable onPress={close} hitSlop={10} style={[styles.navSide, styles.navSideRight]}>
+          <Text style={[styles.navTitle, { color: colors.text }]} numberOfLines={1}>
+            {title}
+          </Text>
+          <Pressable onPress={close} hitSlop={10} style={[styles.navSide, styles.navSideRight]} accessibilityRole="button">
             <Text style={[styles.navButton, styles.navDone, { color: colors.primary }]}>{t("OK")}</Text>
           </Pressable>
         </View>
@@ -188,14 +331,22 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
           <TextInput
             value={query}
             onChangeText={setQuery}
-            placeholder={mode === 'provincias' ? t("Pesquisar províncias") : provincia ? t("Pesquisar em {0}", [provincia]) : t("Pesquisar")}
+            placeholder={
+              level === 'provincias'
+                ? t("Pesquisar províncias")
+                : level === 'bairros'
+                  ? t("Pesquisar bairros de {0}", [opened?.name ?? ''])
+                  : provincia
+                    ? t("Município ou bairro em {0}", [provincia])
+                    : t("Pesquisar")
+            }
             placeholderTextColor={colors.textSecondary}
             selectionColor={colors.primary}
             autoCorrect={false}
             style={[styles.searchInput, { color: colors.text }]}
           />
           {query ? (
-            <Pressable onPress={() => setQuery('')} hitSlop={10}>
+            <Pressable onPress={() => setQuery('')} hitSlop={10} accessibilityLabel={t("Limpar pesquisa")}>
               <Ionicons name="close-circle" size={17} color={colors.textSecondary} />
             </Pressable>
           ) : null}
@@ -214,7 +365,7 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
                       <View style={styles.rowTextBlock}>
                         <Text style={[styles.rowText, { color: colors.text }]}>{t("Perto de si")}</Text>
                         <Text style={[styles.rowSubtext, { color: colors.textSecondary }]}>
-                          {t("Espaços até")}{" "}{NEAR_ME_RADIUS_KM}{" "}{t("km de onde está")}
+                          {t("Espaços até {0} km de onde está", [NEAR_ME_RADIUS_KM])}
                         </Text>
                       </View>
                       {locating ? (
@@ -226,7 +377,7 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
                   )}
                 </Pressable>
                 <View style={[styles.separator, styles.separatorIcon, { backgroundColor: colors.divider }]} />
-                <Pressable onPress={() => setMode('provincias')}>
+                <Pressable onPress={() => goTo('provincias')}>
                   {({ pressed }) => (
                     <View style={[styles.row, pressed && { backgroundColor: colors.backgroundSelected }]}>
                       <View style={[styles.rowIcon, { backgroundColor: '#34C759' }]}>
@@ -247,39 +398,43 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
 
               {coordinates ? (
                 <>
-                  <Text style={[styles.header, { color: colors.textSecondary }]}>{t("ZONAS COM ESPAÇOS PERTO DE SI")}</Text>
+                  <Text style={[styles.header, { color: colors.textSecondary }]}>{t("COM ESPAÇOS PERTO DE SI")}</Text>
                   <View style={[styles.group, { backgroundColor: colors.card }]}>
                     {loadingNearby ? (
                       <View style={styles.row}>
                         <ActivityIndicator size="small" color={colors.textSecondary} />
                       </View>
-                    ) : nearbyBairros.length === 0 ? (
+                    ) : nearby.length === 0 ? (
                       <View style={styles.row}>
                         <Text style={[styles.rowSubtext, { color: colors.textSecondary }]}>{t("Ainda não há espaços registados à sua volta.")}</Text>
                       </View>
                     ) : (
-                      nearbyBairros.map((item, index) => (
-                        <View key={item.bairro}>
-                          <Pressable
-                            onPress={() => {
-                              setBairro(item.bairro, { provincia: item.provincia });
-                              close();
+                      nearby.map((item, index) => (
+                        <View key={`${item.provincia}|${item.municipio}|${item.bairro}`}>
+                          <OptionRow
+                            row={{
+                              key: '',
+                              label: item.bairro ?? item.municipio ?? '',
+                              subtitle: [
+                                item.bairro ? item.municipio : item.provincia,
+                                countLabel(item.count),
+                                Number.isFinite(item.distanceKm) ? t("a {0}", [formatDistance(item.distanceKm)]) : null,
+                              ]
+                                .filter(Boolean)
+                                .join(' · '),
+                              selected:
+                                !nearMe &&
+                                sameLocality(provincia, item.provincia) &&
+                                sameLocality(municipio, item.municipio) &&
+                                (item.bairro ? sameLocality(bairro, item.bairro) : !bairro),
+                              chevron: false,
+                              onPress: () => {
+                                setArea({ provincia: item.provincia, municipio: item.municipio, bairro: item.bairro });
+                                close();
+                              },
                             }}
-                          >
-                            {({ pressed }) => (
-                              <View style={[styles.row, pressed && { backgroundColor: colors.backgroundSelected }]}>
-                                <View style={styles.rowTextBlock}>
-                                  <Text style={[styles.rowText, { color: colors.text }]}>{item.bairro}</Text>
-                                  <Text style={[styles.rowSubtext, { color: colors.textSecondary }]}>
-                                    {item.count} {item.count === 1 ? t("espaço") : t("espaços")}
-                                    {Number.isFinite(item.distanceKm) ? ` · a ${formatDistance(item.distanceKm)}` : ''}
-                                  </Text>
-                                </View>
-                                {!nearMe && sameLocality(bairro, item.bairro) ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
-                              </View>
-                            )}
-                          </Pressable>
-                          {index < nearbyBairros.length - 1 ? <View style={[styles.separator, { backgroundColor: colors.divider }]} /> : null}
+                          />
+                          {index < nearby.length - 1 ? <View style={[styles.separator, { backgroundColor: colors.divider }]} /> : null}
                         </View>
                       ))
                     )}
@@ -289,75 +444,54 @@ export function LocationPicker({ visible, onClose }: { visible: boolean; onClose
             </>
           ) : null}
 
-          <Text style={[styles.header, { color: colors.textSecondary }]}>
-            {mode === 'provincias' ? t("PROVÍNCIAS") : provincia ? t("ZONAS DE {0}", [provincia.toUpperCase()]) : t("ZONAS")}
-          </Text>
+          <Text style={[styles.header, { color: colors.textSecondary }]}>{header}</Text>
 
           <View style={[styles.group, { backgroundColor: colors.card }]}>
-            {!query && (mode === 'provincias' || provincia) ? (
-              <>
-                <OptionRow
-                  label={mode === 'provincias' ? t("Todas as províncias") : t("Toda a província de {0}", [provincia])}
-                  selected={!nearMe && (mode === 'provincias' ? provincia === null : bairro === null)}
-                  onPress={() => choose(null)}
-                />
-                {filtered.length > 0 ? <View style={[styles.separator, { backgroundColor: colors.divider }]} /> : null}
-              </>
-            ) : null}
-            {filtered.map((item, index) => (
-              <View key={item.name}>
-                <OptionRow
-                  label={item.name}
-                  detail={countLabel(item.count)}
-                  selected={!nearMe && sameLocality(mode === 'bairros' ? bairro : provincia, item.name)}
-                  onPress={() => choose(item.name, item.center)}
-                />
-                {index < filtered.length - 1 ? <View style={[styles.separator, { backgroundColor: colors.divider }]} /> : null}
+            {allRows.map((row, index) => (
+              <View key={row.key}>
+                <OptionRow row={row} />
+                {index < allRows.length - 1 ? <View style={[styles.separator, { backgroundColor: colors.divider }]} /> : null}
               </View>
             ))}
-            {loadingItems && items.length === 0 ? (
+            {loadingRows && rows.length === 0 ? (
               <View style={styles.row}>
                 <ActivityIndicator size="small" color={colors.textSecondary} />
               </View>
-            ) : query && filtered.length === 0 ? (
+            ) : rows.length === 0 && emptyMessage ? (
               <View style={styles.row}>
-                <Text style={[styles.rowText, { color: colors.textSecondary }]}>{t("Sem resultados para “")}{query}”</Text>
-              </View>
-            ) : mode === 'bairros' && items.length === 0 && !loadingItems ? (
-              <View style={styles.row}>
-                <Text style={[styles.rowSubtext, { color: colors.textSecondary }]}>
-                  {provincia
-                    ? t("Não foi possível carregar as zonas de {0}.", [provincia])
-                    : t("Escolha uma província para ver as zonas onde há espaços.")}
-                </Text>
+                <Text style={[styles.rowSubtext, { color: colors.textSecondary }]}>{emptyMessage}</Text>
               </View>
             ) : null}
           </View>
+          {level === 'bairros' ? (
+            <Text style={[styles.footer, { color: colors.textSecondary }]}>
+              {t("Bairros do OpenStreetMap. Se o seu não aparece, escolha o município inteiro.")}
+            </Text>
+          ) : null}
         </ScrollView>
       </SafeAreaView>
     </Modal>
   );
 }
 
-function OptionRow({
-  label,
-  detail,
-  selected,
-  onPress,
-}: {
-  label: string;
-  detail?: string;
-  selected: boolean;
-  onPress: () => void;
-}) {
+function OptionRow({ row }: { row: Row }) {
   const colors = useIOSColors();
+  const detail = row.count === undefined || row.subtitle ? null : countLabel(row.count);
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityState={{ selected }}>
+    <Pressable onPress={row.onPress} accessibilityRole="button" accessibilityState={{ selected: row.selected }}>
       {({ pressed }) => (
         <View style={[styles.row, pressed && { backgroundColor: colors.backgroundSelected }]}>
-          <Text style={[styles.rowText, styles.flex, { color: colors.text }]}>{label}</Text>
-          {detail ? <Text style={[styles.rowSubtext, { color: colors.textSecondary }]}>{detail}</Text> : null}
-          {selected ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
+          <View style={styles.rowTextBlock}>
+            <Text style={[styles.rowText, { color: colors.text }]}>{row.label}</Text>
+            {row.subtitle ? (
+              <Text style={[styles.rowSubtext, { color: colors.textSecondary }]} numberOfLines={1}>
+                {row.count ? `${row.subtitle} · ${countLabel(row.count)}` : row.subtitle}
+              </Text>
+            ) : null}
+          </View>
+          {detail ? <Text style={[styles.rowSubtext, { color: row.count ? colors.textSecondary : colors.textTertiary }]}>{detail}</Text> : null}
+          {row.selected ? <Ionicons name="checkmark" size={20} color={colors.primary} /> : null}
+          {row.chevron ? <Ionicons name="chevron-forward" size={17} color={colors.textTertiary} /> : null}
         </View>
       )}
     </Pressable>
@@ -387,7 +521,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   navSide: {
-    width: 96,
+    width: 110,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -402,6 +536,7 @@ const styles = StyleSheet.create({
   },
   navButton: {
     ...Typography.body,
+    flexShrink: 1,
   },
   navDone: {
     fontWeight: '600',

@@ -13,6 +13,10 @@ export interface SpacesMapData {
   // Onde a pessoa está (ponto azul) e, havendo raio, o círculo da distância escolhida.
   position: Coordinates | null;
   radiusKm: number | null;
+  // A área que o mapa mostra (província, município ou bairro): enquadra os espaços dela e,
+  // não havendo nenhum, fica no ponto da área com este zoom. A posição da pessoa continua
+  // a ver-se, mas não puxa o mapa para fora da área.
+  focus?: (Coordinates & { zoom: number }) | null;
   dark: boolean;
   tint: string;
 }
@@ -23,9 +27,9 @@ const DEFAULT_CENTER = [-8.839, 13.2894];
 // A página do mapa de pesquisa: Leaflet com os mapas do OpenStreetMap, um marcador por
 // espaço (com o ícone da agenda+) e a posição da pessoa. Tocar num marcador avisa a app com o id
 // do espaço; tocar no mapa avisa que nada ficou escolhido.
-export function spacesMapHtml({ spaces, position, radiusKm, dark, tint }: SpacesMapData): string {
+export function spacesMapHtml({ spaces, position, radiusKm, focus = null, dark, tint }: SpacesMapData): string {
   // "<" escapado para um nome ou imagem nunca fechar o <script> onde os dados entram.
-  const data = JSON.stringify({ spaces, position, radiusKm }).replace(/</g, "\\u003c");
+  const data = JSON.stringify({ spaces, position, radiusKm, focus }).replace(/</g, "\\u003c");
 
   return `<!doctype html>
 <html>
@@ -143,7 +147,7 @@ export function spacesMapHtml({ spaces, position, radiusKm, dark, tint }: Spaces
   if (data.position) {
     var me = [data.position.latitude, data.position.longitude];
     L.marker(me, { interactive: false, icon: L.divIcon({ className: "", iconSize: [22, 22], iconAnchor: [11, 11], html: '<div class="me"></div>' }) }).addTo(map);
-    bounds.push(me);
+    if (!data.focus) bounds.push(me);
 
     if (data.radiusKm) {
       var circle = L.circle(me, {
@@ -154,7 +158,8 @@ export function spacesMapHtml({ spaces, position, radiusKm, dark, tint }: Spaces
     }
   }
 
-  if (bounds.length === 1) map.setView(bounds[0], 15);
+  if (bounds.length === 0 && data.focus) map.setView([data.focus.latitude, data.focus.longitude], data.focus.zoom);
+  else if (bounds.length === 1) map.setView(bounds[0], 15);
   else if (bounds.length > 1) map.fitBounds(bounds, { padding: [48, 48], maxZoom: 16 });
   spread();
 </script>

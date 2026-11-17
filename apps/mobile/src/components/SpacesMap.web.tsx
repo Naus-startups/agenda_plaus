@@ -6,10 +6,10 @@ import { useT } from "@/i18n";
 
 // A WebView não existe no browser: a versão web mostra a mesma página num iframe e ouve
 // as mensagens que ela envia.
-export function SpacesMap({ spaces, position, radiusKm, dark, tint, onSelect }: SpacesMapProps) {
+export function SpacesMap({ spaces, position, radiusKm, focus, dark, tint, onSelect }: SpacesMapProps) {
   const t = useT();
   const frame = useRef<HTMLIFrameElement>(null);
-  const html = useMemo(() => spacesMapHtml({ spaces, position, radiusKm, dark, tint }), [spaces, position, radiusKm, dark, tint]);
+  const html = useMemo(() => spacesMapHtml({ spaces, position, radiusKm, focus, dark, tint }), [spaces, position, radiusKm, focus, dark, tint]);
 
   useEffect(() => {
     const listener = (event: MessageEvent) => {

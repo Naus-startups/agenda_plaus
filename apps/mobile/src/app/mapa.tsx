@@ -4,18 +4,19 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import type { BusinessDTO } from "@slotix/types";
+import type { BusinessDTO, MunicipalityDTO, ProvinceDTO } from "@slotix/types";
 import { formatDistance, normalizeText, sameLocality } from "@slotix/types";
 
 import { useIOSColors } from "@/components/ios";
+import { LocationPicker } from "@/components/LocationPicker";
 import { MapFiltersSheet, NO_MAP_FILTERS, priceLabel, type MapFilters } from "@/components/MapFiltersSheet";
 import { ratingLabel, placeText } from "@/components/SpaceCards";
 import { SpacesMap } from "@/components/SpacesMap";
 import { Typography } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { useSelectedLocation } from "../contexts/LocationContext";
-import { getBusinessServices, listBusinesses } from "../services/businesses";
-import { reversePlace } from "../services/localities";
+import { areaLabel, useSelectedLocation } from "../contexts/LocationContext";
+import { getBusinessServices, listAllBusinesses } from "../services/businesses";
+import { listMunicipalities, listProvinces, reversePlace, spaceInBairro, spaceInMunicipio } from "../services/localities";
 import { useT } from "@/i18n";
 
 // Uma linha de informação do espaço: ícone e texto.
@@ -31,11 +32,16 @@ function Fact({ icon, text, lines = 1 }: { icon: React.ComponentProps<typeof Ion
   );
 }
 
+// O zoom com que o mapa mostra uma área sem espaços: a província, o município, o bairro.
+const AREA_ZOOM = { provincia: 8, municipio: 12, bairro: 15 };
+
 /*
- * O mapa dos espaços: todos os da província onde a pessoa está (lida do GPS) que têm o
- * ponto marcado, com o ícone da agenda+. A barra de pesquisa procura por nome, província,
- * município ou bairro, em todo o país; os filtros limitam pela distância (desenha o círculo) e pelo preço. Tocar num
- * marcador mostra o espaço — com a distância e o preço — e leva à página dele.
+ * O mapa dos espaços: os da área escolhida (província, município ou bairro — o botão por
+ * baixo da pesquisa muda-a) que têm o ponto marcado, com o ícone da agenda+. Sem área
+ * escolhida vale a província onde a pessoa está (lida do GPS). A barra de pesquisa procura
+ * por nome, província, município ou bairro, em todo o país; os filtros limitam pela
+ * distância (desenha o círculo) e pelo preço. Tocar num marcador mostra o espaço — com a
+ * distância e o preço — e leva à página dele.
  */
 export default function MapScreen() {
   const t = useT();
@@ -43,7 +49,17 @@ export default function MapScreen() {
   const colors = useIOSColors();
   const insets = useSafeAreaInsets();
   const dark = useColorScheme() === "dark";
-  const { coordinates: position, requestPosition, provincia: chosenProvincia } = useSelectedLocation();
+  const {
+    coordinates: position,
+    requestPosition,
+    provincia: chosenProvincia,
+    municipio: chosenMunicipio,
+    bairro: chosenBairro,
+    center: chosenCenter,
+    chosen,
+    nearMe,
+  } = useSelectedLocation();
+  const [pickerVisible, setPickerVisible] = useState(false);
 
   const params = useLocalSearchParams<{ radiusKm?: string }>();
   const initialRadius = Number(params.radiusKm);
@@ -66,22 +82,11 @@ export default function MapScreen() {
   useEffect(() => {
     let cancelled = false;
     // O mapa mostra todos os espaços de uma vez: lê as páginas todas, não só a primeira.
-    const loadAll = async () => {
-      const all: BusinessDTO[] = [];
-      for (let page = 1; ; page++) {
-        const result = await listBusinesses({
-          page,
-          limit: 100,
-          // Com preço escolhido, vêm só os espaços com algum serviço até esse valor.
-          maxPrice: maxPrice ?? undefined,
-          ...(position ? { latitude: position.latitude, longitude: position.longitude } : {}),
-        });
-        all.push(...result.data);
-        if (result.data.length === 0 || all.length >= result.meta.total) return all;
-      }
-    };
-
-    loadAll()
+    listAllBusinesses({
+      // Com preço escolhido, vêm só os espaços com algum serviço até esse valor.
+      maxPrice: maxPrice ?? undefined,
+      ...(position ? { latitude: position.latitude, longitude: position.longitude } : {}),
+    })
       .then((all) => {
         if (!cancelled) setSpaces(all);
       })
@@ -119,8 +124,60 @@ export default function MapScreen() {
     };
   }, [geoLatitude, geoLongitude]);
 
-  // Sem GPS (ou sem província para o ponto), vale a província escolhida na app.
-  const provincia = (position ? geoProvincia : null) ?? chosenProvincia;
+  // A área escolhida na app; sem escolha (ou em "Perto de si"), a província onde a pessoa
+  // está, e sem GPS a província guardada.
+  const byGps = !chosen || nearMe;
+  const provincia = byGps ? ((position ? geoProvincia : null) ?? chosenProvincia) : chosenProvincia;
+  const municipio = byGps ? null : chosenMunicipio;
+  const bairro = byGps ? null : chosenBairro;
+
+  // Os municípios da província (com os bairros de cada um) e o centro de cada província:
+  // dizem que espaços são do município escolhido e onde pôr o mapa quando lá não há nenhum.
+  const [tree, setTree] = useState<{ provincia: string; municipalities: MunicipalityDTO[] } | null>(null);
+  const [provinces, setProvinces] = useState<ProvinceDTO[]>([]);
+  useEffect(() => {
+    void listProvinces()
+      .then(setProvinces)
+      .catch(() => undefined);
+  }, []);
+  useEffect(() => {
+    if (!provincia) return;
+    let cancelled = false;
+    listMunicipalities(provincia)
+      .then((found) => {
+        if (!cancelled) setTree({ provincia, municipalities: found });
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [provincia]);
+  const municipalities = useMemo(() => (tree && tree.provincia === provincia ? tree.municipalities : []), [tree, provincia]);
+
+  const selectedMunicipality = municipio ? municipalities.find((item) => sameLocality(item.name, municipio)) : undefined;
+  const inArea = useCallback(
+    (space: BusinessDTO) => {
+      if (!provincia) return true;
+      if (!sameLocality(space.provincia, provincia)) return false;
+      if (bairro) return spaceInBairro(space, bairro, chosenCenter);
+      if (municipio) return selectedMunicipality ? spaceInMunicipio(space, selectedMunicipality) : sameLocality(space.municipio, municipio);
+      return true;
+    },
+    [provincia, municipio, bairro, chosenCenter, selectedMunicipality],
+  );
+
+  // Onde o mapa fica quando a área não tem espaços: o ponto do bairro ou do município, ou o
+  // centro da província.
+  const focus = useMemo(() => {
+    if (!provincia) return null;
+    if ((bairro || municipio) && chosenCenter) return { ...chosenCenter, zoom: bairro ? AREA_ZOOM.bairro : AREA_ZOOM.municipio };
+    if (municipio && selectedMunicipality && selectedMunicipality.latitude !== null && selectedMunicipality.longitude !== null) {
+      return { latitude: selectedMunicipality.latitude, longitude: selectedMunicipality.longitude, zoom: AREA_ZOOM.municipio };
+    }
+    const province = provinces.find((item) => sameLocality(item.name, provincia));
+    return province ? { latitude: province.latitude, longitude: province.longitude, zoom: AREA_ZOOM.provincia } : null;
+  }, [provincia, municipio, bairro, chosenCenter, selectedMunicipality, provinces]);
+  const areaText = areaLabel({ provincia, municipio, bairro });
 
   const applyFilters = useCallback(
     async (next: MapFilters) => {
@@ -135,20 +192,21 @@ export default function MapScreen() {
     [position, requestPosition],
   );
 
-  // Só entram no mapa os espaços com o ponto marcado. Sem texto, todos os da província da
-  // pessoa; com distância, os que ficam dentro dela; com texto, os que o têm no nome, na província, no município, no bairro ou na morada.
+  // Só entram no mapa os espaços com o ponto marcado. Sem texto, todos os da área escolhida;
+  // com distância, os que ficam dentro dela; com texto, os que o têm no nome, na província,
+  // no município, no bairro ou na morada (em todo o país).
   const shown = useMemo(() => {
     const words = normalizeText(query).split(/\s+/).filter(Boolean);
     return spaces.filter((space) => {
       if (space.latitude === null || space.longitude === null) return false;
       if (radiusKm !== null && position && (space.distanceKm === null || space.distanceKm > radiusKm)) return false;
-      if (words.length === 0) return provincia ? sameLocality(space.provincia, provincia) : true;
+      if (words.length === 0) return inArea(space);
       const text = normalizeText(
         [space.name, space.provincia, space.municipio, space.bairro, space.address, space.category].filter(Boolean).join(" "),
       );
       return words.every((word) => text.includes(word));
     });
-  }, [spaces, radiusKm, position, query, provincia]);
+  }, [spaces, radiusKm, position, query, inArea]);
 
   const markers = useMemo(
     () =>
@@ -187,15 +245,24 @@ export default function MapScreen() {
         ? t("Não há nenhum espaço em “{0}”{1}.", [query.trim(), radiusKm !== null || maxPrice !== null ? t(" com estes filtros") : ""])
         : filtering
           ? t("Nenhum espaço com estes filtros. Alargue a distância ou o preço.")
-        : provincia
-          ? t("Ainda não há espaços marcados no mapa em {0}.", [provincia])
+        : areaText
+          ? t("Ainda não há espaços marcados no mapa em {0}.", [areaText])
           : t("Ainda não há espaços marcados no mapa.")
-      : t("{0}{1}. Toque num para o ver.", [shown.length === 1 ? t("1 espaço") : t("{0} espaços", [shown.length]), [query.trim().length === 0 && provincia ? t(" em {0}", [provincia]) : "", radiusKm !== null ? t(" a menos de {0} km", [radiusKm]) : ""].join("")]);
+      : t("{0}{1}. Toque num para o ver.", [shown.length === 1 ? t("1 espaço") : t("{0} espaços", [shown.length]), [query.trim().length === 0 && areaText ? t(" em {0}", [areaText]) : "", radiusKm !== null ? t(" a menos de {0} km", [radiusKm]) : ""].join("")]);
   const selectedPrice = selected ? prices[selected.id] : undefined;
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
-      <SpacesMap spaces={markers} position={position} radiusKm={position ? radiusKm : null} dark={dark} tint={colors.primary} onSelect={setSelectedId} />
+      <SpacesMap
+        spaces={markers}
+        position={position}
+        radiusKm={position ? radiusKm : null}
+        // A pesquisar, o mapa enquadra o que encontrou; senão, a área escolhida.
+        focus={query.trim().length === 0 && radiusKm === null ? focus : null}
+        dark={dark}
+        tint={colors.primary}
+        onSelect={setSelectedId}
+      />
 
       <View style={[styles.top, { paddingTop: insets.top + 8 }]} pointerEvents="box-none">
         <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace("/"))} hitSlop={8} accessibilityRole="button" accessibilityLabel={t("Voltar")}>
@@ -240,6 +307,28 @@ export default function MapScreen() {
               style={[styles.back, styles.shadow, { backgroundColor: activeFilters > 0 ? colors.primary : colors.card, opacity: pressed ? 0.6 : 1 }]}
             >
               <Ionicons name="options-outline" size={20} color={activeFilters > 0 ? colors.primaryForeground : colors.text} />
+            </View>
+          )}
+        </Pressable>
+      </View>
+
+      <View style={[styles.areaRow, { top: insets.top + 8 + 38 + 10 }]} pointerEvents="box-none">
+        <Pressable
+          onPress={() => {
+            Keyboard.dismiss();
+            setPickerVisible(true);
+          }}
+          hitSlop={6}
+          accessibilityRole="button"
+          accessibilityLabel={t("Mudar a área do mapa: {0}", [areaText ?? t("Todas as localidades")])}
+        >
+          {({ pressed }) => (
+            <View style={[styles.areaChip, styles.shadow, { backgroundColor: colors.card, opacity: pressed ? 0.7 : 1 }]}>
+              <Ionicons name={byGps && position ? "navigate" : "location"} size={14} color={colors.primary} />
+              <Text style={[styles.areaText, { color: colors.text }]} numberOfLines={1}>
+                {areaText ?? t("Todas as localidades")}
+              </Text>
+              <Ionicons name="chevron-down" size={14} color={colors.textSecondary} />
             </View>
           )}
         </Pressable>
@@ -298,6 +387,14 @@ export default function MapScreen() {
         )}
       </View>
 
+      <LocationPicker
+        visible={pickerVisible}
+        onClose={() => {
+          setSelectedId(null);
+          setPickerVisible(false);
+        }}
+      />
+
       <MapFiltersSheet
         visible={filtersVisible}
         initial={filters}
@@ -349,6 +446,26 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
+  },
+  areaRow: {
+    position: "absolute",
+    left: 16 + 38 + 10,
+    right: 16,
+    flexDirection: "row",
+  },
+  areaChip: {
+    height: 32,
+    maxWidth: "100%",
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  areaText: {
+    ...Typography.subheadline,
+    fontWeight: "600",
+    flexShrink: 1,
   },
   bottom: {
     position: "absolute",

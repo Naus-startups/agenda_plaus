@@ -136,14 +136,38 @@ export interface LocalityDTO {
   count: number;
 }
 
-// A province of Angola as OpenStreetMap has it, with the centre of its territory.
+// Angola's territory as the app organises it: província → município → bairro. The
+// provinces and municípios are the official ones (Lei n.º 14/24, 21 and 326); their points
+// and the bairros come from OpenStreetMap.
+
+// A province, with the centre of its territory.
 export interface ProvinceDTO {
+  name: string;
+  latitude: number;
+  longitude: number;
+  // The município that is the seat of the province ("Ingombota" for Luanda).
+  capital?: string;
+  municipalityCount?: number;
+}
+
+// A bairro (or village) of a município, and where it is.
+export interface BairroDTO {
   name: string;
   latitude: number;
   longitude: number;
 }
 
-// A named place inside a province (town, bairro, neighbourhood) and where it is.
+// A município with the point of its seat — null for the few new municípios OpenStreetMap
+// doesn't place yet — and its bairros.
+export interface MunicipalityDTO {
+  name: string;
+  latitude: number | null;
+  longitude: number | null;
+  bairros: BairroDTO[];
+}
+
+// A named place inside a province (town, bairro, neighbourhood) and where it is. Kept for
+// app versions that still ask for /geo/provinces/:name/zones.
 export interface ZoneDTO {
   name: string;
   latitude: number;
@@ -384,8 +408,18 @@ export interface PaymentDTO {
   method: PaymentMethod;
   status: PaymentStatus;
   paidAt: string | null;
+  // The transfer / Multicaixa Express proof attached when the payment was received; the
+  // file itself is read through GET /payments/:id/proof.
+  proof: PaymentProofDTO | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface PaymentProofDTO {
+  fileName: string;
+  mimeType: string;
+  size: number;
+  uploadedAt: string;
 }
 
 export interface CreatePaymentRequest {
@@ -408,19 +442,9 @@ export interface GalleryImageDTO {
   position: number;
   caption: string | null;
   createdAt: string;
-  // The transfer / Multicaixa Express proof attached when the payment was received; the
-  // file itself is read through GET /payments/:id/proof.
-  proof: PaymentProofDTO | null;
 }
 
 export type SearchSortBy = "recommended" | "nearest" | "bestPrice" | "topRated";
-
-export interface PaymentProofDTO {
-  fileName: string;
-  mimeType: string;
-  size: number;
-  uploadedAt: string;
-}
 
 export interface MatchedServiceDTO {
   id: string;

@@ -5,12 +5,12 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { FilledButton, useIOSColors } from "@/components/ios";
-import { normalizeText, type LocalityDTO, type ProvinceDTO } from "@slotix/types";
+import { normalizeText, sameLocality, type LocalityDTO, type ProvinceDTO } from "@slotix/types";
 
 import { Typography } from "@/constants/theme";
 import { useSelectedLocation } from "@/contexts/LocationContext";
-import { useZoneOptions } from "@/hooks/use-zone-options";
-import { countLabel, loadLocationOptions, provinciasOf, type ZoneOption } from "@/services/localities";
+import { useProvinceAreas } from "@/hooks/use-province-areas";
+import { countLabel, loadLocationOptions, provinciasOf, type AreaOption, type MunicipalityOption } from "@/services/localities";
 import { useT } from "@/i18n";
 
 /*
@@ -18,19 +18,23 @@ import { useT } from "@/i18n";
  * É essa a localização que a app passa a usar (pode ser mudada depois, ao tocar na
  * localização na Home ou no Explorar).
  *
- * Dois passos no mesmo ecrã: primeiro a província (todas as de Angola, vindas do
- * OpenStreetMap), depois a zona dessa província — as suas cidades e bairros, também do
- * OpenStreetMap, com o número de espaços que ficam em cada um.
+ * Três passos no mesmo ecrã: a província (as 21 de Angola), o município dessa província
+ * e, se a pessoa quiser, o bairro desse município — cada um com o número de espaços que
+ * lá ficam. Em cada passo pode ficar-se pelo nível de cima ("Toda a província").
  */
+type Step = "provincia" | "municipio" | "bairro";
+type Item = AreaOption & { subtitle?: string; owner?: MunicipalityOption; chevron?: boolean };
+
 export default function LocationOnboardingScreen() {
   const t = useT();
   const router = useRouter();
   const colors = useIOSColors();
-  const { setBairro, setProvincia: saveProvincia, chooseNearMe } = useSelectedLocation();
+  const { setArea, setProvincia: saveProvincia, chooseNearMe } = useSelectedLocation();
 
-  const [step, setStep] = useState<"provincia" | "bairro">("provincia");
+  const [step, setStep] = useState<Step>("provincia");
   const [provincia, setProvincia] = useState<string | null>(null);
-  const [bairro, setBairroChoice] = useState<string | null>(null);
+  const [municipio, setMunicipio] = useState<MunicipalityOption | null>(null);
+  const [bairro, setBairroChoice] = useState<AreaOption | null>(null);
   const [query, setQuery] = useState("");
   const [detecting, setDetecting] = useState(false);
   const [detectFailed, setDetectFailed] = useState(false);
@@ -56,22 +60,52 @@ export default function LocationOnboardingScreen() {
     };
   }, []);
 
-  const { options: zonas, loading: loadingZonas } = useZoneOptions(provincia, localities);
-  const items = useMemo<ZoneOption[]>(
-    () => (step === "provincia" ? provinciasOf(localities, provinces).map((item) => ({ ...item, center: null })) : zonas),
-    [step, zonas, localities, provinces],
-  );
-  const loadingItems = step === "provincia" ? loading : loadingZonas;
-  const filtered = useMemo(() => {
+  const { municipalities, loading: loadingAreas, failed } = useProvinceAreas(provincia);
+  const filtered = useMemo<Item[]>(() => {
     const target = normalizeText(query);
-    return target ? items.filter((item) => normalizeText(item.name).includes(target)) : items;
-  }, [items, query]);
+    const matches = (name: string) => !target || normalizeText(name).includes(target);
+    if (step === "provincia") {
+      return provinciasOf(localities, provinces)
+        .filter((item) => matches(item.name))
+        .map((item) => ({ ...item, center: null, chevron: true }));
+    }
+    if (step === "bairro") return (municipio?.bairros ?? []).filter((item) => matches(item.name));
+
+    const found: Item[] = municipalities.filter((item) => matches(item.name)).map((item) => ({ ...item, chevron: item.bairros.length > 0 }));
+    if (!target) return found;
+    // A pesquisar, também os bairros: quem procura "Alvalade" não tem de saber o município.
+    const bairros = municipalities.flatMap((owner) =>
+      owner.bairros.filter((item) => matches(item.name)).map((item) => ({ ...item, owner, subtitle: owner.name })),
+    );
+    return [...found, ...bairros].slice(0, 80);
+  }, [step, query, localities, provinces, municipalities, municipio]);
+  const loadingItems = step === "provincia" ? loading : loadingAreas;
+
+  const goTo = (next: Step) => {
+    setQuery("");
+    setStep(next);
+  };
 
   const pickProvincia = (name: string) => {
     setProvincia(name);
+    setMunicipio(null);
     setBairroChoice(null);
-    setQuery("");
-    setStep("bairro");
+    goTo("municipio");
+  };
+
+  const pickItem = (item: Item) => {
+    if (step === "provincia") return pickProvincia(item.name);
+    if (step === "bairro") return setBairroChoice(item);
+    if (item.owner) {
+      // Um bairro encontrado na pesquisa dos municípios: escolhe os dois de uma vez.
+      setMunicipio(item.owner);
+      setBairroChoice(item);
+      return goTo("bairro");
+    }
+    const chosen = municipalities.find((owner) => owner.name === item.name) ?? null;
+    setMunicipio(chosen);
+    setBairroChoice(null);
+    if (chosen && chosen.bairros.length > 0) goTo("bairro");
   };
 
   const useGps = async () => {
@@ -92,26 +126,26 @@ export default function LocationOnboardingScreen() {
 
   const finish = () => {
     if (!provincia) return;
-    const center = zonas.find((item) => item.name === bairro)?.center ?? null;
-    setBairro(bairro, { provincia, center });
+    setArea({
+      provincia,
+      municipio: municipio?.name ?? null,
+      bairro: bairro?.name ?? null,
+      center: bairro?.center ?? municipio?.center ?? null,
+    });
     router.replace("/");
   };
+
+  const previous: Step | null = step === "bairro" ? "municipio" : step === "municipio" ? "provincia" : null;
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top", "bottom"]}>
       <View style={styles.header}>
-        {step === "bairro" ? (
-          <Pressable
-            onPress={() => {
-              setStep("provincia");
-              setQuery("");
-            }}
-            hitSlop={10}
-            style={styles.back}
-            accessibilityRole="button"
-          >
+        {previous ? (
+          <Pressable onPress={() => goTo(previous)} hitSlop={10} style={styles.back} accessibilityRole="button">
             <Ionicons name="chevron-back" size={22} color={colors.primary} />
-            <Text style={[styles.backText, { color: colors.primary }]}>{t("Província")}</Text>
+            <Text style={[styles.backText, { color: colors.primary }]}>
+              {previous === "provincia" ? t("Província") : t("Município")}
+            </Text>
           </Pressable>
         ) : (
           <View style={styles.back} />
@@ -121,15 +155,21 @@ export default function LocationOnboardingScreen() {
           <Ionicons name="location" size={30} color={colors.primary} />
         </View>
         <Text style={[styles.title, { color: colors.text }]}>
-          {step === "provincia" ? t("Onde quer ver espaços?") : t("Em que zona de {0}?", [provincia])}
+          {step === "provincia"
+            ? t("Onde quer ver espaços?")
+            : step === "municipio"
+              ? t("Em que município de {0}?", [provincia])
+              : t("Em que bairro de {0}?", [municipio?.name])}
         </Text>
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
           {step === "provincia"
             ? t("Use a sua localização ou escolha uma província onde há espaços. Pode mudar isto mais tarde.")
-            : t("Escolha a zona para ver os espaços de lá, ou veja a província toda.")}
+            : step === "municipio"
+              ? t("Escolha o município para ver os espaços de lá, ou veja a província toda.")
+              : t("Escolha o bairro, ou fique com o município todo.")}
         </Text>
         <Text style={[styles.step, { color: colors.textTertiary }]}>
-          {step === "provincia" ? t("PASSO 1 DE 2") : t("PASSO 2 DE 2")}
+          {step === "provincia" ? t("PASSO 1 DE 3") : step === "municipio" ? t("PASSO 2 DE 3") : t("PASSO 3 DE 3")}
         </Text>
       </View>
 
@@ -138,7 +178,9 @@ export default function LocationOnboardingScreen() {
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder={step === "provincia" ? t("Pesquisar províncias") : t("Pesquisar zonas")}
+          placeholder={
+            step === "provincia" ? t("Pesquisar províncias") : step === "municipio" ? t("Município ou bairro") : t("Pesquisar bairros")
+          }
           placeholderTextColor={colors.textSecondary}
           selectionColor={colors.primary}
           autoCorrect={false}
@@ -179,24 +221,41 @@ export default function LocationOnboardingScreen() {
         ) : null}
 
         <View style={[styles.group, { backgroundColor: colors.card }]}>
-          {step === "bairro" && !query ? (
+          {step !== "provincia" && !query ? (
             <>
-              <Option
-                label={t("Toda a província de {0}", [provincia])}
-                selected={bairro === null}
-                onPress={() => setBairroChoice(null)}
-              />
+              {step === "municipio" ? (
+                <Option
+                  label={t("Toda a província de {0}", [provincia])}
+                  selected={municipio === null}
+                  onPress={() => {
+                    setMunicipio(null);
+                    setBairroChoice(null);
+                  }}
+                />
+              ) : (
+                <Option
+                  label={t("Todo o município de {0}", [municipio?.name])}
+                  selected={bairro === null}
+                  onPress={() => setBairroChoice(null)}
+                />
+              )}
               <View style={[styles.separator, { backgroundColor: colors.divider }]} />
             </>
           ) : null}
           {filtered.map((item, index) => (
-            <View key={item.name}>
+            <View key={item.owner ? `${item.owner.name}/${item.name}` : item.name}>
               <Option
                 label={item.name}
-                detail={countLabel(item.count)}
-                selected={step === "provincia" ? provincia === item.name : bairro === item.name}
-                chevron={step === "provincia"}
-                onPress={() => (step === "provincia" ? pickProvincia(item.name) : setBairroChoice(item.name))}
+                detail={item.subtitle ? t("Bairro · {0}", [item.subtitle]) : countLabel(item.count)}
+                selected={
+                  step === "provincia"
+                    ? provincia === item.name
+                    : step === "bairro" || item.owner
+                      ? sameLocality(bairro?.name, item.name) && sameLocality(municipio?.name, item.owner?.name ?? municipio?.name)
+                      : !bairro && sameLocality(municipio?.name, item.name)
+                }
+                chevron={Boolean(item.chevron)}
+                onPress={() => pickItem(item)}
               />
               {index < filtered.length - 1 ? (
                 <View style={[styles.separator, { backgroundColor: colors.divider }]} />
@@ -214,14 +273,16 @@ export default function LocationOnboardingScreen() {
                   ? t("Sem resultados para “{0}”", [query])
                   : step === "provincia"
                     ? t("Não foi possível carregar as províncias. Verifique a ligação.")
-                    : t("Não foi possível carregar as zonas de {0}.", [provincia])}
+                    : failed
+                      ? t("Não foi possível carregar os municípios de {0}. Verifique a ligação.", [provincia])
+                      : t("Sem bairros registados. Fique com o município todo.")}
               </Text>
             </View>
           ) : null}
         </View>
       </ScrollView>
 
-      {step === "bairro" ? (
+      {step !== "provincia" ? (
         <View style={styles.footer}>
           <FilledButton title={t("Continuar")} onPress={finish} />
         </View>
